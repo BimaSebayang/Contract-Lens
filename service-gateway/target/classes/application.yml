@@ -8,7 +8,7 @@ spring:
       appId: 550e8400-e29b-41d4-a716-446655440000
       appKey: a9F3kQ7ZxP2mL8R5WcE1YH4VJ0B6nDUs
   profiles:
-    active: local
+    active: dev
   main:
     allow-bean-definition-overriding: true
   flyway:
