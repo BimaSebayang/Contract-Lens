@@ -90,8 +90,8 @@
                 <version>${maven.compiler.plugin.version}</version>
 
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
 
             </plugin>
