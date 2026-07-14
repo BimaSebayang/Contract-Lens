@@ -1,11 +1,9 @@
 package com.contractlens.service.module.proxy.service.impl;
 
 import com.contractlens.common.dto.GatewayRequest;
-import com.contractlens.service.infrastructure.RestTemplateConfig;
 import com.contractlens.service.module.proxy.service.GatewayService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,22 +11,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GatewayServiceImpl implements GatewayService {
 
     private final RestTemplate restTemplate;
 
     @Override
     public ResponseEntity<?> forward(GatewayRequest request, HttpHeaders headers) {
+        log.info("forward for : request = {}, headers = {}",request,headers);
+
         //TODO :: Get By Token Id PAthnya nanti
-        String targetUrl = "https://sfdcdev.axa.co.id/";
+        String targetUrl = "http://localhost:9001/";
+
+        UUID tokenId = request.tokenId();
 
         StringBuilder url = new StringBuilder();
 
         url.append(targetUrl);
 
-        url.append(request.path());
+        String prefix = "/gateway/" + tokenId+"/";
+
+
+        url.append(request.path().substring(prefix.length()));
 
         if (request.query() != null && !request.query().isBlank()) {
 
