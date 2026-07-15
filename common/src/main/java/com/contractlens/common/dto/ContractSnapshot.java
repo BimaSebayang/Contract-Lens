@@ -14,4 +14,13 @@ public class ContractSnapshot {
         fields.put(field.getPath(), field);
     }
 
+
+
+    public boolean contains(String path) {
+        return fields.containsKey(path);
+    }
+
+    public SchemaField getField(String path) {
+        return fields.get(path);
+    }
 }
