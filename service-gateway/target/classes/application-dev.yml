@@ -17,7 +17,12 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://root:root@localhost:27017/payment_db?authSource=admin
+      host: localhost
+      port: 27017
+      database: contractlens
+      username: contractlens
+      password: contractlens123
+      authentication-database: admin
 
     redis:
       lettuce:
@@ -35,3 +40,4 @@ spring:
     username: contractlens_user
     password: contractlens_pass
     virtual-host: /
+

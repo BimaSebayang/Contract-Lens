@@ -1,22 +1,23 @@
 package com.contractlens.service.module.proxy.service.impl;
 
 import com.contractlens.common.constant.ServiceConstants;
-import com.contractlens.common.dto.GatewayRequest;
-import com.contractlens.common.dto.GatewayTransactionEvent;
+import com.contractlens.common.dto.*;
+import com.contractlens.service.db.mongo.dao.AnalyzeSpecDocument;
+import com.contractlens.service.db.mongo.service.AnalyzeSpecDocumentQueryService;
 import com.contractlens.service.integration.message.RabbitEventPublisher;
 import com.contractlens.service.module.proxy.service.GatewayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,6 +29,8 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Qualifier(ServiceConstants.GATEWAY_ANALYZER_PUBLISHER)
     private final RabbitEventPublisher rabbitEventPublisher;
+
+    private final AnalyzeSpecDocumentQueryService queryService;
 
     @Override
     public ResponseEntity<?> forward(GatewayRequest request, HttpHeaders headers) {
@@ -110,6 +113,48 @@ public class GatewayServiceImpl implements GatewayService {
                 .headers(responseHeaders)
                 .body(response.getBody());
 
+    }
+
+    @Override
+    public ResponseEntity<List<ContractDifference>> queryforward(GatewayRequest request, HttpHeaders headers) {
+        log.info("forward for : request = {}, headers = {}",request,headers);
+
+        //TODO :: Get By Token Id PAthnya nanti
+        String targetUrl = "http://localhost:9001/";
+
+        UUID tokenId = request.tokenId();
+
+        StringBuilder url = new StringBuilder();
+
+        url.append(targetUrl);
+
+        String prefix = "/gateway-inquiry/" + tokenId+"/";
+
+
+        url.append(request.path().substring(prefix.length()));
+
+        if (request.query() != null && !request.query().isBlank()) {
+
+            url.append("?");
+
+            url.append(request.query());
+
+        }
+
+        AnalyzeSpecQuery analyzeSpecQuery = new AnalyzeSpecQuery(
+            url.toString(),request.method(),request.tokenId()
+        );
+
+        AnalyzeSpecDocument analyzeSpecDocument = queryService.getMainBaseLine(analyzeSpecQuery);
+
+        if(Objects.isNull(analyzeSpecDocument)){
+            return ResponseEntity.ok(new ArrayList<>());
+        }
+
+
+        return new ResponseEntity<>(
+                analyzeSpecDocument.getResponseBodyCompareResult().getDifferences(), HttpStatusCode.valueOf(200)
+        );
     }
 
 

@@ -22,7 +22,7 @@ public class TestingController {
                 TestingStandardGet.builder()
                         .alamat("Alamat Aja")
                         .nama("Nama Aja")
-                        .kodePos("12345")
+                        .kodePos(12345)
                         .build()
         );
     }
@@ -37,7 +37,7 @@ public class TestingController {
                                 TestingStandardGet.builder()
                                         .alamat("Alamat Aja")
                                         .nama("Nama Aja")
-                                        .kodePos("12345")
+                                        .kodePos(12345)
                                         .build()
                         )
                         .build()
