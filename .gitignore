@@ -188,6 +188,12 @@
 /.idea/uiDesigner.xml
 /.idea/vcs.xml
 /.idea/libraries/Maven__org_mongodb_bson_5_0_1.xml
+/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_data_mongodb_3_3_3.xml
+/.idea/libraries/Maven__org_springframework_data_spring_data_mongodb_4_3_3.xml
+/.idea/libraries/Maven__org_mongodb_mongodb_driver_sync_5_0_1.xml
+/.idea/libraries/Maven__org_mongodb_mongodb_driver_core_5_0_1.xml
+/.idea/libraries/Maven__org_mongodb_bson_record_codec_5_0_1.xml
+/.idea/libraries/Maven__org_mongodb_bson_5_0_1.xml
 /.idea/libraries/Maven__org_mongodb_bson_record_codec_5_0_1.xml
 /.idea/libraries/Maven__org_mongodb_mongodb_driver_core_5_0_1.xml
 /.idea/libraries/Maven__org_mongodb_mongodb_driver_sync_5_0_1.xml
