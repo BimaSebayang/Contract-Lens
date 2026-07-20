@@ -11,6 +11,7 @@ public class TestingStandardGet {
 
     private String nama;
     private String alamat;
-    private Integer kodePos;
+    private String kodePos;
+
 
 }

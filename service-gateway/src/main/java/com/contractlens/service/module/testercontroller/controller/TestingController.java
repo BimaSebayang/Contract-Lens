@@ -16,13 +16,18 @@ public class TestingController {
 
 
     @GetMapping("/v1/opal-value")
-    ResponseEntity<TestingStandardGet> setStandardGet(){
+    ResponseEntity<TestingStandardPost> setStandardGet(){
 
         return ResponseEntity.ok(
-                TestingStandardGet.builder()
-                        .alamat("Alamat Aja")
-                        .nama("Nama Aja")
-                        .kodePos(12345)
+                TestingStandardPost.builder()
+                        .id(UUID.randomUUID())
+                        .standardGet(
+                                TestingStandardGet.builder()
+                                        .alamat("Alamat Aja")
+                                        .nama("Nama Aja")
+                                        .kodePos("12345")
+                                        .build()
+                        )
                         .build()
         );
     }
@@ -37,7 +42,7 @@ public class TestingController {
                                 TestingStandardGet.builder()
                                         .alamat("Alamat Aja")
                                         .nama("Nama Aja")
-                                        .kodePos(12345)
+                                        .kodePos("12345")
                                         .build()
                         )
                         .build()
