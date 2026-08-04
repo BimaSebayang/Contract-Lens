@@ -1,0 +1,75 @@
+spring:
+  jackson:
+    default-property-inclusion: Always
+    time-zone: Asia/Jakarta
+  application:
+    name: ekyc
+    init:
+      appId: 550e8400-e29b-41d4-a716-446655440000
+      appKey: a9F3kQ7ZxP2mL8R5WcE1YH4VJ0B6nDUs
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: false
+    out-of-order: true
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    show-sql: false
+  data:
+    redis:
+      lettuce:
+        shutdown-timeout: 0
+        pool:
+          enabled: true
+          max-active: 50
+          max-idle: 10
+          min-idle: 2
+  datasource:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000  # 5 menit (default: 10 menit)
+      max-lifetime: 1800000  # 30 menit (default: 30 menit)
+      keepalive-time: 300000  # Pastikan koneksi tetap hidup
+  whitelist: /microsite-swagger,/microsite-swagger/**,/microsite-swagger-api,/microsite-swagger-api/**,/atest/hello-world-no-auth,/v3/api-docs/**,/swagger-ui/**,/swagger-ui.html,/actuator/health,/swagger-ui/index.html,/v1/configuration/switch-otp,/v1/auth/otp/**,/v1/auth/one-account/**,/v1/api/kyc/imageview/**,/v1/whitelist/**,/v1/api/kyc/external/imageview/**,/v1/microsite/validate-link/check-my-location,/microsite-swagger
+  whitelistmicrosite: /v1/microsite/validate-link,/v1/microsite/verihubs-config,/v1/api/kyc/**,/v1/api/kyc/**
+  microsite: /v1/microsite/pdp-agreement,/v1/microsite/finish,/v1/license/**/check,/v1/face/liveness,/v1/face/deepfake,/v1/ktp/extract,/v1/ktp-selfie/extract
+  jwttoken: 123456789012345678901234567890qwertyuiopqwertyuiopmnbvcxzzxcvbnmlkjhgfdsaasdfghjkl
+  hmactoken: microsite-one-on-one
+
+feign:
+  okhttp:
+    enabled: true
+
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 60000
+        loggerLevel: basic
+        retryer: feign.Retryer$NeverRetry
+
+springdoc:
+  swagger-ui:
+    doc-expansion: none
+    operations-sorter: alpha
+    tags-sorter: alpha
+    layout: StandaloneLayout
+    path: /microsite-swagger
+    url: /microsite-swagger-api
+  api-docs:
+    path: /microsite-swagger-api
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d %-5level [%X{userId:-}] %logger:%line - %msg%n"

@@ -1,0 +1,38 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: EKYC_DEV
+  datasource:
+    url: jdbc:h2:mem:dbeykc;DATABASE_TO_UPPER=false
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/h2
+    validate-migration-naming: true
+
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/payment_db?authSource=admin
+
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      timeout: 5000ms
+      database: 0
+
+    rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
