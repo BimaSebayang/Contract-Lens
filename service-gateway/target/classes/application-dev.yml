@@ -4,16 +4,28 @@ server:
 spring:
   application:
     name: SERVICE_GATEWAY
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/contractlens_gateway
+    username: sa
+    password: sa
+    driver-class-name: org.postgresql.Driver
+
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+          lob.non_contextual_creation: true
+
   flyway:
     enabled: true
     baseline-on-migrate: true
-    locations: classpath:db/h2
-    validate-migration-naming: true
+    locations: classpath:db/migration
 
   data:
     mongodb:
@@ -25,14 +37,15 @@ spring:
       authentication-database: admin
 
     redis:
-      lettuce:
-        pool:
-          enabled: true
       host: localhost
       port: 7000
       password:
       timeout: 5000ms
       database: 0
+
+      lettuce:
+        pool:
+          enabled: true
 
   rabbitmq:
     host: localhost
@@ -40,4 +53,3 @@ spring:
     username: contractlens_user
     password: contractlens_pass
     virtual-host: /
-

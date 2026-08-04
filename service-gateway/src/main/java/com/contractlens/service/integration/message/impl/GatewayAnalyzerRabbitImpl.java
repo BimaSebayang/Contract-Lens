@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -20,14 +21,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service(ServiceConstants.GATEWAY_ANALYZER_PUBLISHER)
-@AllArgsConstructor
 @Slf4j
 public class GatewayAnalyzerRabbitImpl implements RabbitEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
     @Qualifier(ServiceConstants.REDIS_PUBLISH_EVENT)
-    private final PublishEventService publishEventService;
+    @Autowired
+    private  PublishEventService publishEventService;
     private final ObjectMapper objectMapper;
+
+    public GatewayAnalyzerRabbitImpl(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     @Retryable(
