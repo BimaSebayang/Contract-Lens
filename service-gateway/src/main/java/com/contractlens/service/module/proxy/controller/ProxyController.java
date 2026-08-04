@@ -1,10 +1,14 @@
 package com.contractlens.service.module.proxy.controller;
 
+import com.contractlens.common.dto.CreateGatewayRouteRequest;
 import com.contractlens.common.dto.GatewayRequest;
 import com.contractlens.service.module.proxy.service.GatewayService;
+import com.contractlens.service.module.proxy.service.impl.RouteResolverService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,32 @@ import java.util.UUID;
 public class ProxyController {
 
     private final GatewayService gatewayService;
+    private final RouteResolverService routeResolverService;
+
+
+    @PostMapping
+    public ResponseEntity<String> create(
+            @RequestBody @Valid CreateGatewayRouteRequest request) {
+
+        String token = routeResolverService.createToken(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(token);
+
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(
+            @RequestBody @Valid CreateGatewayRouteRequest request) {
+
+        routeResolverService.updateToken(request);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
+
 
     @RequestMapping(
             value = "/{tokenId}/**",

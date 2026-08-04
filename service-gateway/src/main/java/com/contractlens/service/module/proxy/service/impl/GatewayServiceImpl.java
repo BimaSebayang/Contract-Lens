@@ -8,6 +8,7 @@ import com.contractlens.service.integration.message.RabbitEventPublisher;
 import com.contractlens.service.module.proxy.service.GatewayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,23 +22,30 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class GatewayServiceImpl implements GatewayService {
 
     private final RestTemplate restTemplate;
 
     @Qualifier(ServiceConstants.GATEWAY_ANALYZER_PUBLISHER)
-    private final RabbitEventPublisher rabbitEventPublisher;
+    @Autowired
+    private RabbitEventPublisher rabbitEventPublisher;
 
     private final AnalyzeSpecDocumentQueryService queryService;
+
+    private final RouteResolverService routeResolverService;
+
+    public GatewayServiceImpl(RestTemplate restTemplate, AnalyzeSpecDocumentQueryService queryService, RouteResolverService routeResolverService) {
+        this.restTemplate = restTemplate;
+        this.queryService = queryService;
+        this.routeResolverService = routeResolverService;
+    }
 
     @Override
     public ResponseEntity<?> forward(GatewayRequest request, HttpHeaders headers) {
         log.info("forward for : request = {}, headers = {}",request,headers);
 
-        //TODO :: Get By Token Id PAthnya nanti
-        String targetUrl = "http://localhost:9001/";
+        String targetUrl = routeResolverService.resolve(request.tokenId().toString()).getTargetUrl();
 
         UUID tokenId = request.tokenId();
 

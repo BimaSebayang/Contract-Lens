@@ -1,6 +1,5 @@
 package com.contractlens.service.module.proxy.service;
 
-import com.contractlens.common.dto.AnalyzeSpecQueryResult;
 import com.contractlens.common.dto.ContractDifference;
 import com.contractlens.common.dto.GatewayRequest;
 import org.springframework.http.HttpHeaders;
