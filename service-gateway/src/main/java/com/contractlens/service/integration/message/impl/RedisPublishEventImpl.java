@@ -9,6 +9,7 @@ import com.contractlens.service.integration.message.PublishEventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +17,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
 @Service(ServiceConstants.REDIS_PUBLISH_EVENT)
 public class RedisPublishEventImpl implements PublishEventService {
 
 
     @Qualifier(ServiceConstants.REDIS_PUBLISH_EVENT_DELEGATE)
-    private final PublishEventDelegateSvc publishEventDelegateSvc;
+    @Autowired
+    private  PublishEventDelegateSvc publishEventDelegateSvc;
     private final ObjectMapper objectMapper;
     private static final int MAX_RETRY = 10;
+
+    public RedisPublishEventImpl(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
 
     @Override

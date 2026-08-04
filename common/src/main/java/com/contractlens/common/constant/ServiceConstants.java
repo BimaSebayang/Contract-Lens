@@ -8,4 +8,6 @@ public class ServiceConstants {
 
     public static final String RABBIT_LISTENER_CONFIGURATION = "rabbitListenerContainerFactory";
 
+    public static final String GATEWAY_SERVICE_PS = "GATEWAY_SERVICE_PS";
+    public static final String GATEWAY_SERVICE_RD = "GATEWAY_SERVICE_RD";
 }
