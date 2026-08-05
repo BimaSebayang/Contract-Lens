@@ -1,0 +1,370 @@
+# Contract Comparison Examples
+
+Below are several examples demonstrating how ContractLens detects structural API changes.
+
+---
+
+## Example 1 — No Changes
+
+### Baseline
+
+```json
+{
+  "name": "Bima",
+  "age": 30
+}
+```
+
+### Current
+
+```json
+{
+  "name": "Bima",
+  "age": 30
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": false,
+  "breakingChanges": false,
+  "risk": "NONE",
+  "summary": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "differences": []
+}
+```
+
+---
+
+## Example 2 — Field Added
+
+### Baseline
+
+```json
+{
+  "name": "Bima"
+}
+```
+
+### Current
+
+```json
+{
+  "name": "Bima",
+  "age": 30
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": true,
+  "breakingChanges": false,
+  "risk": "LOW",
+  "summary": {
+    "added": 1,
+    "removed": 0,
+    "modified": 0
+  },
+  "differences": [
+    {
+      "path": "$.age",
+      "changeType": "FIELD_ADDED",
+      "oldValue": null,
+      "newValue": "Integer",
+      "risk": "LOW"
+    }
+  ]
+}
+```
+
+---
+
+## Example 3 — Field Removed
+
+### Baseline
+
+```json
+{
+  "name": "Bima",
+  "age": 30
+}
+```
+
+### Current
+
+```json
+{
+  "name": "Bima"
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": true,
+  "breakingChanges": true,
+  "risk": "HIGH",
+  "summary": {
+    "added": 0,
+    "removed": 1,
+    "modified": 0
+  },
+  "differences": [
+    {
+      "path": "$.age",
+      "changeType": "FIELD_REMOVED",
+      "oldValue": "Integer",
+      "newValue": null,
+      "risk": "HIGH"
+    }
+  ]
+}
+```
+
+---
+
+## Example 4 — Type Changed
+
+### Baseline
+
+```json
+{
+  "zipCode": 12345
+}
+```
+
+### Current
+
+```json
+{
+  "zipCode": "12345"
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": true,
+  "breakingChanges": true,
+  "risk": "HIGH",
+  "summary": {
+    "added": 0,
+    "removed": 0,
+    "modified": 1
+  },
+  "differences": [
+    {
+      "path": "$.zipCode",
+      "changeType": "TYPE_CHANGED",
+      "oldValue": "Integer",
+      "newValue": "String",
+      "risk": "HIGH"
+    }
+  ]
+}
+```
+
+---
+
+## Example 5 — Nested Object Changed
+
+### Baseline
+
+```json
+{
+  "address": {
+    "city": "Jakarta"
+  }
+}
+```
+
+### Current
+
+```json
+{
+  "address": {
+    "city": "Jakarta",
+    "country": "Indonesia"
+  }
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": true,
+  "breakingChanges": false,
+  "risk": "LOW",
+  "summary": {
+    "added": 1,
+    "removed": 0,
+    "modified": 0
+  },
+  "differences": [
+    {
+      "path": "$.address.country",
+      "changeType": "FIELD_ADDED",
+      "oldValue": null,
+      "newValue": "String",
+      "risk": "LOW"
+    }
+  ]
+}
+```
+
+---
+
+## Example 6 — Array Structure Changed
+
+### Baseline
+
+```json
+{
+  "items": [
+    {
+      "id": 1
+    }
+  ]
+}
+```
+
+### Current
+
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "price": 100
+    }
+  ]
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": true,
+  "breakingChanges": false,
+  "risk": "LOW",
+  "summary": {
+    "added": 1,
+    "removed": 0,
+    "modified": 0
+  },
+  "differences": [
+    {
+      "path": "$.items[].price",
+      "changeType": "FIELD_ADDED",
+      "oldValue": null,
+      "newValue": "Integer",
+      "risk": "LOW"
+    }
+  ]
+}
+```
+
+---
+
+## Example 7 — Multiple Changes
+
+### Baseline
+
+```json
+{
+  "name": "Bima",
+  "age": 30,
+  "status": "ACTIVE"
+}
+```
+
+### Current
+
+```json
+{
+  "fullName": "Bima",
+  "status": true
+}
+```
+
+### Comparison Result
+
+```json
+{
+  "hasChanges": true,
+  "breakingChanges": true,
+  "risk": "HIGH",
+  "summary": {
+    "added": 1,
+    "removed": 2,
+    "modified": 1
+  },
+  "differences": [
+    {
+      "path": "$.name",
+      "changeType": "FIELD_REMOVED",
+      "oldValue": "String",
+      "newValue": null,
+      "risk": "HIGH"
+    },
+    {
+      "path": "$.fullName",
+      "changeType": "FIELD_ADDED",
+      "oldValue": null,
+      "newValue": "String",
+      "risk": "LOW"
+    },
+    {
+      "path": "$.age",
+      "changeType": "FIELD_REMOVED",
+      "oldValue": "Integer",
+      "newValue": null,
+      "risk": "HIGH"
+    },
+    {
+      "path": "$.status",
+      "changeType": "TYPE_CHANGED",
+      "oldValue": "String",
+      "newValue": "Boolean",
+      "risk": "HIGH"
+    }
+  ]
+}
+```
+
+---
+
+# Risk Levels
+
+ContractLens classifies detected changes into different risk levels.
+
+| Risk | Description |
+|-------|-------------|
+| NONE | No contract changes detected. |
+| LOW | Backward-compatible changes (for example: new optional field). |
+| MEDIUM | Changes that may require consumer review. |
+| HIGH | Potential breaking changes that can impact existing consumers. |
+
+---
+
+# Supported Change Types
+
+| Change Type | Description | Breaking |
+|-------------|-------------|:--------:|
+| FIELD_ADDED | A new field is introduced. | ❌ |
+| FIELD_REMOVED | An existing field is removed. | ✅ |
+| TYPE_CHANGED | Field data type changes. | ✅ |
+| REQUIRED_CHANGED *(Planned)* | Optional field becomes required. | ✅ |
+| FIELD
