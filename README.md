@@ -1,22 +1,47 @@
-# ContractLens
+ContractLens
 
-> **Observe. Detect. Protect.**
+«Observe. Detect. Protect.»
 
 ContractLens is an intelligent API Gateway and Contract Intelligence Platform that helps engineering teams detect, analyze, and prevent API breaking changes before they impact consumers.
 
-Instead of relying on manual API reviews, ContractLens automatically captures API traffic, analyzes contracts, detects differences, and prepares compatibility rules for safe backend evolution.
+Instead of relying on manual API reviews, ContractLens automatically captures API traffic, analyzes contracts, detects differences, prepares compatibility rules, and preserves backward compatibility with minimal runtime overhead.
 
 ---
 
-# Vision
+Vision
 
-> Give developers confidence when deploying APIs.
+«Give developers confidence when deploying APIs.»
 
 ContractLens allows backend services to evolve safely while keeping existing consumers protected from unexpected contract changes.
 
 ---
 
-# Problem
+Engineering Principles
+
+ContractLens is designed using enterprise-grade engineering principles.
+
+Functional Principles
+
+- API First
+- Contract First
+- Backward Compatibility
+- Rule-based Transformation
+- Asynchronous Contract Analysis
+- Runtime Compatibility Protection
+
+Non-Functional Principles
+
+- Performance First
+- Memory-first Execution
+- Minimal Runtime Overhead
+- Reliability
+- Scalability by Design
+- High Observability
+- Testability
+
+---
+
+Problem
 
 Modern APIs evolve rapidly.
 
@@ -35,13 +60,12 @@ Without automated verification, developers must manually review every API respon
 
 ---
 
-# Solution
+Solution
 
 ContractLens combines an API Gateway with a Contract Intelligence Engine.
 
 Every API request automatically flows through ContractLens.
 
-```text
 Client
     │
     ▼
@@ -49,11 +73,9 @@ ContractLens Gateway
     │
     ▼
 Target Service
-```
 
 Meanwhile, ContractLens performs asynchronous contract analysis.
 
-```text
 Request / Response
         │
         ▼
@@ -72,14 +94,31 @@ Baseline Detection
 Contract Comparison
         │
         ▼
-Store History
-```
+Compatibility Rule Generation
+        │
+        ▼
+Store History & Rules
+
+At runtime, the Gateway does not perform contract comparison.
+
+Instead, it executes pre-generated compatibility rules.
+
+Gateway
+    │
+    ▼
+Load Compatibility Rule (Memory Cache)
+    │
+    ▼
+Runtime Transformation
+    │
+    ▼
+Return Response
 
 ---
 
-# Features
+Features
 
-## API Gateway
+API Gateway
 
 - Reverse Proxy
 - Dynamic Route Resolution
@@ -92,11 +131,9 @@ Store History
 
 ---
 
-## Contract Snapshot
+Contract Snapshot
 
 Every request and response passing through ContractLens is transformed into a normalized Contract Snapshot.
-
-Instead of storing raw JSON payloads, ContractLens extracts the API structure, allowing comparisons regardless of formatting or property ordering.
 
 Each snapshot contains:
 
@@ -107,15 +144,11 @@ Each snapshot contains:
 - Field Type Information
 - Nested Object Structure
 
-Contract Snapshots become the foundation for every subsequent analysis.
-
 ---
 
-## Contract Comparison
+Contract Comparison
 
-Whenever a new Contract Snapshot is generated, ContractLens automatically compares it with the current Baseline Contract.
-
-Detected changes include:
+Automatically detects:
 
 - Added Fields
 - Removed Fields
@@ -125,176 +158,69 @@ Detected changes include:
 - Array Structure Changes
 - Potential Breaking Changes
 
-Rather than comparing raw JSON, ContractLens compares normalized API structures.
+---
+
+Compatibility Engine
+
+Instead of simply reporting breaking changes, ContractLens attempts to preserve backward compatibility.
+
+Supported compatibility includes:
+
+- Type Compatibility
+- Field Compatibility
+- Structure Compatibility
+- Collection Compatibility
+- Enum Compatibility
+- Default Value Compatibility
+- Complex Object Compatibility
+- Runtime Payload Transformation
 
 ---
 
-## Baseline Detection
+Architecture
 
-For every endpoint, ContractLens automatically creates a Baseline Contract.
-
-Every subsequent request generates a new snapshot and compares it against the baseline.
-
-```text
-Request
-    │
-    ▼
-Generate Snapshot
-    │
-    ▼
-Baseline Exists?
-        │
-   ┌────┴────┐
-   │         │
-  NO        YES
-   │         │
-   ▼         ▼
-Create     Compare
-Baseline   Snapshot
-```
-
-This enables automatic API evolution monitoring without requiring manual contract registration.
-
----
-
-## API History
-
-Every analyzed request is stored in MongoDB.
-
-Each history record includes:
-
-- Request Contract Snapshot
-- Response Contract Snapshot
-- Comparison Result
-- Breaking Change Summary
-- Execution Duration
-- Response Status
-- Analysis Timestamp
-
-Instead of storing only the latest version, ContractLens preserves the evolution of every API contract over time.
-
----
-
-# Architecture
-
-```text
                     Client
                        │
                        ▼
               ContractLens Gateway
                        │
-        ┌──────────────┴──────────────┐
-        │                             │
-        ▼                             ▼
-   PostgreSQL                    RabbitMQ
-(API Configuration)         (Async Contract Events)
-                                      │
-                                      ▼
-                          ContractLens Analyzer
-                                      │
-                                      ▼
-                         Contract Snapshot Engine
-                                      │
-                                      ▼
-                           Baseline Detection
-                                      │
-                                      ▼
-                           Contract Comparison
-                                      │
-                                      ▼
-                                 MongoDB
-                       (History & Contract Storage)
-```
+             Runtime Transformation
+                       │
+                       ▼
+                 Target Service
+
+                       │
+                       ▼
+
+        ───────── Asynchronous Pipeline ─────────
+
+               RabbitMQ Event
+                       │
+                       ▼
+             ContractLens Analyzer
+                       │
+                       ▼
+          Contract Snapshot Engine
+                       │
+                       ▼
+            Baseline Detection
+                       │
+                       ▼
+           Contract Comparison
+                       │
+                       ▼
+       Compatibility Rule Generation
+                       │
+                       ▼
+          MongoDB + PostgreSQL
 
 ---
 
-# Core Components
+Roadmap
 
-## Gateway
+Sprint 1 ✅
 
-- Spring Boot
-- Java 21
-- GraalVM
-- PostgreSQL
-- Redis
-- RabbitMQ
-
-## Analyzer
-
-- Spring Boot
-- MongoDB
-- Contract Snapshot Engine
-- Contract Comparator
-- Baseline Detection
-- History Storage
-
-## Infrastructure
-
-- Docker
-- Nginx
-- Flyway
-
----
-
-# Current Capabilities
-
-## Gateway
-
-✅ Reverse Proxy
-
-✅ Dynamic Route Resolution
-
-✅ PostgreSQL Route Management
-
-✅ Redis Cache Layer
-
-✅ Request Capture
-
-✅ Response Capture
-
-✅ RabbitMQ Event Publishing
-
----
-
-## Contract Intelligence
-
-✅ Contract Snapshot Generation
-
-✅ Request Header Analysis
-
-✅ Request Body Analysis
-
-✅ Response Header Analysis
-
-✅ Response Body Analysis
-
-✅ Structural Contract Comparison
-
-✅ Baseline Detection
-
-✅ API History
-
----
-
-## Infrastructure
-
-✅ PostgreSQL
-
-✅ MongoDB
-
-✅ Redis
-
-✅ RabbitMQ
-
-✅ Flyway Migration
-
----
-
-# Roadmap
-
-## Sprint 1 ✅
-
-### Foundation
+Foundation
 
 - Project Initialization
 - Multi Module Architecture
@@ -304,9 +230,9 @@ Instead of storing only the latest version, ContractLens preserves the evolution
 
 ---
 
-## Sprint 2 ✅
+Sprint 2 ✅
 
-### API Gateway
+API Gateway
 
 - Reverse Proxy
 - Dynamic Target Routing
@@ -319,9 +245,9 @@ Instead of storing only the latest version, ContractLens preserves the evolution
 
 ---
 
-## Sprint 3 ✅
+Sprint 3 ✅
 
-### Reliable Event Processing
+Reliable Event Processing
 
 - RabbitMQ Integration
 - Reliable Event Publishing
@@ -331,85 +257,134 @@ Instead of storing only the latest version, ContractLens preserves the evolution
 
 ---
 
-## Sprint 4 ✅
+Sprint 4 ✅
 
-### Contract Intelligence
-
-#### Contract Snapshot
-
-Automatically generates normalized API contracts from:
-
-- Request Header
-- Request Body
-- Response Header
-- Response Body
-
-#### Contract Comparison
-
-Automatically detects:
-
-- Added Fields
-- Removed Fields
-- Type Changes
-- Nested Structure Changes
-- Breaking Changes
-
-#### Baseline Detection
-
-- Automatic Baseline Creation
-- Runtime Snapshot Detection
-- Latest Snapshot Comparison
-- Continuous Contract Monitoring
-
-#### API History
-
-Stores:
+Contract Intelligence
 
 - Contract Snapshot
-- Comparison Result
-- Breaking Change Summary
-- Response Status
-- Execution Duration
-- Analysis Timestamp
-
-MongoDB acts as the historical storage for all analyzed contracts.
+- Contract Comparison
+- Baseline Detection
+- API History
+- MongoDB Storage
 
 ---
 
-## Sprint 5 ✅
+Sprint 5 ✅
 
-### Dynamic Route Resolution
+Dynamic Route Resolution
 
 - PostgreSQL as Source of Truth
 - Redis Cache Layer
-- Read-Through Cache Strategy
+- Read-Through Cache
 - Write Synchronization
-- Gateway Route Management
-- Automatic Redis Cache Rebuild
-- Audit Entity
-- Flyway Migration
+- Automatic Cache Rebuild
 
 ---
 
-## Sprint 6 🚧
+Sprint 6 🚧
 
-### Compatibility Engine
+Compatibility Engine
 
-Instead of only detecting API changes, ContractLens will automatically generate compatibility rules.
+The Compatibility Engine evaluates every detected contract change and attempts to preserve backward compatibility before declaring a breaking change.
 
-Features:
+Story Backlog
 
-- Automatic Type Conversion
-- Field Rename Mapping
-- Default Value Injection
-- Enum Compatibility Mapping
-- Runtime Response Transformation
+— Type Compatibility
+— Field Compatibility
+— Structure Compatibility
+— Collection Compatibility
+— Enum Compatibility
+— Default Value Compatibility
+— Complex Object Compatibility
+— Runtime Compatibility Transformation
+- ⬜ Story 6.9 — Compatibility Report
+
+Performance Requirements
+
+Every story must satisfy both Functional and Non-Functional Acceptance Criteria.
+
+Functional
+
+- Feature works correctly
+- Unit Test completed
+- Integration Test completed
+
+Non-Functional
+
+- No runtime contract comparison
+- No RabbitMQ communication
+- No database lookup during transformation (except cache miss)
+- Memory-first execution
+- Single-pass transformation whenever possible
+- Low memory allocation
+- Minimal additional latency
 
 ---
 
-## Sprint 7
+Sprint 6.5 🧪
 
-### Interactive Dashboard
+Validation & Performance Testing
+
+This sprint acts as the quality gate before introducing Dashboard and AI features.
+
+Scope
+
+Functional Validation
+
+- End-to-End Testing
+- Integration Testing
+- Regression Testing
+- Cross Story Validation
+
+Data Validation
+
+- Small Dataset
+- Medium Dataset
+- Large Dataset
+- Edge Cases
+- Compatibility Accuracy
+
+Performance Validation
+
+- Runtime Benchmark
+- Memory Profiling
+- CPU Profiling
+- Latency Measurement
+- Load Testing
+- Stress Testing
+
+Testing Strategy
+
+Every feature should be validated through:
+
+Unit Test
+      │
+      ▼
+Functional Test
+      │
+      ▼
+Integration Test
+      │
+      ▼
+Regression Test
+      │
+      ▼
+Performance Test
+      │
+      ▼
+Load Test
+      │
+      ▼
+Stress Test
+      │
+      ▼
+Large Dataset Validation
+
+---
+
+Sprint 7
+
+Interactive Dashboard
 
 - Contract Diff Viewer
 - API Timeline
@@ -419,9 +394,9 @@ Features:
 
 ---
 
-## Sprint 8
+Sprint 8
 
-### AI Features
+AI Features
 
 - AI Contract Explanation
 - AI Compatibility Suggestion
@@ -430,14 +405,13 @@ Features:
 
 ---
 
-## Sprint 9
+Sprint 9
 
-### Enterprise Features
+Enterprise Features
 
 - Notification Center
 - Slack Integration
 - Email Notification
-- Firebase Cloud Messaging (FCM)
 - Webhook Integration
 - Multi Workspace
 - API Version Management
@@ -445,60 +419,52 @@ Features:
 
 ---
 
-# Current Status
+Current Status
 
-✅ Functional Prototype
+Completed
 
-The current implementation has been functionally verified in a local development environment.
-
-Verified scenarios:
-
-- Dynamic Route Resolution
-- PostgreSQL Route Management
-- Redis Cache Synchronization
-- Automatic Redis Cache Rebuild
-- Contract Snapshot Generation
-- Baseline Detection
+- API Gateway
+- Dynamic Routing
+- Redis Cache
+- RabbitMQ
+- Contract Snapshot
 - Contract Comparison
+- Baseline Detection
 - API History
 
-The following are intentionally outside the current scope:
+In Progress
 
+- Compatibility Engine
+
+Planned Validation
+
+- Functional Validation
+- Performance Benchmark
+- Compatibility Validation
+- Large Dataset Validation
 - Load Testing
-- High Concurrency Testing
-- Performance Benchmarking
-- Horizontal Scalability Testing
-- Production Validation
+- Stress Testing
 
 ---
 
-# Why ContractLens?
+Future Vision
 
-ContractLens is more than an API Gateway.
-
-It continuously observes API behavior, builds contract snapshots, detects structural changes, tracks API evolution, and lays the foundation for automatic compatibility protection.
-
-Instead of reacting after production failures occur, ContractLens helps engineering teams identify API contract changes before they impact consumers.
-
----
-
-# Future Vision
+ContractLens aims to evolve from an API Gateway into a complete API Contract Intelligence Platform.
 
 Future capabilities include:
 
 - Interactive Dashboard
+- Runtime Compatibility Engine
 - AI-assisted Contract Analysis
-- Automatic Compatibility Rules
+- AI-generated Compatibility Rules
+- Performance Validation Suite
 - Notification Center
-- Runtime Response Transformation
 - Enterprise Workspace Management
-
-ContractLens aims to evolve from an API Gateway into a complete **API Contract Intelligence Platform**.
 
 ---
 
-# Closing
+Closing
 
-> **Observe. Detect. Protect.**
+«Observe. Detect. Protect.»
 
-ContractLens gives engineering teams confidence to deploy backend changes safely while maintaining API compatibility.
+ContractLens gives engineering teams confidence to evolve backend APIs safely by combining intelligent contract analysis, runtime compatibility protection, and enterprise-grade engineering principles.
