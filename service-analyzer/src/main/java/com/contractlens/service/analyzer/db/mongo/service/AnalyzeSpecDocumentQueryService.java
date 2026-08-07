@@ -1,5 +1,6 @@
 package com.contractlens.service.analyzer.db.mongo.service;
 
+import com.contractlens.common.dto.AnalyzeSpecQuery;
 import com.contractlens.common.dto.GatewayTransactionEvent;
 import com.contractlens.service.analyzer.db.mongo.dao.AnalyzeSpecDocument;
 import com.contractlens.service.analyzer.db.mongo.repository.AnalyzeRepository;
@@ -16,6 +17,38 @@ import java.util.UUID;
 public class AnalyzeSpecDocumentQueryService {
 
     private final AnalyzeRepository analyzeRepository;
+
+
+    public AnalyzeSpecDocument getMainBaseLine(AnalyzeSpecQuery event) {
+        UUID tokenId = event.tokenId();
+        String method = event.method();
+        String targetUrl = event.targetUrl();
+
+        //Find Existing BaseLine First
+        List<AnalyzeSpecDocument> baselines =
+                analyzeRepository.findLatest(
+                        tokenId,
+                        method,
+                        targetUrl
+                );
+
+
+
+        return baselines.stream()
+                .findFirst()
+                .orElseGet(() ->
+                        analyzeRepository.findLatest(
+                                        tokenId,
+                                        method,
+                                        targetUrl
+                                )
+                                .stream()
+                                .findFirst()
+                                .orElse(null)
+                );
+
+
+    }
 
     public AnalyzeSpecDocument getMainBaseLine(GatewayTransactionEvent event) {
         UUID tokenId = event.getTokenId();
