@@ -12,7 +12,7 @@ Sprint 6 focuses on evolving ContractLens from an API Contract Detection platfor
 
 This sprint introduces:
 
-- Spring WebFlux Gateway
+- Spring Boot Gateway
 - Compatibility Engine
 - Compatibility Plan
 - Runtime Transformation
@@ -24,21 +24,6 @@ This sprint introduces:
 
 # Technology Decisions
 
-## Spring WebFlux
-
-The Gateway runtime is migrated to **Spring WebFlux** to maximize throughput and minimize processing overhead.
-
-Responsibilities:
-
-- Reactive Request Processing
-- Reactive Response Processing
-- Compatibility Runtime Execution
-- Non-blocking Processing
-- High Concurrency Support
-
-The Analyzer remains asynchronous and independent from the Gateway runtime.
-
----
 
 ## Compatibility Cache
 
@@ -60,58 +45,6 @@ MongoDB remains the Contract Intelligence Source of Truth.
 
 ---
 
-# Story 6.0 — Gateway Refactoring 🚧
-
-## Objective
-
-Refactor the existing Gateway implementation to support Spring WebFlux and the Compatibility Engine.
-
-### Deliverables
-
-### Spring WebFlux Migration
-
-- Migrate Gateway to Spring WebFlux
-- Replace blocking flow with reactive pipeline
-- Reactive Request Processing
-- Reactive Response Processing
-
-### Route Management Refactoring
-
-- Refactor Save Route API
-- Refactor Get Route API
-- Refactor Update Route API
-- Refactor Delete Route API
-- Reactive Repository Integration
-
-### Gateway Runtime Refactoring
-
-- Refactor Dynamic Route Resolution
-- Refactor Request Forwarding
-- Refactor Response Handling
-- Introduce Compatibility Pipeline
-- Introduce Compatibility Cache
-
-### Code Quality
-
-- Improve Package Structure
-- Simplify Existing Services
-- Improve Exception Handling
-- Improve Logging
-- Remove Obsolete Synchronous Code
-
-### Acceptance Criteria
-
-- Existing Gateway features continue to work.
-- CRUD Route APIs successfully migrated to Spring WebFlux.
-- Gateway forwarding remains functional.
-- Existing unit tests continue to pass.
-
-### Performance Goal
-
-- Non-blocking execution.
-- Minimal latency overhead.
-
-Status
 
 🚧 In Progress
 
@@ -131,7 +64,7 @@ Build the core Compatibility Engine architecture.
 - Transformation Dispatcher
 - Compatibility Cache Abstraction
 - Caffeine Integration
-- Spring WebFlux Integration
+- Spring Boot Integration
 
 ### Performance Goal
 
@@ -320,7 +253,7 @@ Perform complete validation before Sprint 7.
 - High Concurrency Test
 - Cache Validation
 - Caffeine Validation
-- Spring WebFlux Validation
+- Spring Boot Validation
 
 ### Performance Validation
 
@@ -351,7 +284,7 @@ Status
                     Client
                        │
                        ▼
-          Spring WebFlux Gateway
+          Spring Boot Gateway
                        │
              Compatibility Cache
                  (Caffeine)
@@ -389,7 +322,6 @@ Status
 
 | Story | Status |
 |--------|--------|
-| Story 6.0 — Gateway Refactoring | 🚧 In Progress |
 | Story 6.1 — Compatibility Engine Foundation | 🚧 In Progress |
 | Story 6.2 — Data Type Compatibility | ⬜ Planned |
 | Story 6.3 — Required Field Compatibility | ⬜ Planned |
@@ -406,7 +338,6 @@ Status
 
 Sprint 6 is considered complete when:
 
-- ✅ Gateway fully migrated to Spring WebFlux.
 - ✅ Existing Gateway features remain functional.
 - ✅ Compatibility Engine is operational.
 - ✅ Compatibility Plans are cached using Caffeine.
