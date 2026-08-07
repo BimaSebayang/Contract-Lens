@@ -1,0 +1,1 @@
+MESSAGE_NOT_FOUND_BY_ROLE = "Sorry, I can't content on that role"
