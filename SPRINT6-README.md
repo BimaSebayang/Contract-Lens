@@ -1,269 +1,418 @@
-🚀 Sprint 6 — Compatibility Engine
+# Sprint 6 — Compatibility Engine 🚧
 
-«Goal: Build a Compatibility Engine capable of protecting existing API consumers by automatically transforming compatible contract changes whenever it is safe to do so.»
-
----
-
-📖 Overview
-
-Sprint 6 introduces the Compatibility Engine, one of the core differentiators of ContractLens.
-
-Instead of only detecting API contract changes, ContractLens attempts to preserve backward compatibility by analyzing every contract change and applying safe transformations whenever possible.
-
-Every detected change will be evaluated before being classified as either:
-
-- ✅ Compatible
-- ❌ Breaking Change
-
-«Philosophy
-
-Never declare a breaking change until every compatible transformation has been evaluated.»
+> **Goal**
+>
+> Build the ContractLens Compatibility Engine to automatically preserve backward compatibility while maintaining a high-performance, non-blocking Gateway runtime.
 
 ---
 
-🎯 Sprint Goal
+# Sprint Objective
 
-- Analyze every contract change.
-- Preserve backward compatibility whenever possible.
-- Apply built-in transformations.
-- Apply rule-based transformations.
-- Generate compatibility reports.
-- Report breaking changes only when no safe transformation exists.
+Sprint 6 focuses on evolving ContractLens from an API Contract Detection platform into an API Compatibility Platform.
 
----
+This sprint introduces:
 
-🔄 Compatibility Decision Flow
-
-Receive Payload
-        │
-        ▼
-Load Previous Contract
-        │
-        ▼
-Load Current Contract
-        │
-        ▼
-Compare Contract
-        │
-        ▼
-Compatibility Engine
-        │
-        ▼
-Transformation Available?
-      │
- ┌────┴────┐
- │         │
-Yes        No
- │         │
- ▼         ▼
-Compatible Breaking
+- Spring WebFlux Gateway
+- Compatibility Engine
+- Compatibility Plan
+- Runtime Transformation
+- Caffeine Local Cache
+- Backward Compatibility Protection
+- Performance Optimization
 
 ---
 
-✅ Supported Compatibility
+# Technology Decisions
 
-Change Type| Supported| Transformation
-Type Conversion| ✅| Built-in
-Field Rename| ✅| Built-in
-Structure Mapping| ✅| Built-in
-Nested Object Mapping| ✅| Built-in
-Array Mapping| ✅| Built-in
-Enum Mapping| ✅| Built-in
-Default Value Injection| ✅| Rule Based
-Required Field Removed| ✅| Rule Based
-Incompatible Data Type| ✅| Rule Based
-Object ↔ Primitive| ✅| Rule Based
+## Spring WebFlux
 
-«Supported means ContractLens understands the change and attempts to preserve compatibility whenever possible.»
+The Gateway runtime is migrated to **Spring WebFlux** to maximize throughput and minimize processing overhead.
 
----
+Responsibilities:
 
-📚 Sprint Backlog
+- Reactive Request Processing
+- Reactive Response Processing
+- Compatibility Runtime Execution
+- Non-blocking Processing
+- High Concurrency Support
 
-Story| Feature| Status
-6.1| Type Compatibility| 🟡 In Progress
-6.2| Field Compatibility| ⬜ Todo
-6.3| Structure Compatibility| ⬜ Todo
-6.4| Collection Compatibility| ⬜ Todo
-6.5| Enum Compatibility| ⬜ Todo
-6.6| Default Value Compatibility| ⬜ Todo
-6.7| Complex Object Compatibility| ⬜ Todo
-6.8| Runtime Compatibility Transformation| ⬜ Todo
-6.9| Compatibility Report| ⬜ Todo
+The Analyzer remains asynchronous and independent from the Gateway runtime.
 
 ---
 
-📖 Story Details
+## Compatibility Cache
 
-🟡 Story 6.1 — Type Compatibility
+Compatibility Plans are stored in an in-memory **Caffeine Cache**.
 
-Goal
+Characteristics:
 
-Support safe data type transformation.
+- O(1) Lookup
+- Thread-safe
+- Local JVM Cache
+- No Database Lookup during Runtime
+- Startup Cache Loading
 
-Examples:
-
-- Integer ↔ Long
-- Integer ↔ Double
-- Integer ↔ String
-- Boolean ↔ String
-- Number ↔ String
-
-Acceptance Criteria
-
-- Safe type conversion is supported.
-- Invalid conversion is rejected.
-- Compatibility result is generated.
-- Unit tests are completed.
+MongoDB remains the Contract Intelligence Source of Truth.
 
 ---
 
-⬜ Story 6.2 — Field Compatibility
-
-Goal
-
-Support field rename compatibility.
-
-Examples:
-
-firstName
-      ↓
-givenName
+# Stories
 
 ---
 
-⬜ Story 6.3 — Structure Compatibility
+# Story 6.0 — Gateway Refactoring 🚧
 
-Goal
+## Objective
 
-Support JSON structure transformation.
+Refactor the existing Gateway implementation to support Spring WebFlux and the Compatibility Engine.
 
-Examples:
+### Deliverables
 
-user.name
-      ↓
-profile.fullName
+### Spring WebFlux Migration
 
----
+- Migrate Gateway to Spring WebFlux
+- Replace blocking flow with reactive pipeline
+- Reactive Request Processing
+- Reactive Response Processing
 
-⬜ Story 6.4 — Collection Compatibility
+### Route Management Refactoring
 
-Goal
+- Refactor Save Route API
+- Refactor Get Route API
+- Refactor Update Route API
+- Refactor Delete Route API
+- Reactive Repository Integration
 
-Support compatibility for arrays and nested collections.
+### Gateway Runtime Refactoring
 
-Examples:
+- Refactor Dynamic Route Resolution
+- Refactor Request Forwarding
+- Refactor Response Handling
+- Introduce Compatibility Pipeline
+- Introduce Compatibility Cache
 
-users[].name
-      ↓
-members[].fullName
+### Code Quality
 
----
+- Improve Package Structure
+- Simplify Existing Services
+- Improve Exception Handling
+- Improve Logging
+- Remove Obsolete Synchronous Code
 
-⬜ Story 6.5 — Enum Compatibility
+### Acceptance Criteria
 
-Goal
+- Existing Gateway features continue to work.
+- CRUD Route APIs successfully migrated to Spring WebFlux.
+- Gateway forwarding remains functional.
+- Existing unit tests continue to pass.
 
-Support enum value transformation.
+### Performance Goal
 
-Examples:
+- Non-blocking execution.
+- Minimal latency overhead.
 
-ACTIVE
-   ↓
-ENABLED
+Status
 
----
-
-⬜ Story 6.6 — Default Value Compatibility
-
-Goal
-
-Support missing field transformation using default values or compatibility rules.
-
-Examples:
-
-country
-   ↓
-Default : ID
-
----
-
-⬜ Story 6.7 — Complex Object Compatibility
-
-Goal
-
-Support complex object transformation.
-
-Examples:
-
-- Primitive → Object
-- Object → Primitive
-- Object → Object
-
-Transformation is performed only when a valid compatibility rule exists.
+🚧 In Progress
 
 ---
 
-⬜ Story 6.8 — Runtime Compatibility Transformation
+# Story 6.1 — Compatibility Engine Foundation 🚧
 
-Goal
+## Objective
 
-Transform payloads at runtime before returning responses to API consumers.
+Build the core Compatibility Engine architecture.
 
----
-
-⬜ Story 6.9 — Compatibility Report
-
-Goal
-
-Generate a detailed compatibility report including:
-
-- Detected changes
-- Applied transformations
-- Compatibility rules
-- Compatibility status
-- Breaking change reason
-
----
-
-📦 Deliverables
+### Deliverables
 
 - Compatibility Engine
-- Runtime Transformer
+- Compatibility Plan
+- Transformation Model
+- Transformation Dispatcher
+- Compatibility Cache Abstraction
+- Caffeine Integration
+- Spring WebFlux Integration
+
+### Performance Goal
+
+- O(1) Compatibility Lookup
+- In-memory Execution
+- No Runtime Contract Comparison
+
+Status
+
+🚧 In Progress
+
+---
+
+# Story 6.2 — Data Type Compatibility
+
+## Objective
+
+Protect primitive data type evolution.
+
+### Supported Scenarios
+
+- Integer → Long
+- Integer → Double
+- Integer → String
+- Long → String
+- Double → String
+- Boolean → String
+- Numeric Compatibility
+
+Status
+
+⬜ Planned
+
+---
+
+# Story 6.3 — Required Field Compatibility
+
+## Objective
+
+Protect consumers from required field changes.
+
+### Supported Scenarios
+
+- Required → Optional
+- Required Field Removed
+- Default Value Injection
+- Missing Field Protection
+
+Status
+
+⬜ Planned
+
+---
+
+# Story 6.4 — JSON Structure Compatibility
+
+## Objective
+
+Protect JSON structure evolution.
+
+### Supported Scenarios
+
+- Object → Object
+- Object ↔ Primitive
+- Nested Object Mapping
+- Array Structure Mapping
+- Field Path Mapping
+
+Status
+
+⬜ Planned
+
+---
+
+# Story 6.5 — Compatibility Cache
+
+## Objective
+
+Provide high-performance runtime compatibility lookup.
+
+### Deliverables
+
+- Caffeine Cache
+- CompatibilityPlan Cache
+- Startup Cache Loader
+- Cache Statistics
+- Cache Abstraction
+
+### Performance Goal
+
+- O(1) Lookup
+- Thread-safe
+- Zero Database Access during Runtime
+
+Status
+
+⬜ Planned
+
+---
+
+# Story 6.6 — Compatibility Runtime
+
+## Objective
+
+Execute Compatibility Plans inside Gateway runtime.
+
+### Deliverables
+
+- Runtime Transformation Pipeline
+- Transformation Dispatcher
+- Compatibility Execution
+- Reactive Runtime Integration
+- Gateway Compatibility Pipeline
+
+Status
+
+⬜ Planned
+
+---
+
+# Story 6.7 — Compatibility Validation
+
+## Objective
+
+Validate generated Compatibility Plans before runtime usage.
+
+### Deliverables
+
+- Rule Validation
+- Transformation Validation
+- Error Handling
 - Compatibility Report
-- Unit Tests
-- Integration Tests
+
+Status
+
+⬜ Planned
 
 ---
 
-✅ Definition of Done
+# Story 6.8 — Performance Optimization
 
-Sprint 6 is completed when:
+## Objective
 
-- Every supported contract change is analyzed.
-- Safe transformations are automatically applied.
-- Rule-based transformations are supported.
-- Compatibility reports are generated.
-- Breaking changes are reported only after all compatibility options have been evaluated.
+Optimize Gateway performance.
+
+### Validation Scope
+
+- Caffeine Benchmark
+- JVM Heap Analysis
+- Garbage Collection Analysis
+- Memory Consumption
+- Throughput Benchmark
+- Gateway Latency Benchmark
+
+### Performance Target
+
+- Average Overhead < 20 ms
+- P95 < 50 ms
+- P99 < 100 ms
+
+Status
+
+⬜ Planned
 
 ---
 
-📊 Sprint Progress
+# Story 6.9 — Sprint Validation
 
-Sprint 6 Progress
+## Objective
 
-🟡 In Progress
-☐ Story 6.1 — Type Compatibility
+Perform complete validation before Sprint 7.
 
-⬜ Todo
-☐ Story 6.2 — Field Compatibility
-☐ Story 6.3 — Structure Compatibility
-☐ Story 6.4 — Collection Compatibility
-☐ Story 6.5 — Enum Compatibility
-☐ Story 6.6 — Default Value Compatibility
-☐ Story 6.7 — Complex Object Compatibility
-☐ Story 6.8 — Runtime Compatibility Transformation
-☐ Story 6.9 — Compatibility Report
+### Functional Validation
 
-✅ Done
-(None)
+- Compatibility Engine
+- Data Type Compatibility
+- Required Field Compatibility
+- JSON Structure Compatibility
+- Runtime Transformation
+
+### Technical Validation
+
+- Unit Test
+- Integration Test
+- Gateway Reactive Test
+- High Concurrency Test
+- Cache Validation
+- Caffeine Validation
+- Spring WebFlux Validation
+
+### Performance Validation
+
+- JVM Memory Usage
+- Heap Analysis
+- Garbage Collection
+- Cache Hit Ratio
+- Gateway Latency
+- Throughput
+- Response Time Comparison
+
+### Acceptance Criteria
+
+- Compatibility Engine works correctly.
+- Gateway overhead remains within performance target.
+- No regression on existing Gateway functionality.
+- Ready to continue to Sprint 7.
+
+Status
+
+⬜ Planned
+
+---
+
+# Sprint 6 Architecture
+
+```text
+                    Client
+                       │
+                       ▼
+          Spring WebFlux Gateway
+                       │
+             Compatibility Cache
+                 (Caffeine)
+                       │
+                       ▼
+           Compatibility Engine
+                       │
+                       ▼
+            Runtime Transformation
+                       │
+                       ▼
+               Target Service
+
+
+               ─────────────────
+
+
+                   RabbitMQ
+                       │
+                       ▼
+                 Analyzer Service
+                       │
+                       ▼
+          Generate Compatibility Plan
+                       │
+                       ▼
+                   MongoDB
+
+        (Contract Intelligence Source of Truth)
+```
+
+---
+
+# Sprint Progress
+
+| Story | Status |
+|--------|--------|
+| Story 6.0 — Gateway Refactoring | 🚧 In Progress |
+| Story 6.1 — Compatibility Engine Foundation | 🚧 In Progress |
+| Story 6.2 — Data Type Compatibility | ⬜ Planned |
+| Story 6.3 — Required Field Compatibility | ⬜ Planned |
+| Story 6.4 — JSON Structure Compatibility | ⬜ Planned |
+| Story 6.5 — Compatibility Cache | ⬜ Planned |
+| Story 6.6 — Compatibility Runtime | ⬜ Planned |
+| Story 6.7 — Compatibility Validation | ⬜ Planned |
+| Story 6.8 — Performance Optimization | ⬜ Planned |
+| Story 6.9 — Sprint Validation | ⬜ Planned |
+
+---
+
+# Definition of Done
+
+Sprint 6 is considered complete when:
+
+- ✅ Gateway fully migrated to Spring WebFlux.
+- ✅ Existing Gateway features remain functional.
+- ✅ Compatibility Engine is operational.
+- ✅ Compatibility Plans are cached using Caffeine.
+- ✅ Runtime transformation is supported.
+- ✅ Backward compatibility is validated.
+- ✅ Performance benchmarks meet target.
+- ✅ Unit, integration, and performance tests pass successfully.
+
+> **Sprint 6 lays the foundation for ContractLens to evolve from detecting API changes into actively protecting API consumers through intelligent runtime compatibility while preserving a high-performance reactive Gateway.**
