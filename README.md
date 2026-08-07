@@ -1,496 +1,333 @@
+# ContractLens
 
-ContractLens
+> **Observe. Detect. Protect.**
 
-«Observe. Detect. Protect.»
+ContractLens is an intelligent API Gateway and Contract Intelligence
+Platform that helps engineering teams detect, analyze, protect, and
+preserve API compatibility while maintaining minimal runtime overhead.
 
-ContractLens is an intelligent API Gateway and Contract Intelligence Platform that helps engineering teams detect, analyze, and prevent API breaking changes before they impact consumers.
+------------------------------------------------------------------------
 
-Instead of relying on manual API reviews, ContractLens automatically captures API traffic, analyzes contracts, detects differences, prepares compatibility rules, and preserves backward compatibility with minimal runtime overhead.
+# Vision
 
----
+> **Give developers confidence when deploying APIs.**
 
-Vision
+ContractLens enables backend services to evolve safely without breaking
+existing API consumers.
 
-«Give developers confidence when deploying APIs.»
+------------------------------------------------------------------------
 
-ContractLens allows backend services to evolve safely while keeping existing consumers protected from unexpected contract changes.
+# Engineering Principles
 
----
+## Functional Principles
 
-Engineering Principles
+-   API First
+-   Contract First
+-   Backward Compatibility
+-   Rule-based Transformation
+-   Asynchronous Contract Analysis
+-   Runtime Compatibility Protection
 
-ContractLens is designed using enterprise-grade engineering principles.
+## Non-Functional Principles
 
-Functional Principles
+-   Performance First
+-   Reactive Processing
+-   Memory-first Execution
+-   Minimal Runtime Overhead
+-   Reliability
+-   Scalability by Design
+-   High Observability
+-   Testability
 
-- API First
-- Contract First
-- Backward Compatibility
-- Rule-based Transformation
-- Asynchronous Contract Analysis
-- Runtime Compatibility Protection
+------------------------------------------------------------------------
 
-Non-Functional Principles
+# Architecture Philosophy
 
-- Performance First
-- Memory-first Execution
-- Minimal Runtime Overhead
-- Reliability
-- Scalability by Design
-- High Observability
-- Testability
+ContractLens separates operational data from contract intelligence.
 
----
+## Operational Domain
 
-Key Differentiators
+**Source of Truth:** PostgreSQL
 
-Unlike traditional API Gateways or Contract Testing tools, ContractLens:
+Stores:
 
-- Detects contract changes automatically.
-- Preserves backward compatibility whenever possible.
-- Separates runtime execution from asynchronous analysis.
-- Executes compatibility rules with minimal runtime overhead.
-- Tracks API evolution over time.
-- Provides a foundation for AI-assisted contract intelligence.
+-   Route Configuration
+-   Token Configuration
+-   Workspace
+-   API Registration
+-   Gateway Configuration
 
----
+## Contract Intelligence Domain
 
-Problem
+**Source of Truth:** MongoDB
 
-Modern APIs evolve rapidly.
+Stores:
 
-Even a small API contract change can introduce production issues.
+-   Contract Snapshot
+-   Baseline
+-   Comparison Result
+-   Compatibility Plan
+-   API History
+-   Future AI Insights
 
-Examples:
+MongoDB acts as the **Contract Intelligence Knowledge Base**.
 
-- Integer → String
-- Required field removed
-- Field renamed
-- Response structure changed
-- New mandatory field
-- Header contract changed
+------------------------------------------------------------------------
 
-Without automated verification, developers must manually review every API response, making deployments slower and more error-prone.
+# Runtime Architecture
 
----
-
-Solution
-
-ContractLens combines an API Gateway with a Contract Intelligence Engine.
-
-Every API request automatically flows through ContractLens.
-
-Client
-    │
-    ▼
-ContractLens Gateway
-    │
-    ▼
-Target Service
-
-Meanwhile, ContractLens performs asynchronous contract analysis.
-
-Request / Response
-        │
-        ▼
-RabbitMQ
-        │
-        ▼
-Analyzer
-        │
-        ▼
-Generate Contract Snapshot
-        │
-        ▼
-Baseline Detection
-        │
-        ▼
-Contract Comparison
-        │
-        ▼
-Compatibility Rule Generation
-        │
-        ▼
-Store History & Rules
-
-At runtime, the Gateway does not perform contract comparison.
-
-Instead, it executes pre-generated compatibility rules.
-
-Gateway
-    │
-    ▼
-Load Compatibility Rule (Memory Cache)
-    │
-    ▼
-Runtime Transformation
-    │
-    ▼
-Return Response
-
----
-
-Features
-
-API Gateway
-
-- Reverse Proxy
-- Dynamic Route Resolution
-- PostgreSQL Route Management
-- Redis Cache Layer
-- Token-based Endpoint Resolution
-- Request Capture
-- Response Capture
-- Reliable RabbitMQ Publishing
-
----
-
-Contract Snapshot
-
-Every request and response passing through ContractLens is transformed into a normalized Contract Snapshot.
-
-Each snapshot contains:
-
-- Request Header Contract
-- Request Body Contract
-- Response Header Contract
-- Response Body Contract
-- Field Type Information
-- Nested Object Structure
-
----
-
-Contract Comparison
-
-Automatically detects:
-
-- Added Fields
-- Removed Fields
-- Type Changes
-- Required Field Changes
-- Nested Object Changes
-- Array Structure Changes
-- Potential Breaking Changes
-
----
-
-Compatibility Engine
-
-Instead of simply reporting breaking changes, ContractLens attempts to preserve backward compatibility.
-
-Supported compatibility includes:
-
-- Type Compatibility
-- Field Compatibility
-- Structure Compatibility
-- Collection Compatibility
-- Enum Compatibility
-- Default Value Compatibility
-- Complex Object Compatibility
-- Runtime Payload Transformation
-
----
-
-Architecture
-
-                    Client
-                       │
-                       ▼
-              ContractLens Gateway
-                       │
-             Runtime Transformation
-                       │
-                       ▼
+``` text
+                     Client
+                        │
+                        ▼
+              Spring WebFlux Gateway
+                        │
+                Compatibility Cache
+                   (Caffeine)
+                        │
+                        ▼
+             Compatibility Engine
+                        │
+                        ▼
+                 Runtime Transformation
+                        │
+                        ▼
                  Target Service
 
-                       │
-                       ▼
 
-        ───────── Asynchronous Pipeline ─────────
+─────────────────────────────────────────────
 
-               RabbitMQ Event
-                       │
-                       ▼
-             ContractLens Analyzer
-                       │
-                       ▼
+                  RabbitMQ
+                      │
+                      ▼
+               Analyzer Service
+                      │
+                      ▼
           Contract Snapshot Engine
-                       │
-                       ▼
-            Baseline Detection
-                       │
-                       ▼
-           Contract Comparison
-                       │
-                       ▼
-       Compatibility Rule Generation
-                       │
-                       ▼
-          MongoDB + PostgreSQL
+                      │
+                      ▼
+             Baseline Detection
+                      │
+                      ▼
+            Contract Comparison
+                      │
+                      ▼
+       Compatibility Plan Generation
+                      │
+                      ▼
+                  MongoDB
+```
 
----
+------------------------------------------------------------------------
 
-Roadmap
+# Features
 
-Sprint 1 ✅
+## API Gateway
+
+-   Spring WebFlux
+-   Reverse Proxy
+-   Dynamic Route Resolution
+-   PostgreSQL Route Management
+-   Reactive Request Processing
+-   Reactive Response Processing
+-   Reliable RabbitMQ Publishing
+
+## Contract Intelligence
+
+-   Contract Snapshot
+-   Baseline Detection
+-   Contract Comparison
+-   Compatibility Plan Generation
+-   Runtime Compatibility
+-   API History
+
+## Compatibility Engine
+
+-   Type Compatibility
+-   Required Field Compatibility
+-   JSON Structure Compatibility
+-   Runtime Payload Transformation
+-   Caffeine Local Cache
+
+------------------------------------------------------------------------
+
+# Roadmap
+
+## Sprint 1 ✅
 
 Foundation
 
-- Project Initialization
-- Multi Module Architecture
-- Common Library
-- Shared DTO
-- Docker Environment
+-   Project Initialization
+-   Multi Module Architecture
+-   Docker
+-   Common Library
 
----
+------------------------------------------------------------------------
 
-Sprint 2 ✅
+## Sprint 2 ✅
 
 API Gateway
 
-- Reverse Proxy
-- Dynamic Target Routing
-- PostgreSQL Configuration
-- Token Management
-- Dynamic Route Resolution
-- Redis Cache Layer
-- Gateway Route Management
-- Flyway Migration
+-   Reverse Proxy
+-   Dynamic Route Resolution
+-   PostgreSQL
+-   Token Management
+-   Flyway
 
----
+------------------------------------------------------------------------
 
-Sprint 3 ✅
+## Sprint 3 ✅
 
 Reliable Event Processing
 
-- RabbitMQ Integration
-- Reliable Event Publishing
-- Retry Mechanism
-- Outbox Pattern
-- Asynchronous Processing
+-   RabbitMQ
+-   Retry
+-   Outbox Pattern
+-   Async Processing
 
----
+------------------------------------------------------------------------
 
-Sprint 4 ✅
+## Sprint 4 ✅
 
 Contract Intelligence
 
-- Contract Snapshot
-- Contract Comparison
-- Baseline Detection
-- API History
-- MongoDB Storage
+-   Snapshot
+-   Baseline
+-   Comparison
+-   History
+-   MongoDB
 
----
+------------------------------------------------------------------------
 
-Sprint 5 ✅
+## Sprint 5 ✅
 
-Dynamic Route Resolution
+Gateway Enhancement
 
-- PostgreSQL as Source of Truth
-- Redis Cache Layer
-- Read-Through Cache
-- Write Synchronization
-- Automatic Cache Rebuild
+-   Dynamic Route Resolution
+-   Read-through Cache
+-   Route Management
+-   Cache Rebuild
 
----
+------------------------------------------------------------------------
 
-Sprint 6 🚧
+## Sprint 6 🚧
 
-Compatibility Engine
+### Goal
 
-The Compatibility Engine evaluates every detected contract change and attempts to preserve backward compatibility before declaring a breaking change.
+Build the Compatibility Engine while migrating the Gateway to Spring
+WebFlux.
 
-Story Backlog
+  Story                                           Status
+  ----------------------------------------------- --------
+  Story 6.0 --- Gateway Refactoring               🚧
+  Story 6.1 --- Compatibility Engine Foundation   🚧
+  Story 6.2 --- Data Type Compatibility           ⬜
+  Story 6.3 --- Required Field Compatibility      ⬜
+  Story 6.4 --- JSON Structure Compatibility      ⬜
+  Story 6.5 --- Compatibility Cache (Caffeine)    ⬜
+  Story 6.6 --- Compatibility Runtime             ⬜
+  Story 6.7 --- Compatibility Validation          ⬜
+  Story 6.8 --- Performance Optimization          ⬜
+  Story 6.9 --- Sprint Validation                 ⬜
 
-- 🟡 Story 6.1 — Type Compatibility
-- ⬜ Story 6.2 — Field Compatibility
-- ⬜ Story 6.3 — Structure Compatibility
-- ⬜ Story 6.4 — Collection Compatibility
-- ⬜ Story 6.5 — Enum Compatibility
-- ⬜ Story 6.6 — Default Value Compatibility
-- ⬜ Story 6.7 — Complex Object Compatibility
-- ⬜ Story 6.8 — Runtime Compatibility Transformation
-- ⬜ Story 6.9 — Compatibility Report
+### Sprint 6 Technical Decisions
 
-Acceptance Criteria
+-   Spring WebFlux for Gateway runtime
+-   MongoDB as Contract Intelligence Source of Truth
+-   PostgreSQL as Operational Source of Truth
+-   Caffeine as Local Compatibility Cache
+-   Compatibility Plans loaded at Gateway startup
+-   No runtime contract comparison
+-   Memory-first execution
+-   O(1) CompatibilityPlan lookup
 
-Functional
+------------------------------------------------------------------------
 
-- Feature works correctly.
-- Unit Test completed.
-- Integration Test completed.
+## Sprint Validation 🧪
 
-Non-Functional
+Validation includes:
 
-- No runtime contract comparison.
-- No RabbitMQ communication.
-- No database lookup during transformation (except cache miss).
-- Memory-first execution.
-- Single-pass transformation whenever possible.
-- Low memory allocation.
-- Minimal additional latency.
+-   Unit Testing
+-   Integration Testing
+-   Functional Testing
+-   Regression Testing
+-   JVM Memory Profiling
+-   Caffeine Benchmark
+-   Garbage Collection Analysis
+-   Throughput Benchmark
+-   Latency Benchmark
+-   Load Testing
+-   Stress Testing
 
----
+Target:
 
-Sprint Validation 🧪
+-   Average Overhead \< 20 ms
+-   P95 \< 50 ms
+-   P99 \< 100 ms
 
-Validation & Performance Testing
+------------------------------------------------------------------------
 
-This sprint acts as the quality gate before introducing Dashboard and AI features.
-
-Functional Validation
-
-- End-to-End Testing
-- Integration Testing
-- Regression Testing
-- Cross Story Validation
-
-Data Validation
-
-- Small Dataset
-- Medium Dataset
-- Large Dataset
-- Edge Cases
-- Compatibility Accuracy
-
-Performance Validation
-
-- Runtime Benchmark
-- Memory Profiling
-- CPU Profiling
-- Latency Measurement
-- Load Testing
-- Stress Testing
-
-Testing Strategy
-
-Unit Test
-      │
-      ▼
-Functional Test
-      │
-      ▼
-Integration Test
-      │
-      ▼
-Regression Test
-      │
-      ▼
-Performance Test
-      │
-      ▼
-Load Test
-      │
-      ▼
-Stress Test
-      │
-      ▼
-Large Dataset Validation
-
-«Every Sprint 6 story should be validated using both Functional and Performance testing to ensure new compatibility features do not negatively impact gateway latency.»
-
----
-
-Sprint 7
+## Sprint 7
 
 Interactive Dashboard
 
-- Contract Diff Viewer
-- API Timeline
-- Search
-- Filtering
-- Baseline Approval
+------------------------------------------------------------------------
 
----
+## Sprint 8
 
-Sprint 8
+AI Contract Intelligence
 
-AI Features
+------------------------------------------------------------------------
 
-- AI Contract Explanation
-- AI Compatibility Suggestion
-- AI Rule Recommendation
-- Natural Language Query
-
----
-
-Sprint 9
+## Sprint 9
 
 Enterprise Features
 
-- Notification Center
-- Slack Integration
-- Email Notification
-- Webhook Integration
-- Multi Workspace
-- API Version Management
-- Role Based Access Control
+------------------------------------------------------------------------
 
----
+# Current Status
 
-Current Status
+## Completed
 
-Completed
+-   API Gateway
+-   Dynamic Routing
+-   RabbitMQ
+-   Contract Snapshot
+-   Baseline Detection
+-   Contract Comparison
+-   API History
 
-- API Gateway
-- Dynamic Routing
-- Redis Cache
-- RabbitMQ
-- Contract Snapshot
-- Contract Comparison
-- Baseline Detection
-- API History
+## In Progress
 
-In Progress
+-   Spring WebFlux Migration
+-   Compatibility Engine Foundation
 
-- Compatibility Engine
+## Planned
 
-Planned Validation
+-   Caffeine Runtime Cache
+-   Runtime Compatibility
+-   Performance Validation
 
-- Functional Validation
-- Performance Benchmark
-- Compatibility Validation
-- Large Dataset Validation
-- Load Testing
-- Stress Testing
+------------------------------------------------------------------------
 
----
+# Future Vision
 
-Development Status
+ContractLens aims to become a complete **API Contract Intelligence
+Platform** capable of:
 
-Sprint| Status
-Sprint 1| ✅ Completed
-Sprint 2| ✅ Completed
-Sprint 3| ✅ Completed
-Sprint 4| ✅ Completed
-Sprint 5| ✅ Completed
-Sprint 6| 🚧 In Progress
-Sprint Validation| ⏳ Planned
-Sprint 7| 📋 Planned
-Sprint 8| 📋 Planned
-Sprint 9| 📋 Planned
+-   Detecting API changes
+-   Preserving backward compatibility
+-   Executing runtime transformations
+-   Explaining contract changes with AI
+-   Recommending compatibility strategies
+-   Providing enterprise-grade observability
 
----
+------------------------------------------------------------------------
 
-Future Vision
+# Closing
 
-ContractLens aims to evolve from an API Gateway into a complete API Contract Intelligence Platform.
+> **Observe. Detect. Protect.**
 
-Future capabilities include:
-
-- Interactive Dashboard
-- Runtime Compatibility Engine
-- AI-assisted Contract Analysis
-- AI-generated Compatibility Rules
-- Performance Validation Suite
-- Notification Center
-- Enterprise Workspace Management
-
----
-
-Closing
-
-«Observe. Detect. Protect.»
-
-ContractLens gives engineering teams confidence to evolve backend APIs safely by combining intelligent contract analysis, runtime compatibility protection, and enterprise-grade engineering principles.
+ContractLens combines intelligent contract analysis, runtime
+compatibility protection, and reactive engineering principles to help
+teams deploy APIs with confidence.
