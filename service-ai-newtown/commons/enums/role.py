@@ -3,9 +3,9 @@ from enum import Enum
 
 class Role(str, Enum):
 
-    USER = "USER"
-    ASSISTANT = "ASSISTANT"
-    SYSTEM = "SYSTEM"
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"
 
     @property
     def llm_value(self) -> str:
