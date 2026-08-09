@@ -43,7 +43,8 @@ class GroqClient(LLMClient):
                 role=choice.message.role,
                 content=choice.message.content,
                 reasoning=choice.message.reasoning,
-                finishing_reason=choice.finish_reason
+                finishing_reason=choice.finish_reason,
+                approve=None
             )
             for choice in response.choices
         ]
