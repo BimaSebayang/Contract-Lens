@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from commons.enums.role import Role
 from core.chat_request import ChatRequest
 from core.chat_response import ChatResponse
-from modules.fakechat.service.chat_me_svc import ChatMeService
+from modules.me_chat.service.chat_me_svc import ChatMeService
 
 
 router = APIRouter(
