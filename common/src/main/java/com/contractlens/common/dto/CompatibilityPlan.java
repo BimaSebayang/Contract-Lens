@@ -36,8 +36,6 @@ public class CompatibilityPlan {
         private DataType sourceType;
 
         private DataType targetType;
-
-        private Object defaultValue;
     }
 
 }

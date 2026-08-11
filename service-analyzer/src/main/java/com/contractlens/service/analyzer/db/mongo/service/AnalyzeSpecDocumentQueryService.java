@@ -50,6 +50,23 @@ public class AnalyzeSpecDocumentQueryService {
 
     }
 
+    public AnalyzeSpecDocument getLatestData(AnalyzeSpecQuery event) {
+        UUID tokenId = event.tokenId();
+        String method = event.method();
+        String targetUrl = event.targetUrl();
+
+        return  analyzeRepository.findLatestData(
+                        tokenId,
+                        method,
+                        targetUrl
+                )
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+
+    }
+
     public AnalyzeSpecDocument getMainBaseLine(GatewayTransactionEvent event) {
         UUID tokenId = event.getTokenId();
         String method = event.getMethod();

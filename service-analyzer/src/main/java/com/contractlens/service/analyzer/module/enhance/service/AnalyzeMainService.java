@@ -1,8 +1,6 @@
 package com.contractlens.service.analyzer.module.enhance.service;
 
-import com.contractlens.common.dto.ContractCompareResult;
-import com.contractlens.common.dto.ContractSnapshot;
-import com.contractlens.common.dto.GatewayTransactionEvent;
+import com.contractlens.common.dto.*;
 import com.contractlens.service.analyzer.db.mongo.dao.AnalyzeSpecDocument;
 import com.contractlens.service.analyzer.db.mongo.service.AnalyzeSpecDocumentDelegateService;
 import com.contractlens.service.analyzer.db.mongo.service.AnalyzeSpecDocumentQueryService;
@@ -11,6 +9,10 @@ import com.contractlens.service.analyzer.module.reader.service.JsonReaderSvc;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -23,9 +25,11 @@ public class AnalyzeMainService {
 
     public void analyze(GatewayTransactionEvent event) {
 
-        AnalyzeSpecDocument baseLine = queryService.getMainBaseLine(event);
+        AnalyzeSpecDocument baseLine =
+                queryService.getMainBaseLine(event);
 
-        AnalyzeSpecDocument runtime = buildRuntimeDocument(event);
+        AnalyzeSpecDocument runtime =
+                buildRuntimeDocument(event);
 
         if (baseLine == null) {
             runtime.setIsBaseline(true);
@@ -37,7 +41,17 @@ public class AnalyzeMainService {
 
         compareContracts(baseLine, runtime);
 
-        if (!hasContractChange(runtime)) {
+
+
+        AnalyzeSpecDocument latestChange =
+                queryService.getLatestData(new AnalyzeSpecQuery(
+                        event.getTargetUrl(),
+                        event.getMethod(),
+                        event.getTokenId()
+                ));
+
+        boolean hasSameContract = hasSameContractChange(latestChange, runtime);
+        if (hasSameContract) {
             return;
         }
 
@@ -51,21 +65,21 @@ public class AnalyzeMainService {
 
         BeanUtils.copyProperties(event, runtime);
 
-        ContractSnapshot requestHeaderSnapshot =
-                jsonReaderSvc.readContract(event.getRequestHeaders());
-        runtime.setRequestHeaderSnapshot(requestHeaderSnapshot);
+        runtime.setRequestHeaderSnapshot(
+                jsonReaderSvc.readContract(event.getRequestHeaders())
+        );
 
-        ContractSnapshot requestBodySnapshot =
-                jsonReaderSvc.readContract(event.getRequestBody());
-        runtime.setRequestBodySnapshot(requestBodySnapshot);
+        runtime.setRequestBodySnapshot(
+                jsonReaderSvc.readContract(event.getRequestBody())
+        );
 
-        ContractSnapshot responseHeadersSnapshot =
-                jsonReaderSvc.readContract(event.getResponseHeaders());
-        runtime.setResponseHeadersSnapshot(responseHeadersSnapshot);
+        runtime.setResponseHeadersSnapshot(
+                jsonReaderSvc.readContract(event.getResponseHeaders())
+        );
 
-        ContractSnapshot responseBodySnapshot =
-                jsonReaderSvc.readContract(event.getResponseBody());
-        runtime.setResponseBodySnapshot(responseBodySnapshot);
+        runtime.setResponseBodySnapshot(
+                jsonReaderSvc.readContract(event.getResponseBody())
+        );
 
         return runtime;
     }
@@ -112,5 +126,97 @@ public class AnalyzeMainService {
                 || !runtime.getResponseBodyCompareResult().isMatched();
     }
 
+    private boolean hasSameContractChange(
+            AnalyzeSpecDocument previous,
+            AnalyzeSpecDocument current
+    ) {
+        if (previous == null) {
+            return false;
+        }
 
+        boolean sameRequestHeader = sameCompareResult(
+                previous.getRequestHeaderCompareResult(),
+                current.getRequestHeaderCompareResult()
+        );
+
+        boolean sameRequestBody = sameCompareResult(
+                previous.getRequestBodyCompareResult(),
+                current.getRequestBodyCompareResult()
+        );
+
+        boolean sameResponseHeader =sameCompareResult(
+                previous.getResponseHeadersCompareResult(),
+                current.getResponseHeadersCompareResult()
+        );
+
+        boolean sameResponseBody = sameCompareResult(
+                previous.getResponseBodyCompareResult(),
+                current.getResponseBodyCompareResult());
+
+        return sameRequestBody && sameRequestHeader && sameResponseHeader && sameResponseBody;
+    }
+
+    private boolean sameCompareResult(
+            ContractCompareResult previous,
+            ContractCompareResult current
+    ) {
+        if (previous == null || current == null) {
+            return previous == current;
+        }
+
+        if (previous.isMatched() != current.isMatched()) {
+            return false;
+        }
+
+        return sameDifferences(
+                previous.getDifferences(),
+                current.getDifferences()
+        );
+    }
+
+    private boolean sameDifferences(
+            List<ContractDifference> previous,
+            List<ContractDifference> current
+    ) {
+        if (previous == null || current == null) {
+            return previous == current;
+        }
+
+        if (previous.size() != current.size()) {
+            return false;
+        }
+
+        return previous.stream()
+                .allMatch(previousDifference ->
+                        current.stream()
+                                .anyMatch(currentDifference ->
+                                        sameDifference(
+                                                previousDifference,
+                                                currentDifference
+                                        )
+                                )
+                );
+    }
+
+    private boolean sameDifference(
+            ContractDifference previous,
+            ContractDifference current
+    ) {
+        return Objects.equals(
+                previous.getType(),
+                current.getType()
+        )
+                && Objects.equals(
+                previous.getPath(),
+                current.getPath()
+        )
+                && Objects.equals(
+                previous.getExpected(),
+                current.getExpected()
+        )
+                && Objects.equals(
+                previous.getActual(),
+                current.getActual()
+        );
+    }
 }

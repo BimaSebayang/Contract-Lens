@@ -32,6 +32,22 @@ public interface AnalyzeRepository extends MongoRepository<AnalyzeSpecDocument, 
         {
             'tokenId': ?0,
             'method': ?1,
+            'targetUrl': ?2
+        }
+        """,
+            sort = "{ 'analyzedTime' : -1 }"
+    )
+    List<AnalyzeSpecDocument> findLatestData(
+            UUID tokenId,
+            String method,
+            String targetUrl
+    );
+
+    @Query(
+            value = """
+        {
+            'tokenId': ?0,
+            'method': ?1,
             'targetUrl': ?2,
             'isBaseline': true
         }
