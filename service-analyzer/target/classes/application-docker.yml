@@ -1,0 +1,50 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: EKYC_DEV
+
+  datasource:
+    url: jdbc:postgresql://host.docker.internal:5432/contract_lens_anz
+    username: sa
+    password: sa
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/h2
+    validate-migration-naming: true
+
+  data:
+    mongodb:
+      host: host.docker.internal
+      port: 27017
+      database: contractlens
+      username: contractlens
+      password: contractlens123
+      authentication-database: admin
+
+    redis:
+      lettuce:
+        pool:
+          enabled: true
+      host: host.docker.internal
+      port: 7000
+      password:
+      timeout: 5000ms
+      database: 0
+
+  rabbitmq:
+    host: host.docker.internal
+    port: 5672
+    username: contractlens_user
+    password: contractlens_pass
+    virtual-host: /

@@ -1,0 +1,45 @@
+services:
+  service-analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: service-analyzer
+
+    ports:
+      - "9002:9002"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+      # PostgreSQL
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/contract_lens_anz
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: sa
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+      # RabbitMQ
+      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: contractlens_user
+      SPRING_RABBITMQ_PASSWORD: contractlens_pass
+
+      # MongoDB
+      SPRING_DATA_MONGODB_URI: mongodb://contractlens:contractlens@host.docker.internal:27017/contractlens?authSource=admin
+
+      # Redis
+      SPRING_DATA_REDIS_HOST: host.docker.internal
+      SPRING_DATA_REDIS_PORT: 7000
+      SPRING_DATA_REDIS_PASSWORD: ""
+      SPRING_DATA_REDIS_TIMEOUT: 5000ms
+      SPRING_DATA_REDIS_DATABASE: 0
+
+    restart: unless-stopped
+
+    networks:
+      - contractlens-network
+
+
+networks:
+  contractlens-network:
+    external: true

@@ -80,6 +80,7 @@ class ChatMeService:
 
         print(f"Chat Messages is: {messages}")
 
+        # Disini nanti provider model akan diganti
         response: LlmChatResponse = self.groq.chat(
             messages,
             ai_lab_constants.GPT_OSS_120b
