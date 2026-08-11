@@ -2,23 +2,19 @@ package com.contractlens.service.module.proxy.service.impl;
 
 import com.contractlens.common.constant.ServiceConstants;
 import com.contractlens.common.dto.*;
-import com.contractlens.service.db.mongo.dao.AnalyzeSpecDocument;
-import com.contractlens.service.db.mongo.service.AnalyzeSpecDocumentQueryService;
 import com.contractlens.service.integration.message.RabbitEventPublisher;
 import com.contractlens.service.module.proxy.service.GatewayService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -31,13 +27,10 @@ public class GatewayServiceImpl implements GatewayService {
     @Autowired
     private RabbitEventPublisher rabbitEventPublisher;
 
-    private final AnalyzeSpecDocumentQueryService queryService;
-
     private final RouteResolverService routeResolverService;
 
-    public GatewayServiceImpl(RestTemplate restTemplate, AnalyzeSpecDocumentQueryService queryService, RouteResolverService routeResolverService) {
+    public GatewayServiceImpl(RestTemplate restTemplate, RouteResolverService routeResolverService) {
         this.restTemplate = restTemplate;
-        this.queryService = queryService;
         this.routeResolverService = routeResolverService;
     }
 
@@ -125,10 +118,10 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Override
     public ResponseEntity<List<ContractDifference>> queryforward(GatewayRequest request, HttpHeaders headers) {
-        log.info("forward for : request = {}, headers = {}",request,headers);
+        log.info("queryforward for : request = {}, headers = {}",request,headers);
 
         //TODO :: Get By Token Id PAthnya nanti
-        String targetUrl = "http://localhost:9001/";
+        String targetUrl = routeResolverService.resolve(request.tokenId().toString()).getTargetUrl();
 
         UUID tokenId = request.tokenId();
 
@@ -149,19 +142,16 @@ public class GatewayServiceImpl implements GatewayService {
 
         }
 
-        AnalyzeSpecQuery analyzeSpecQuery = new AnalyzeSpecQuery(
-            url.toString(),request.method(),request.tokenId()
+
+        ResponseEntity<List<ContractDifference>> response = restTemplate.exchange(
+                url.toString(),
+                HttpMethod.valueOf(request.method()),
+                null,
+                new ParameterizedTypeReference<>() {}
         );
 
-        AnalyzeSpecDocument analyzeSpecDocument = queryService.getMainBaseLine(analyzeSpecQuery);
 
-        if(Objects.isNull(analyzeSpecDocument)){
-            return ResponseEntity.ok(new ArrayList<>());
-        }
-
-
-        return new ResponseEntity<>(
-                analyzeSpecDocument.getResponseBodyCompareResult().getDifferences(), HttpStatusCode.valueOf(200)
+        return new ResponseEntity<>(response.getBody(), HttpStatusCode.valueOf(200)
         );
     }
 
