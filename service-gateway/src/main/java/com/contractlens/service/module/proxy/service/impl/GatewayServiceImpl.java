@@ -7,6 +7,7 @@ import com.contractlens.service.module.proxy.service.GatewayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class GatewayServiceImpl implements GatewayService {
+
+    @Value("${external.analyze-api.url:}")
+    private String analyzeApiUrl;
 
     private final RestTemplate restTemplate;
 
@@ -46,16 +50,18 @@ public class GatewayServiceImpl implements GatewayService {
 
         url.append(targetUrl);
 
+        StringBuilder pattern = new StringBuilder();
+
         String prefix = "/gateway/" + tokenId+"/";
 
 
-        url.append(request.path().substring(prefix.length()));
+        pattern.append(request.path().substring(prefix.length()));
 
         if (request.query() != null && !request.query().isBlank()) {
 
-            url.append("?");
+            pattern.append("?");
 
-            url.append(request.query());
+            pattern.append(request.query());
 
         }
 
@@ -72,7 +78,7 @@ public class GatewayServiceImpl implements GatewayService {
 
         Instant start = Instant.now();
         ResponseEntity<byte[]> response = restTemplate.exchange(
-                url.toString(),
+                url.append(pattern).toString(),
                 HttpMethod.valueOf(request.method()),
                 entity,
                 byte[].class
@@ -84,7 +90,7 @@ public class GatewayServiceImpl implements GatewayService {
                 .transactionId(UUID.randomUUID())
                 .tokenId(tokenId)
                 .method(request.method())
-                .targetUrl(url.toString())
+                .targetUrl(pattern.toString())
                 .statusCode(response.getStatusCode().value())
                 .duration(Duration.between(start, end).toMillis())
                 .requestHeaders(headers.toSingleValueMap())
@@ -121,18 +127,15 @@ public class GatewayServiceImpl implements GatewayService {
         log.info("queryforward for : request = {}, headers = {}",request,headers);
 
         //TODO :: Get By Token Id PAthnya nanti
-        String targetUrl = routeResolverService.resolve(request.tokenId().toString()).getTargetUrl();
-
+        String targetUrl = analyzeApiUrl;
         UUID tokenId = request.tokenId();
 
         StringBuilder url = new StringBuilder();
 
         url.append(targetUrl);
 
-        String prefix = "/gateway-inquiry/" + tokenId+"/";
 
-
-        url.append(request.path().substring(prefix.length()));
+        url.append(request.path());
 
         if (request.query() != null && !request.query().isBlank()) {
 

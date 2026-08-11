@@ -29,17 +29,26 @@ public class GatewayServiceImpl implements GatewayService {
     public ResponseEntity<List<ContractDifference>> queryforward(GatewayRequest request, HttpHeaders headers) {
         log.info("forward for : request = {}, headers = {}",request,headers);
 
-        //TODO :: Get By Token Id PAthnya nanti
-        String targetUrl = "http://localhost:9001/";
+        AnalyzeSpecQuery analyzeSpecQuery = getAnalyzeSpecQuery(request);
 
+        AnalyzeSpecDocument analyzeSpecDocument = queryService.getMainBaseLine(analyzeSpecQuery);
+
+        if(Objects.isNull(analyzeSpecDocument)){
+            return ResponseEntity.ok(new ArrayList<>());
+        }
+
+
+        return new ResponseEntity<>(
+                analyzeSpecDocument.getResponseBodyCompareResult().getDifferences(), HttpStatusCode.valueOf(200)
+        );
+    }
+
+    private static AnalyzeSpecQuery getAnalyzeSpecQuery(GatewayRequest request) {
         UUID tokenId = request.tokenId();
 
         StringBuilder url = new StringBuilder();
 
-        url.append(targetUrl);
-
         String prefix = "/gateway-inquiry/" + tokenId+"/";
-
 
         url.append(request.path().substring(prefix.length()));
 
@@ -51,19 +60,8 @@ public class GatewayServiceImpl implements GatewayService {
 
         }
 
-        AnalyzeSpecQuery analyzeSpecQuery = new AnalyzeSpecQuery(
-                url.toString(),request.method(),request.tokenId()
-        );
-
-        AnalyzeSpecDocument analyzeSpecDocument = queryService.getMainBaseLine(analyzeSpecQuery);
-
-        if(Objects.isNull(analyzeSpecDocument)){
-            return ResponseEntity.ok(new ArrayList<>());
-        }
-
-
-        return new ResponseEntity<>(
-                analyzeSpecDocument.getResponseBodyCompareResult().getDifferences(), HttpStatusCode.valueOf(200)
+        return new AnalyzeSpecQuery(
+                url.toString(), request.method(), request.tokenId()
         );
     }
 

@@ -53,3 +53,8 @@ spring:
     username: contractlens_user
     password: contractlens_pass
     virtual-host: /
+
+external:
+  analyze-api:
+    url:  http://localhost:9002
+    name: ANALYZE-API

@@ -25,7 +25,13 @@ services:
       SPRING_RABBITMQ_PASSWORD: contractlens_pass
 
       # MongoDB
-      SPRING_DATA_MONGODB_URI: mongodb://contractlens:contractlens@host.docker.internal:27017/contractlens?authSource=admin
+      SPRING_DATA_MONGODB_HOST: host.docker.internal
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: contractlens
+      SPRING_DATA_MONGODB_USERNAME: contractlens
+      SPRING_DATA_MONGODB_PASSWORD: contractlens123
+      SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin
+
 
       # Redis
       SPRING_DATA_REDIS_HOST: host.docker.internal
