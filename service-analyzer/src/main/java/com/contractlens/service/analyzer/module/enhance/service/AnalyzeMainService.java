@@ -12,8 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 @AllArgsConstructor
 public class AnalyzeMainService {
@@ -24,57 +22,95 @@ public class AnalyzeMainService {
     private final JsonReaderSvc jsonReaderSvc;
 
     public void analyze(GatewayTransactionEvent event) {
+
         AnalyzeSpecDocument baseLine = queryService.getMainBaseLine(event);
 
-        AnalyzeSpecDocument runtime = new AnalyzeSpecDocument();
-        BeanUtils.copyProperties(event,runtime);
+        AnalyzeSpecDocument runtime = buildRuntimeDocument(event);
 
-        ContractSnapshot requestHeaderSnapshot = jsonReaderSvc.readContract(event.getRequestHeaders());
-        runtime.setRequestHeaderSnapshot(requestHeaderSnapshot);
+        if (baseLine == null) {
+            runtime.setIsBaseline(true);
+            delegateService.save(runtime);
+            return;
+        }
 
-        ContractSnapshot requestBodySnapshot = jsonReaderSvc.readContract(event.getRequestBody());
-        runtime.setRequestBodySnapshot(requestBodySnapshot);
+        runtime.setCompareDocId(baseLine.getId());
 
-        ContractSnapshot responseHeadersSnapshot = jsonReaderSvc.readContract(event.getResponseHeaders());
-        runtime.setResponseHeadersSnapshot(responseHeadersSnapshot);
+        compareContracts(baseLine, runtime);
 
-        ContractSnapshot responseBodySnapshot = jsonReaderSvc.readContract(event.getResponseBody());
-        runtime.setResponseBodySnapshot(responseBodySnapshot);
-
-        if(!Objects.isNull(baseLine)) {
-
-            runtime.setCompareDocId(baseLine.getCompareDocId());
-            ContractCompareResult contractCompareRequestHeader = contractComparator.compare(
-                    baseLine.getRequestHeaderSnapshot(),
-                    requestHeaderSnapshot
-            );
-            runtime.setRequestHeaderCompareResult(contractCompareRequestHeader);
-
-            ContractCompareResult contractCompareRequestBody = contractComparator.compare(
-                    baseLine.getRequestBodySnapshot(),
-                    requestBodySnapshot
-            );
-            runtime.setRequestBodyCompareResult(contractCompareRequestBody);
-
-            ContractCompareResult contractCompareResponseHeader = contractComparator.compare(
-                    baseLine.getResponseHeadersSnapshot(),
-                    responseHeadersSnapshot
-            );
-            runtime.setResponseHeadersCompareResult(contractCompareResponseHeader);
-
-
-            ContractCompareResult contractCompareResponseBody = contractComparator.compare(
-                    baseLine.getResponseBodySnapshot(),
-                    responseBodySnapshot
-            );
-            runtime.setResponseBodyCompareResult(contractCompareResponseBody);
-
-
+        if (!hasContractChange(runtime)) {
+            return;
         }
 
         delegateService.save(runtime);
-
-
     }
+
+    private AnalyzeSpecDocument buildRuntimeDocument(
+            GatewayTransactionEvent event
+    ) {
+        AnalyzeSpecDocument runtime = new AnalyzeSpecDocument();
+
+        BeanUtils.copyProperties(event, runtime);
+
+        ContractSnapshot requestHeaderSnapshot =
+                jsonReaderSvc.readContract(event.getRequestHeaders());
+        runtime.setRequestHeaderSnapshot(requestHeaderSnapshot);
+
+        ContractSnapshot requestBodySnapshot =
+                jsonReaderSvc.readContract(event.getRequestBody());
+        runtime.setRequestBodySnapshot(requestBodySnapshot);
+
+        ContractSnapshot responseHeadersSnapshot =
+                jsonReaderSvc.readContract(event.getResponseHeaders());
+        runtime.setResponseHeadersSnapshot(responseHeadersSnapshot);
+
+        ContractSnapshot responseBodySnapshot =
+                jsonReaderSvc.readContract(event.getResponseBody());
+        runtime.setResponseBodySnapshot(responseBodySnapshot);
+
+        return runtime;
+    }
+
+    private void compareContracts(
+            AnalyzeSpecDocument baseLine,
+            AnalyzeSpecDocument runtime
+    ) {
+        runtime.setRequestHeaderCompareResult(
+                contractComparator.compare(
+                        baseLine.getRequestHeaderSnapshot(),
+                        runtime.getRequestHeaderSnapshot()
+                )
+        );
+
+        runtime.setRequestBodyCompareResult(
+                contractComparator.compare(
+                        baseLine.getRequestBodySnapshot(),
+                        runtime.getRequestBodySnapshot()
+                )
+        );
+
+        runtime.setResponseHeadersCompareResult(
+                contractComparator.compare(
+                        baseLine.getResponseHeadersSnapshot(),
+                        runtime.getResponseHeadersSnapshot()
+                )
+        );
+
+        runtime.setResponseBodyCompareResult(
+                contractComparator.compare(
+                        baseLine.getResponseBodySnapshot(),
+                        runtime.getResponseBodySnapshot()
+                )
+        );
+    }
+
+    private boolean hasContractChange(
+            AnalyzeSpecDocument runtime
+    ) {
+        return !runtime.getRequestHeaderCompareResult().isMatched()
+                || !runtime.getRequestBodyCompareResult().isMatched()
+                || !runtime.getResponseHeadersCompareResult().isMatched()
+                || !runtime.getResponseBodyCompareResult().isMatched();
+    }
+
 
 }

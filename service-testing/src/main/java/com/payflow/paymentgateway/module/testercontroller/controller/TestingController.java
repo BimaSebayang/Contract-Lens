@@ -43,7 +43,6 @@ public class TestingController {
                                         .alamat("Alamat Aja")
                                         .nama("Nama Aja")
                                         .kodePos("12345")
-                                        .idPos(1000)
                                         .build()
                         )
                         .build()

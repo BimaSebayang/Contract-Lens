@@ -26,7 +26,7 @@ public class AnalyzeSpecDocumentQueryService {
 
         //Find Existing BaseLine First
         List<AnalyzeSpecDocument> baselines =
-                analyzeRepository.findLatest(
+                analyzeRepository.findFirstData(
                         tokenId,
                         method,
                         targetUrl
@@ -37,7 +37,7 @@ public class AnalyzeSpecDocumentQueryService {
         return baselines.stream()
                 .findFirst()
                 .orElseGet(() ->
-                        analyzeRepository.findLatest(
+                        analyzeRepository.findFirstData(
                                         tokenId,
                                         method,
                                         targetUrl
@@ -77,7 +77,7 @@ public class AnalyzeSpecDocumentQueryService {
         return baselines.stream()
                 .findFirst()
                 .orElseGet(() ->
-                        analyzeRepository.findLatest(
+                        analyzeRepository.findFirstData(
                                 tokenId,
                                 method,
                                 targetUrl
