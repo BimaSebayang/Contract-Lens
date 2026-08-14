@@ -2,7 +2,9 @@ package com.contractlens.service.module.proxy.service.impl;
 
 import com.contractlens.common.constant.ServiceConstants;
 import com.contractlens.common.dto.*;
+import com.contractlens.service.db.redis.dao.CompatibilityPlan;
 import com.contractlens.service.integration.message.RabbitEventPublisher;
+import com.contractlens.service.module.analyzer.service.CompatibilityEngine;
 import com.contractlens.service.module.proxy.service.GatewayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,10 @@ public class GatewayServiceImpl implements GatewayService {
     @Qualifier(ServiceConstants.GATEWAY_ANALYZER_PUBLISHER)
     @Autowired
     private RabbitEventPublisher rabbitEventPublisher;
+
+    @Qualifier(ServiceConstants.ENGINE_TRANSFORM)
+    @Autowired
+    private CompatibilityEngine compatibilityEngine;
 
     private final RouteResolverService routeResolverService;
 
@@ -115,10 +121,12 @@ public class GatewayServiceImpl implements GatewayService {
 
         });
 
+        CompatibilityPlan compatibilityPlan = compatibilityEngine.callPlan(tokenId,pattern.toString(),request.method(),request);
+
         return ResponseEntity
                 .status(response.getStatusCode())
                 .headers(responseHeaders)
-                .body(response.getBody());
+                .body(compatibilityEngine.transform(compatibilityPlan,response.getBody()));
 
     }
 
@@ -126,15 +134,9 @@ public class GatewayServiceImpl implements GatewayService {
     public ResponseEntity<List<ContractDifference>> queryforward(GatewayRequest request, HttpHeaders headers) {
         log.info("queryforward for : request = {}, headers = {}",request,headers);
 
-        //TODO :: Get By Token Id PAthnya nanti
         String targetUrl = analyzeApiUrl;
-        UUID tokenId = request.tokenId();
-
         StringBuilder url = new StringBuilder();
-
         url.append(targetUrl);
-
-
         url.append(request.path());
 
         if (request.query() != null && !request.query().isBlank()) {

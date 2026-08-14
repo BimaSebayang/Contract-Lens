@@ -1,8 +1,10 @@
-package com.contractlens.common.dto;
+package com.contractlens.service.db.redis.dao;
 
 import com.contractlens.common.enums.DataType;
 import com.contractlens.common.enums.TransformationType;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.List;
 
@@ -11,8 +13,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@RedisHash("compatibility_plan")
 public class CompatibilityPlan {
 
+    @Id
     private String planId;
 
     private String contractId;

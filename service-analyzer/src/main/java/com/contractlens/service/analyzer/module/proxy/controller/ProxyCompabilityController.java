@@ -1,6 +1,6 @@
 package com.contractlens.service.analyzer.module.proxy.controller;
 
-import com.contractlens.common.dto.CompatibilityPlan;
+import com.contractlens.service.analyzer.db.redis.dao.CompatibilityPlan;
 import com.contractlens.common.dto.GatewayRequest;
 import com.contractlens.service.analyzer.module.proxy.service.GatewayService;
 import jakarta.servlet.http.HttpServletRequest;

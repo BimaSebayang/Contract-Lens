@@ -1,6 +1,7 @@
 package com.contractlens.service.analyzer.module.reader.service.impl;
 
-import com.contractlens.common.dto.CompatibilityPlan;
+import com.contractlens.common.util.DigestUtility;
+import com.contractlens.service.analyzer.db.redis.dao.CompatibilityPlan;
 import com.contractlens.common.dto.ContractCompareResult;
 import com.contractlens.common.dto.ContractDifference;
 import com.contractlens.common.enums.DataType;
@@ -9,6 +10,7 @@ import com.contractlens.common.enums.TransformationType;
 import com.contractlens.service.analyzer.db.mongo.dao.AnalyzeSpecDocument;
 import com.contractlens.service.analyzer.module.reader.service.CompatibilityPlanService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.script.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,7 +48,11 @@ public class CompatibilityPlanServiceImpl
         );
 
         return CompatibilityPlan.builder()
-                .planId(document.getId())
+                .planId(DigestUtility.compabilityPlanId(
+                        document.getTokenId().toString(),
+                        document.getMethod(),
+                        document.getTargetUrl()
+                ))
                 .contractId(document.getId())
                 .apiPath(document.getTargetUrl())
                 .method(document.getMethod())

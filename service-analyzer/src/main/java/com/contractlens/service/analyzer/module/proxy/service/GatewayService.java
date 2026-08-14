@@ -1,12 +1,13 @@
 package com.contractlens.service.analyzer.module.proxy.service;
 
 import com.contractlens.common.dto.AnalyzeSpecQuery;
-import com.contractlens.common.dto.CompatibilityPlan;
+import com.contractlens.service.analyzer.db.redis.dao.CompatibilityPlan;
 import com.contractlens.common.dto.ContractDifference;
 import com.contractlens.common.dto.GatewayRequest;
 import com.contractlens.service.analyzer.db.mongo.dao.AnalyzeSpecDocument;
 import com.contractlens.service.analyzer.db.mongo.service.AnalyzeSpecDocumentQueryService;
 
+import com.contractlens.service.analyzer.db.redis.service.CompatibilityTrxService;
 import com.contractlens.service.analyzer.module.reader.service.CompatibilityPlanService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class GatewayService {
 
     private final AnalyzeSpecDocumentQueryService queryService;
     private final CompatibilityPlanService compatibilityPlanService;
+    private final CompatibilityTrxService compatibilityTrxService;
 
     public ResponseEntity<List<ContractDifference>> queryforward(GatewayRequest request, HttpHeaders headers) {
         log.info("forward for : request = {}, headers = {}",request,headers);
@@ -80,7 +82,7 @@ public class GatewayService {
 
 
         CompatibilityPlan plan = generate(analyzeSpecDocument);
-
+        compatibilityTrxService.upsert(plan);
         return ResponseEntity.ok(plan);
     }
 
