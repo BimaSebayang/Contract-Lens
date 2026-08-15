@@ -5,3 +5,5 @@ python-dotenv
 pydantic
 pymongo
 pika
+sqlalchemy
+psycopg[binary]

@@ -12,6 +12,9 @@ from db.mongodb.repositories.conversation_repository import ConversationReposito
 from llm.models.llm_chat_response import LlmChatResponse
 from llm.models.llm_message_response import LlmMessageResponse
 from llm.models.llm_usage_response import LlmUsageResponse
+from llm.prompts.context import contractlens_context
+from llm.prompts.system import contractlens_system
+from llm.prompts.template import contractlens_template
 from llm.providers.groq.client import GroqClient
 
 logger = logging.getLogger(__name__)
@@ -50,7 +53,7 @@ class ChatMeService:
             content: ChatRequest
     ) -> List[ChatResponse]:
 
-        user_message = Message(
+        user_prompt = Message(
             role=Role.USER,
             content=content.message
         )
@@ -60,23 +63,36 @@ class ChatMeService:
                 content=message.content
             )
             for message in self.orchestrate(
-                user_message,
+                user_prompt,
                 content.conversation_id
             )
         ]
 
     def orchestrate(
             self,
-            user_message: Message,
+            user_prompt: Message,
             conversation_id: str
     ) -> List[Message]:
+
+        # Start Prompt Setting
+        system_prompt = Message(
+            role=Role.SYSTEM,
+            content= f"""
+                    {contractlens_system.SYSTEM_PROMPT_CONTRACTLENS}
+                    {contractlens_system.SYSTEM_PROMPT_CREATOR_TEMP}
+                    {contractlens_context.CONTEXT_CONTRACTLENS}
+                    {contractlens_template.CONTRACT_ANALYSIS_TEMPLATE}
+                        """
+        )
+        # End Prompt Setting
 
         messages: List[Message] = (
             self.conversation_repository
             .get_history(conversation_id)
         )
 
-        messages.append(user_message)
+        messages.insert(0, system_prompt)
+        messages.append(user_prompt)
 
         print(f"Chat Messages is: {messages}")
 
@@ -92,16 +108,10 @@ class ChatMeService:
             conversation_id,
             ConversationDetail(
                 LlmMessageResponse(
-                    role=user_message.role,
-                    content=user_message.content,
-                    reasoning=self.create_user_reasoning(
-                        user_message,
-                        conversation_id
-                    ),
-                    finishing_reason=self.create_finishing_user_reasoning(
-                        user_message,
-                        conversation_id
-                    ),
+                    role=user_prompt.role,
+                    content=user_prompt.content,
+                    reasoning='',
+                    finishing_reason='',
                     approve=True
                 ),
                 LlmUsageResponse(
@@ -141,24 +151,3 @@ class ChatMeService:
 
         return response_messages
 
-    def create_user_reasoning(
-            self,
-            user_message: Message,
-            conversation_id: str
-    ) -> str:
-        # Kayaknya bakal ada logic buat reasoning user
-        return (
-                "user hanya ingin mengatakan "
-                + user_message.content
-        )
-
-    def create_finishing_user_reasoning(
-            self,
-            user_message: Message,
-            conversation_id: str
-    ) -> str:
-        # Kayaknya bakal ada logic buat reasoning user
-        return (
-                "user mungkin akan mengakhiri "
-                + user_message.content
-        )
