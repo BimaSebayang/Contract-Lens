@@ -9,13 +9,63 @@ from core.chat_response import ChatResponse
 from core.message import Message
 from db.mongodb.repositories.conversation_repository import ConversationRepository
 from llm.prompts.context.service.context_service import ContextService
-
 from llm.prompts.intents.service.intents_service import IntentPromptService
 from llm.prompts.system.service.system_prompt_service import SystemPromptService
 from llm.prompts.template.service.template_service import TemplateService
 
 
 logger = logging.getLogger(__name__)
+
+
+def _build_contract_lens_message(
+        system_prompt_key: str,
+        template_key: str
+) -> List[Message]:
+
+    context_service = ContextService()
+    system_prompt_service = SystemPromptService()
+    intent_prompt_service = IntentPromptService()
+    template_service = TemplateService()
+
+    context_contractlens = (
+        context_service.get_ai_prompt_architecture()
+    )
+
+    intent_detection_prompt = (
+        intent_prompt_service.get_intent_detection_prompt()
+    )
+
+    intent_glossary = (
+        intent_prompt_service.get_intent_glossary()
+    )
+
+    system_prompt = (
+        system_prompt_service.get_system_prompt(
+            prompt_key=system_prompt_key
+        )
+    )
+
+    template = (
+        template_service.get_template(
+            prompt_key=template_key
+        )
+    )
+
+    main_content = (
+            (context_contractlens or "")
+            + (system_prompt or "")
+            + (intent_detection_prompt or "")
+            + (intent_glossary or "")
+            + (template or "")
+    )
+
+    return [
+        Message(
+            role=Role.SYSTEM,
+            content=main_content,
+            reason=''
+        )
+    ]
 
 
 class ChatMeService:
@@ -53,84 +103,96 @@ class ChatMeService:
             content: ChatRequest
     ) -> List[ChatResponse]:
 
-        context_service = ContextService()
-        system_prompt_service = SystemPromptService()
-        intent_prompt_service = IntentPromptService()
-        template_service = TemplateService()
-
-        user_prompt = Message(
-            role=Role.USER,
-            content=content.message,
-            reason=''
+        additional_message = _build_contract_lens_message(
+            system_prompt_key="INTENT_DETECTION",
+            template_key="TP_INTENT_DETECTION"
         )
 
-        context_contractlens = (
-            context_service.get_ai_prompt_architecture()
+        return self._orchestrate_contract_lens(
+            content,
+            additional_message
         )
-
-        system_prompt_creator = (
-            system_prompt_service.get_system_prompt(
-                prompt_key="SYSTEM_PROMPT_CREATOR"
-            )
-        )
-
-        system_prompt_global = (
-            system_prompt_service.get_system_prompt(
-                prompt_key="SYSTEM_PROMPT_GLOBAL"
-            )
-        )
-
-        intent_detection_prompt = (
-            intent_prompt_service.get_intent_detection_prompt()
-        )
-
-        intent_glossary = (
-            intent_prompt_service.get_intent_glossary()
-        )
-
-        intent_detection_template = (
-            template_service.get_template(
-                prompt_key="TP_INTENT_DETECTION"
-            )
-        )
-        main_content = (
-                (context_contractlens or "")
-                + (system_prompt_creator or "")
-                + (system_prompt_global or "")
-                + (intent_detection_prompt or "")
-                + (intent_glossary or "")
-                + (intent_detection_template or "")
-        )
-
-        additional_message: List[Message] = [
-            Message(
-                role=Role.SYSTEM,
-                content=main_content,
-                reason=''
-            )
-        ]
-
-        return [
-            ChatResponse(
-                content=message.content,
-                reason=message.reason,
-                context=main_content
-            )
-            for message in self.orc.orchestrate(
-                user_prompt,
-                content.conversation_id,
-                additional_message
-            )
-        ]
 
     def send_message_contract_greeting_first_timer(
             self,
             content: ChatRequest
     ) -> List[ChatResponse]:
 
-        context_service = ContextService()
-        system_prompt_service = SystemPromptService()
-        template_service = TemplateService()
+        additional_message = _build_contract_lens_message(
+            system_prompt_key="GREETING_FIRST_TIMER",
+            template_key="TP_GREETING_FIRST_TIMER"
+        )
+
+        return self._orchestrate_contract_lens(
+            content,
+            additional_message
+        )
+
+    def send_message_unknown(
+            self,
+            content: ChatRequest
+    ) -> List[ChatResponse]:
+
+        additional_message = _build_contract_lens_message(
+            system_prompt_key="UNKNOWN",
+            template_key="TP_UNKNOWN"
+        )
+
+        return self._orchestrate_contract_lens(
+            content,
+            additional_message
+        )
+
+    def send_introduce_contractlens(
+            self,
+            content: ChatRequest
+    ) -> List[ChatResponse]:
+
+        additional_message = _build_contract_lens_message(
+            system_prompt_key="INTRODUCE_CONTRACTLENS",
+            template_key="TP_INTRODUCE_CONTRACTLENS"
+        )
+
+        return self._orchestrate_contract_lens(
+            content,
+            additional_message
+        )
+
+    def send_greeting_already_known(
+            self,
+            content: ChatRequest
+    ) -> List[ChatResponse]:
+
+        additional_message = _build_contract_lens_message(
+            system_prompt_key="GETTING_ALREADY_KNOW_APP",
+            template_key="TP_GREETING_ALREADY_KNOW_APPLICATION"
+        )
+
+        return self._orchestrate_contract_lens(
+            content,
+            additional_message
+        )
+
+    def send_teach_how_to_use(
+            self,
+            content: ChatRequest
+    ) -> List[ChatResponse]:
+
+        additional_message = _build_contract_lens_message(
+            system_prompt_key="TEACH_HOW_TO_USE_CONTRACTLENS",
+            template_key="TP_TEACH_HOW_TO_USE_CONTRACTLENS"
+        )
+
+        return self._orchestrate_contract_lens(
+            content,
+            additional_message
+        )
+
+    def _orchestrate_contract_lens(
+            self,
+            content: ChatRequest,
+            additional_message: List[Message]
+    ) -> List[ChatResponse]:
 
         user_prompt = Message(
             role=Role.USER,
@@ -138,48 +200,11 @@ class ChatMeService:
             reason=''
         )
 
-        context_contractlens = (
-            context_service.get_ai_prompt_architecture()
-        )
-
-        system_prompt_creator = (
-            system_prompt_service.get_system_prompt(
-                prompt_key="SYSTEM_PROMPT_CREATOR"
-            )
-        )
-
-        greeting_first_timer_prompt = (
-            system_prompt_service.get_system_prompt(
-                prompt_key="GREETING_FIRST_TIMER"
-            )
-        )
-
-        greeting_first_timer_template = (
-            template_service.get_template(
-                prompt_key="TP_GREETING_FIRST_TIMER"
-            )
-        )
-
-        main_content = (
-                (context_contractlens or "")
-                + (system_prompt_creator or "")
-                + (greeting_first_timer_prompt or "")
-                + (greeting_first_timer_template or "")
-        )
-
-        additional_message: List[Message] = [
-            Message(
-                role=Role.SYSTEM,
-                content=main_content,
-                reason=''
-            )
-        ]
-
         return [
             ChatResponse(
                 content=message.content,
                 reason=message.reason,
-                context=main_content
+                context=additional_message[0].content
             )
             for message in self.orc.orchestrate(
                 user_prompt,

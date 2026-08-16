@@ -58,3 +58,6 @@ external:
   analyze-api:
     url:  http://localhost:9002
     name: ANALYZE-API
+  contract-lens-api:
+    url:  http://127.0.0.1:9004
+    name: CONTRACT-LENS-API

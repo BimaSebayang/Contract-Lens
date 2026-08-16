@@ -38,7 +38,7 @@ class OrchestrationService:
         # TODO: Replace provider implementation with configurable LLM provider.
         response: LlmChatResponse = self.groq.chat(
             messages,
-            ai_lab_constants.GPT_OSS_120b
+            ai_lab_constants.GPT_OSS_SAFEGUARD
         )
 
         response_messages: List[Message] = []

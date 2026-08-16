@@ -17,7 +17,33 @@ Gunakan hanya intent yang tersedia pada:
 <OUTPUT>
 ==================================================
 
-Hasilkan struktur JSON berikut:
+OUTPUT CONTRACT:
+
+Response WAJIB berupa satu JSON object yang valid.
+
+Response HARUS mengikuti struktur JSON yang telah ditentukan
+di bawah ini.
+
+Semua field WAJIB tersedia.
+
+Jangan menghapus field.
+
+Jangan menambahkan field lain.
+
+Jangan mengubah nama field.
+
+Jangan mengubah struktur JSON.
+
+Jangan menghasilkan plain text.
+
+Jangan menghasilkan Markdown.
+
+Jangan menggunakan code block seperti ```json.
+
+Jangan memberikan penjelasan sebelum atau sesudah JSON.
+
+JSON object harus menjadi satu-satunya output.
+
 
 {
     "intent": "INTENT_NAME",
@@ -48,12 +74,17 @@ tidak terdapat intent yang sesuai, gunakan:
 
 "UNKNOWN"
 
+Field "intent" WAJIB berupa satu intent yang tersedia
+atau "UNKNOWN".
+
 
 confidence:
 
 Berisi tingkat keyakinan terhadap intent yang dipilih.
 
 Nilai harus berada antara 0.0 sampai 1.0.
+
+Field "confidence" WAJIB berupa number.
 
 
 reason:
@@ -67,6 +98,8 @@ Reason harus:
 - Maksimal 1-2 kalimat.
 - Tidak mengandung chain-of-thought.
 - Tidak mengungkapkan reasoning internal.
+
+Field "reason" WAJIB berupa string.
 
 
 ==================================================
@@ -90,17 +123,21 @@ Reason harus:
 
    <CONTEXT_SECTION name="INTENT_GLOSSARY">
 
-8. Jangan menambahkan field selain:
+8. Output hanya boleh memiliki field berikut:
 
    - intent
    - confidence
    - reason
 
-9. Jangan menggunakan Markdown.
+9. Jangan menambahkan field lain.
 
-10. Jangan memberikan teks sebelum atau sesudah JSON.
+10. Jangan menggunakan Markdown.
 
-11. Output harus berupa JSON yang valid.
+11. Jangan memberikan teks sebelum atau sesudah JSON.
+
+12. Output harus berupa JSON object yang valid.
+
+13. JSON object harus menjadi satu-satunya output.
 
 
 ==================================================

@@ -1,0 +1,44 @@
+services:
+  service-ai-newtown:
+    image: service-ai-newtown:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: service-ai-newtown
+
+    ports:
+      - "9004:9004"
+
+    environment:
+      # MongoDB
+      MONGODB_HOST: host.docker.internal
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: contractlens
+      MONGODB_USERNAME: contractlens
+      MONGODB_PASSWORD: contractlens123
+      MONGODB_AUTHENTICATION_DATABASE: admin
+
+      # RabbitMQ
+      RABBITMQ_HOST: host.docker.internal
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: contractlens_user
+      RABBITMQ_PASSWORD: contractlens_pass
+      RABBITMQ_VIRTUAL_HOST: /
+
+      # PostgreSQL
+      DATABASE_HOST: host.docker.internal
+      DATABASE_PORT: 5432
+      DATABASE_NAME: contractlens_gateway
+      DATABASE_USERNAME: sa
+      DATABASE_PASSWORD: sa
+
+    restart: unless-stopped
+
+    networks:
+      - contractlens-network
+
+
+networks:
+  contractlens-network:
+    external: true

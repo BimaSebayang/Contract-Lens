@@ -27,5 +27,4 @@ class ContextService:
 
             if prompt is None:
                 return None
-            print(f"get_ai_prompt_architecture results : {prompt.content}")
             return prompt.content

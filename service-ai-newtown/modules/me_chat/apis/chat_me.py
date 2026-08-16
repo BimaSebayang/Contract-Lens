@@ -15,8 +15,6 @@ router = APIRouter(
 
 chat_service = ChatMeService()
 
-
-
 @router.post("/uji-coba-test")
 def chat(chat_request: ChatRequest) -> List[ChatResponse]:
     return chat_service.send_message_uji_coba(chat_request)
@@ -28,3 +26,19 @@ def chat(chat_request: ChatRequest) -> List[ChatResponse]:
 @router.post("/contract-lens/greeting-first-timer")
 def chat(chat_request: ChatRequest) -> List[ChatResponse]:
     return chat_service.send_message_contract_greeting_first_timer(chat_request)
+
+@router.post("/contract-lens/unknown")
+def chat(chat_request: ChatRequest) -> List[ChatResponse]:
+    return chat_service.send_message_unknown(chat_request)
+
+@router.post("/contract-lens/greeting-already-know")
+def chat(chat_request: ChatRequest) -> List[ChatResponse]:
+    return chat_service.send_greeting_already_known(chat_request)
+
+@router.post("/contract-lens/introduce-contract")
+def chat(chat_request: ChatRequest) -> List[ChatResponse]:
+    return chat_service.send_introduce_contractlens(chat_request)
+
+@router.post("/contract-lens/how-to-use")
+def chat(chat_request: ChatRequest) -> List[ChatResponse]:
+    return chat_service.send_teach_how_to_use(chat_request)

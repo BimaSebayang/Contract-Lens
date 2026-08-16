@@ -2,72 +2,22 @@
 <CONTEXT_SECTION name="INTENT_DETECTION">
 ==================================================
 
-Tentukan intent utama berdasarkan task INTENT_DETECTION yang telah
-diberikan.
+Context section ini menyediakan informasi hasil intent detection
+yang dirangkum berdasarkan keseluruhan conversation history.
 
-Gunakan seluruh conversation history sebagai sumber konteks untuk
-menentukan intent user.
+Informasi ini memberikan gambaran mengenai konteks, tujuan,
+dan intent yang telah muncul selama conversation.
 
-Gunakan hanya intent yang tersedia pada:
+Context ini dapat digunakan oleh task atau intent apa pun sebagai
+informasi tambahan untuk memahami conversation secara keseluruhan.
 
-<CONTEXT_SECTION name="INTENT_GLOSSARY">
+Gunakan informasi dari context ini sesuai dengan kebutuhan task
+yang sedang dijalankan.
 
-Jangan mengambil atau membuat intent dari sumber lain.
-
-
-==================================================
-<OUTPUT>
-==================================================
-
-Hasilkan struktur JSON berikut:
-
-{
-    "intent": "INTENT_NAME",
-    "confidence": 0.0,
-    "reason": "Alasan singkat pemilihan intent"
-}
-
-
-==================================================
-<FIELD_DEFINITION>
-==================================================
-
-intent:
-
-Berisi satu intent utama yang paling sesuai dengan tujuan user.
-
-Intent harus diambil langsung dari intent yang tersedia pada:
+Untuk definisi dan daftar intent yang tersedia, gunakan informasi
+yang terdapat pada:
 
 <CONTEXT_SECTION name="INTENT_GLOSSARY">
-
-Jangan membuat intent baru dan jangan menggunakan intent yang
-tidak terdapat dalam INTENT_GLOSSARY.
-
-
-confidence:
-
-Berisi tingkat keyakinan terhadap intent yang dipilih.
-
-Nilai berada antara 0.0 sampai 1.0.
-
-
-reason:
-
-Berisi alasan singkat mengapa pesan user dikategorikan ke intent
-tersebut.
-
-Reason harus berdasarkan informasi yang tersedia pada conversation
-history.
-
-Jangan memberikan chain-of-thought, reasoning internal, atau proses
-berpikir internal.
-
-
-==================================================
-<CONVERSATION_HISTORY>
-==================================================
-
-{conversation_history}
 
 
 ==================================================

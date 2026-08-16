@@ -13,7 +13,33 @@ menghasilkan response.
 <OUTPUT>
 ==================================================
 
-Hasilkan struktur JSON berikut:
+OUTPUT CONTRACT:
+
+Response WAJIB berupa satu JSON object yang valid.
+
+Response HARUS mengikuti struktur JSON yang telah ditentukan
+di bawah ini.
+
+Semua field WAJIB tersedia.
+
+Jangan menghapus field.
+
+Jangan menambahkan field lain.
+
+Jangan mengubah nama field.
+
+Jangan mengubah struktur JSON.
+
+Jangan menghasilkan plain text.
+
+Jangan menghasilkan Markdown di luar nilai field "message".
+
+Jangan menggunakan code block seperti ```json.
+
+Jangan memberikan penjelasan sebelum atau sesudah JSON.
+
+JSON object harus menjadi satu-satunya output.
+
 
 {
     "message": "Panduan yang akan disampaikan kepada user",
@@ -42,38 +68,60 @@ Response dapat menjelaskan:
 
 Gunakan contoh yang sederhana dan relevan jika diperlukan.
 
+Field "message" WAJIB berupa string.
+
 
 reason:
 
 Berisi alasan singkat mengapa assistant memberikan panduan
 tersebut berdasarkan conversation history dan request user.
 
+Field "reason" WAJIB berupa string.
+
+Reason tidak boleh berisi chain-of-thought, reasoning internal,
+atau proses berpikir internal.
+
 
 next_intent:
 
 Berisi kemungkinan intent user berikutnya berdasarkan panduan
-yang diberikan dan intent glossary yang tersedia.
+yang diberikan, conversation history, dan intent glossary yang
+tersedia.
 
 Jika belum terdapat kemungkinan intent yang cukup jelas:
 
 "next_intent": null
 
 Jika terdapat kemungkinan intent, gunakan satu intent yang tersedia
-pada <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+pada:
 
-Contoh intent yang mungkin muncul setelah user mendapatkan panduan:
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Contoh intent yang dapat menjadi kemungkinan intent berikutnya:
 
 - ANALYZE_API
 - CHECK_COMPATIBILITY
 - EXPLAIN_IMPACT
 - RECOMMEND_COMPATIBILITY
 
+Jangan membuat intent baru.
+
+Jangan menggunakan intent yang tidak tersedia pada
+INTENT_GLOSSARY.
+
+Field "next_intent" hanya boleh berisi satu intent yang tersedia
+atau null.
+
 
 confidence:
 
-Berisi tingkat keyakinan terhadap next_intent yang dipilih.
+Berisi tingkat keyakinan terhadap "next_intent" yang dipilih.
 
-Nilai berada antara 0.0 sampai 1.0.
+Nilai harus berada antara 0.0 sampai 1.0.
+
+Jika "next_intent" bernilai null, gunakan:
+
+"confidence": 0.0
 
 
 ==================================================
