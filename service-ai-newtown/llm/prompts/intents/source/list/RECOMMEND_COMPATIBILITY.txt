@@ -1,0 +1,67 @@
+==================================================
+<INTENT name="RECOMMEND_COMPATIBILITY">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user adalah meminta solusi,
+strategi, atau rekomendasi agar perubahan API tetap compatible
+dengan consumer yang sudah menggunakan versi sebelumnya.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Meminta solusi agar perubahan API tidak menyebabkan breaking change.
+- Meminta rekomendasi untuk mempertahankan backward compatibility.
+- Menanyakan cara melakukan perubahan API tanpa merusak consumer lama.
+- Meminta strategi untuk menangani perubahan contract.
+- Menanyakan transformation atau pendekatan yang dapat digunakan
+  agar API tetap compatible.
+- Menggunakan kata seperti "solusi", "rekomendasi", "bagaimana supaya",
+  "cara agar", atau "harus pakai apa" dalam konteks compatibility API.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan RECOMMEND_COMPATIBILITY jika tujuan utama user adalah:
+
+- Meminta analisis API secara umum tanpa meminta solusi.
+  → ANALYZE_API
+
+- Menentukan apakah perubahan API compatible atau menyebabkan
+  breaking change.
+  → CHECK_COMPATIBILITY
+
+- Mengetahui dampak perubahan API terhadap consumer.
+  → EXPLAIN_IMPACT
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Bagaimana supaya perubahan ini tetap compatible?"
+
+"Apa solusi agar consumer lama tidak rusak?"
+
+"Bagaimana cara melakukan perubahan API tanpa breaking?"
+
+"Harus pakai transformation apa?"
+
+"Bagaimana cara mengubah response tanpa merusak consumer lama?"
+
+"Apa solusi terbaik untuk menjaga backward compatibility?"
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

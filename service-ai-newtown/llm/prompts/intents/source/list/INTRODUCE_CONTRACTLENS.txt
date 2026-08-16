@@ -1,0 +1,81 @@
+==================================================
+<INTENT name="INTRODUCE_CONTRACTLENS">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user adalah mengetahui
+apa itu ContractLens, fungsi ContractLens, atau kemampuan
+ContractLens secara umum.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Menanyakan apa itu ContractLens.
+- Menanyakan fungsi atau tujuan ContractLens.
+- Menanyakan kemampuan ContractLens secara umum.
+- Meminta penjelasan mengenai ContractLens.
+- Menanyakan apa yang dapat dilakukan AI ini.
+- Menanyakan bagaimana ContractLens membantu developer.
+- Menggunakan pertanyaan seperti "apa itu", "buat apa",
+  "bisa apa", atau "fungsinya apa" dalam konteks ContractLens.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan INTRODUCE_CONTRACTLENS jika tujuan utama user adalah:
+
+- Menanyakan cara menggunakan ContractLens atau meminta tutorial.
+  → TEACH_HOW_TO_USE_CONTRACTLENS
+
+- Memberikan greeting sebagai pengguna baru.
+  → GREETING_FIRST_TIMER
+
+- Melanjutkan greeting atau conversation sebagai user yang sudah
+  mengetahui ContractLens.
+  → GREETING_ALREADY_KNOW_APPLICATION
+
+- Memberikan API untuk dianalisis.
+  → ANALYZE_API
+
+- Menanyakan compatibility atau breaking change.
+  → CHECK_COMPATIBILITY
+
+- Menanyakan dampak perubahan API.
+  → EXPLAIN_IMPACT
+
+- Meminta solusi atau rekomendasi compatibility.
+  → RECOMMEND_COMPATIBILITY
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"ContractLens itu apa?"
+
+"ContractLens buat apa?"
+
+"Jelasin ContractLens dong."
+
+"Apa yang bisa dilakukan AI ini?"
+
+"ContractLens bisa membantu developer apa?"
+
+"Fungsi ContractLens sebenarnya apa?"
+
+"Kenapa saya perlu menggunakan ContractLens?"
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

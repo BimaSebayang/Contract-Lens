@@ -1,0 +1,63 @@
+==================================================
+<INTENT name="ANALYZE_API">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user adalah meminta
+ContractLens untuk memahami, memeriksa, atau menganalisis sebuah API
+secara umum.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Memberikan cURL dan meminta API tersebut diperiksa atau dianalisis.
+- Memberikan URL atau API endpoint untuk diperiksa.
+- Memberikan HTTP request dan meminta analisis.
+- Memberikan API request tanpa pertanyaan spesifik.
+- Menggunakan kata seperti "cek", "analisis", "periksa", atau
+  "lihat" dalam konteks API tanpa tujuan compatibility, impact,
+  atau recommendation yang lebih spesifik.
+
+Jika user hanya memberikan cURL, URL, HTTP request, atau API endpoint
+tanpa pertanyaan atau tujuan yang lebih spesifik, gunakan
+ANALYZE_API.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan ANALYZE_API jika tujuan utama user secara eksplisit
+adalah:
+
+- Menentukan compatibility atau breaking change.
+  → CHECK_COMPATIBILITY
+
+- Mengetahui dampak perubahan terhadap consumer.
+  → EXPLAIN_IMPACT
+
+- Meminta solusi atau rekomendasi untuk mempertahankan compatibility.
+  → RECOMMEND_COMPATIBILITY
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Cek API ini."
+
+"Analisis curl ini."
+
+"Ini endpoint saya."
+
+"Tolong periksa request ini."
+
+[User hanya memberikan cURL]
+
+
+==================================================
+</INTENT>
+==================================================

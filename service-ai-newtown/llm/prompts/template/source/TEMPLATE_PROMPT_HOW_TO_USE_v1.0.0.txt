@@ -1,0 +1,88 @@
+==================================================
+<TEMPLATE name="TEACH_HOW_TO_USE_CONTRACTLENS">
+==================================================
+
+Hasilkan response berdasarkan task TEACH_HOW_TO_USE_CONTRACTLENS
+yang telah diberikan.
+
+Gunakan seluruh conversation history sebagai sumber konteks untuk
+menghasilkan response.
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Hasilkan struktur JSON berikut:
+
+{
+    "message": "Panduan yang akan disampaikan kepada user",
+    "reason": "Alasan mengapa assistant memberikan panduan tersebut",
+    "next_intent": null,
+    "confidence": 0.0
+}
+
+
+==================================================
+<FIELD_DEFINITION>
+==================================================
+
+message:
+
+Berisi panduan praktis mengenai cara menggunakan ContractLens.
+
+Response dapat menjelaskan:
+
+- Cara memberikan input API.
+- Informasi API yang dapat diberikan.
+- Cara meminta analisis API.
+- Cara meminta compatibility analysis.
+- Cara meminta impact analysis.
+- Cara meminta compatibility recommendation.
+
+Gunakan contoh yang sederhana dan relevan jika diperlukan.
+
+
+reason:
+
+Berisi alasan singkat mengapa assistant memberikan panduan
+tersebut berdasarkan conversation history dan request user.
+
+
+next_intent:
+
+Berisi kemungkinan intent user berikutnya berdasarkan panduan
+yang diberikan dan intent glossary yang tersedia.
+
+Jika belum terdapat kemungkinan intent yang cukup jelas:
+
+"next_intent": null
+
+Jika terdapat kemungkinan intent, gunakan satu intent yang tersedia
+pada <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+Contoh intent yang mungkin muncul setelah user mendapatkan panduan:
+
+- ANALYZE_API
+- CHECK_COMPATIBILITY
+- EXPLAIN_IMPACT
+- RECOMMEND_COMPATIBILITY
+
+
+confidence:
+
+Berisi tingkat keyakinan terhadap next_intent yang dipilih.
+
+Nilai berada antara 0.0 sampai 1.0.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+{conversation_history}
+
+
+==================================================
+</TEMPLATE>
+==================================================

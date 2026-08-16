@@ -1,0 +1,74 @@
+==================================================
+<TEMPLATE name="GREETING_ALREADY_KNOW_APPLICATION">
+==================================================
+
+Hasilkan response berdasarkan task GETTING_ALREADY_KNOW_APP
+yang telah diberikan.
+
+Gunakan seluruh conversation history sebagai sumber konteks untuk
+menghasilkan response.
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Hasilkan struktur JSON berikut:
+
+{
+    "message": "Greeting atau response yang akan disampaikan kepada user",
+    "reason": "Alasan mengapa assistant memberikan response tersebut",
+    "next_intent": null,
+    "confidence": 0.0
+}
+
+
+==================================================
+<FIELD_DEFINITION>
+==================================================
+
+message:
+
+Berisi greeting atau response singkat yang akan disampaikan kepada
+user.
+
+Response harus mempertahankan kesinambungan conversation dan tidak
+mengulang pengenalan ContractLens kepada user.
+
+
+reason:
+
+Berisi alasan singkat mengapa assistant memberikan response tersebut
+berdasarkan conversation history dan request user.
+
+
+next_intent:
+
+Berisi kemungkinan intent user berikutnya berdasarkan response yang
+diberikan dan intent glossary yang tersedia.
+
+Jika belum terdapat kemungkinan intent yang cukup jelas:
+
+"next_intent": null
+
+Jika terdapat kemungkinan intent, gunakan satu intent yang tersedia
+pada <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+
+confidence:
+
+Berisi tingkat keyakinan terhadap next_intent yang dipilih.
+
+Nilai berada antara 0.0 sampai 1.0.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+{conversation_history}
+
+
+==================================================
+</TEMPLATE>
+==================================================

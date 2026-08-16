@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connectors" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/connectors" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/db" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/llm" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/messages" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>

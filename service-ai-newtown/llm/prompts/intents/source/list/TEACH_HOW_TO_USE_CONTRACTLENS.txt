@@ -1,0 +1,86 @@
+==================================================
+<INTENT name="TEACH_HOW_TO_USE_CONTRACTLENS">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user adalah mengetahui cara
+menggunakan ContractLens atau meminta panduan untuk berinteraksi
+dengan kemampuan ContractLens.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Menanyakan cara menggunakan ContractLens.
+- Meminta tutorial atau panduan penggunaan ContractLens.
+- Menanyakan input apa yang dapat diberikan kepada ContractLens.
+- Menanyakan bagaimana cara memberikan cURL atau HTTP request.
+- Menanyakan bagaimana cara melakukan analisis API.
+- Menanyakan bagaimana cara meminta compatibility analysis.
+- Menanyakan bagaimana cara meminta impact analysis.
+- Menanyakan bagaimana cara meminta compatibility recommendation.
+- Menggunakan pertanyaan seperti "cara pakai", "gimana caranya",
+  "harus kasih input apa", atau "gimana menggunakan" dalam konteks
+  ContractLens.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan TEACH_HOW_TO_USE_CONTRACTLENS jika tujuan utama user:
+
+- Hanya ingin mengetahui apa itu atau fungsi ContractLens.
+  → INTRODUCE_CONTRACTLENS
+
+- Hanya memberikan greeting sebagai pengguna baru.
+  → GREETING_FIRST_TIMER
+
+- Menyapa atau melanjutkan percakapan sebagai user yang sudah
+  mengetahui ContractLens.
+  → GREETING_ALREADY_KNOW_APPLICATION
+
+- Memberikan API untuk dianalisis.
+  → ANALYZE_API
+
+- Menanyakan apakah perubahan API compatible atau breaking.
+  → CHECK_COMPATIBILITY
+
+- Menanyakan dampak perubahan API terhadap consumer.
+  → EXPLAIN_IMPACT
+
+- Meminta solusi atau rekomendasi untuk mempertahankan compatibility.
+  → RECOMMEND_COMPATIBILITY
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Gimana cara pakai ContractLens?"
+
+"Cara menggunakan ContractLens gimana?"
+
+"Gw harus kasih input apa?"
+
+"Cara analisis API di sini gimana?"
+
+"Ajarin gw cara pakai ContractLens."
+
+"Kalau mau cek API, harus kirim apa?"
+
+"Gimana cara minta compatibility analysis?"
+
+"Cara kasih cURL ke ContractLens gimana?"
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

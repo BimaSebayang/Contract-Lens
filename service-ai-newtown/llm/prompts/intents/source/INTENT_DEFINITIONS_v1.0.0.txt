@@ -1,0 +1,86 @@
+==================================================
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+==================================================
+
+Bagian ini merupakan sumber utama untuk seluruh intent
+yang tersedia di ContractLens.
+
+Setiap intent di dalam section ini memiliki:
+
+- Nama intent
+- Deskripsi
+- Kapan intent digunakan
+- Fokus utama
+- Contoh request
+
+Hanya intent yang terdapat di section ini yang dapat digunakan
+oleh ContractLens.
+
+
+{intent-list-xiii}
+
+
+==================================================
+<INTENT_PRIORITY>
+==================================================
+
+Jika tujuan utama user masih ambigu setelah mempertimbangkan
+context dan conversation history, gunakan prioritas berikut:
+
+1. RECOMMEND_COMPATIBILITY
+
+2. CHECK_COMPATIBILITY
+
+3. EXPLAIN_IMPACT
+
+4. ANALYZE_API
+
+5. TEACH_HOW_TO_USE_CONTRACTLENS
+
+6. INTRODUCE_CONTRACTLENS
+
+7. GREETING_ALREADY_KNOW_APPLICATION
+
+8. GREETING_FIRST_TIMER
+
+9. UNKNOWN
+
+Priority hanya digunakan sebagai tie-breaker ketika tujuan
+utama user belum cukup jelas.
+
+Jika tujuan utama user sudah dapat ditentukan dengan jelas,
+gunakan intent tersebut dan jangan menggunakan priority untuk
+menggantikan intent tersebut.
+
+==================================================
+</INTENT_PRIORITY>
+==================================================
+
+
+==================================================
+<MULTIPLE_INTENTS>
+==================================================
+
+Satu pesan dapat memiliki beberapa kemungkinan intent.
+
+Jika hal tersebut terjadi:
+
+1. Identifikasi tujuan utama user.
+
+2. Pilih satu intent yang paling spesifik terhadap tujuan utama user.
+
+3. Jangan memilih intent hanya berdasarkan keyword.
+
+4. Jangan menjalankan atau menghasilkan lebih dari satu intent.
+
+5. Jika tujuan utama masih ambigu setelah mempertimbangkan
+   context dan conversation history, gunakan INTENT_PRIORITY
+   sebagai tie-breaker.
+
+==================================================
+</MULTIPLE_INTENTS>
+==================================================
+
+==================================================
+</CONTEXT_SECTION>
+==================================================

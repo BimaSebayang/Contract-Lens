@@ -1,0 +1,71 @@
+==================================================
+<INTENT name="CHECK_COMPATIBILITY">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user adalah mengetahui
+apakah perubahan API masih compatible dengan consumer yang sudah
+menggunakan versi API sebelumnya atau berpotensi menyebabkan
+breaking change.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Menanyakan apakah perubahan API menyebabkan breaking change.
+- Menanyakan apakah API masih compatible dengan versi sebelumnya.
+- Menanyakan apakah consumer lama masih dapat menggunakan API.
+- Menanyakan apakah perubahan API aman untuk consumer yang sudah ada.
+- Menggunakan istilah seperti "breaking", "compatible",
+  "compatibility", atau "backward compatible" dalam konteks
+  perubahan API.
+- Membandingkan API atau contract lama dengan API atau contract baru
+  untuk mengetahui compatibility.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan CHECK_COMPATIBILITY jika tujuan utama user adalah:
+
+- Meminta analisis API secara umum tanpa pertanyaan compatibility.
+  → ANALYZE_API
+
+- Mengetahui dampak perubahan API terhadap consumer.
+  → EXPLAIN_IMPACT
+
+- Meminta solusi atau rekomendasi agar perubahan API tetap compatible.
+  → RECOMMEND_COMPATIBILITY
+
+- Menanyakan apa itu ContractLens atau kemampuan ContractLens.
+  → INTRODUCE_CONTRACTLENS
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Apakah perubahan ini breaking?"
+
+"API ini masih compatible dengan versi sebelumnya?"
+
+"Consumer lama masih bisa menggunakan API ini?"
+
+"Perubahan ini aman nggak untuk consumer lama?"
+
+"Kalau field ini dihapus, apakah breaking change?"
+
+"Apakah perubahan response ini backward compatible?"
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

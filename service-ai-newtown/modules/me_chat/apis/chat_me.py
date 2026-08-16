@@ -16,11 +16,15 @@ router = APIRouter(
 chat_service = ChatMeService()
 
 
-@router.get("/test")
-def test(role: Role) -> str:
-    return chat_service.last_chat(role)
 
-
-@router.post("/")
+@router.post("/uji-coba-test")
 def chat(chat_request: ChatRequest) -> List[ChatResponse]:
-    return chat_service.send_message(chat_request)
+    return chat_service.send_message_uji_coba(chat_request)
+
+@router.post("/contract-lens/intents")
+def chat(chat_request: ChatRequest) -> List[ChatResponse]:
+    return chat_service.send_message_contract_lens_intents(chat_request)
+
+@router.post("/contract-lens/greeting-first-timer")
+def chat(chat_request: ChatRequest) -> List[ChatResponse]:
+    return chat_service.send_message_contract_greeting_first_timer(chat_request)

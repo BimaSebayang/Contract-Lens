@@ -1,0 +1,75 @@
+==================================================
+<INTENT name="GREETING_ALREADY_KNOW_APPLICATION">
+==================================================
+
+Gunakan intent ini ketika user menyapa atau melanjutkan percakapan
+dan menunjukkan bahwa user sudah mengetahui atau pernah menggunakan
+ContractLens.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Menyapa kembali ContractLens.
+- Mengajak melanjutkan percakapan sebelumnya.
+- Merujuk pada pembahasan atau aktivitas sebelumnya.
+- Menunjukkan bahwa user sudah mengetahui ContractLens.
+- Menggunakan konteks percakapan sebelumnya tanpa membutuhkan
+  pengenalan ContractLens dari awal.
+
+Gunakan conversation history untuk menentukan apakah user sudah
+pernah mengetahui atau menggunakan ContractLens.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan GREETING_ALREADY_KNOW_APPLICATION jika:
+
+- User merupakan pengguna baru atau belum mengetahui ContractLens.
+  → GREETING_FIRST_TIMER
+
+- User hanya menanyakan apa itu atau fungsi ContractLens.
+  → INTRODUCE_CONTRACTLENS
+
+- User meminta panduan atau tutorial menggunakan ContractLens.
+  → TEACH_HOW_TO_USE_CONTRACTLENS
+
+- User memberikan API atau meminta analisis API.
+  → ANALYZE_API
+
+Jika greeting disertai request yang lebih spesifik, prioritaskan
+tujuan utama request tersebut.
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Halo lagi ContractLens."
+
+"Yuk lanjut."
+
+"Oke, kita lanjut."
+
+"Kita lanjut dari yang kemarin."
+
+"Gw udah tahu ContractLens, sekarang mau cek API."
+
+"Halo lagi, kita lanjut yang tadi."
+
+"Balik lagi nih, lanjut yuk."
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

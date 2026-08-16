@@ -1,0 +1,92 @@
+==================================================
+<INTENT name="UNKNOWN">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user tidak dapat dipetakan
+ke intent ContractLens yang tersedia atau request berada di luar
+scope ContractLens.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Memberikan request yang tidak berhubungan dengan ContractLens.
+- Meminta sesuatu yang berada di luar kemampuan ContractLens.
+- Memberikan request yang terlalu ambigu untuk menentukan intent.
+- Memberikan informasi yang tidak cukup untuk memahami tujuan user.
+- Tidak memiliki tujuan yang sesuai dengan intent ContractLens lainnya.
+- Menggunakan referensi seperti "ini", "itu", "yang tadi", atau
+  "kenapa" tanpa context yang cukup untuk menentukan maksudnya.
+
+Jika conversation history tidak memberikan context yang cukup untuk
+menentukan intent, gunakan UNKNOWN.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan UNKNOWN jika tujuan utama user dapat dipetakan dengan
+jelas ke salah satu intent yang tersedia.
+
+Gunakan intent yang paling sesuai jika:
+
+- User meminta analisis API.
+  → ANALYZE_API
+
+- User ingin mengetahui compatibility atau breaking change.
+  → CHECK_COMPATIBILITY
+
+- User ingin mengetahui dampak perubahan API.
+  → EXPLAIN_IMPACT
+
+- User meminta solusi atau rekomendasi compatibility.
+  → RECOMMEND_COMPATIBILITY
+
+- User ingin mengetahui apa itu atau fungsi ContractLens.
+  → INTRODUCE_CONTRACTLENS
+
+- User ingin mengetahui cara menggunakan ContractLens.
+  → TEACH_HOW_TO_USE_CONTRACTLENS
+
+- User merupakan pengguna baru yang sedang memberikan greeting.
+  → GREETING_FIRST_TIMER
+
+- User sudah mengetahui ContractLens dan melanjutkan conversation.
+  → GREETING_ALREADY_KNOW_APPLICATION
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Bikinin gue program Java."
+
+"Berapa harga motor?"
+
+"Siapa presiden Indonesia?"
+
+"Jelaskan cara membuat aplikasi game."
+
+"Berapa hasil 10 + 20?"
+
+"Ini gimana?"
+
+"Kenapa?"
+
+"Yang tadi?"
+
+"Bagaimana menurutmu?"
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

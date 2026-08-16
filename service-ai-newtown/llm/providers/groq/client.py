@@ -36,8 +36,6 @@ class GroqClient(LLMClient):
             messages=messages
         )
 
-        print(f"this is response chat from Groq with model {model} = {response}")
-
         mapped_messages = [
             LlmMessageResponse(
                 role=choice.message.role,

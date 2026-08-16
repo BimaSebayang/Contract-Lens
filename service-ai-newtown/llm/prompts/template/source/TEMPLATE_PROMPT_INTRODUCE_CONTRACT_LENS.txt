@@ -1,0 +1,83 @@
+==================================================
+<TEMPLATE name="INTRODUCE_CONTRACTLENS">
+==================================================
+
+Hasilkan response berdasarkan task INTRODUCE_CONTRACTLENS
+yang telah diberikan.
+
+Gunakan seluruh conversation history sebagai sumber konteks
+untuk menghasilkan response.
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Hasilkan struktur JSON berikut:
+
+{
+    "message": "Penjelasan yang akan disampaikan kepada user mengenai ContractLens",
+    "reason": "Alasan mengapa assistant memberikan penjelasan tersebut",
+    "next_intent": null,
+    "confidence": 0.0
+}
+
+
+==================================================
+<FIELD_DEFINITION>
+==================================================
+
+message:
+
+Berisi penjelasan singkat mengenai ContractLens sesuai dengan
+pertanyaan dan context conversation user.
+
+Penjelasan dapat mencakup:
+
+- Apa itu ContractLens.
+- Masalah yang dibantu ContractLens.
+- Kemampuan utama ContractLens.
+- Bagaimana ContractLens membantu developer memahami API.
+
+
+reason:
+
+Berisi alasan singkat mengapa assistant memberikan penjelasan
+tersebut berdasarkan conversation history dan request user.
+
+
+next_intent:
+
+Berisi kemungkinan intent user berikutnya berdasarkan penjelasan
+yang diberikan dan intent glossary yang tersedia.
+
+Jika tidak terdapat kemungkinan intent yang cukup jelas:
+
+"next_intent": null
+
+Jika terdapat kemungkinan intent, gunakan satu intent yang tersedia
+pada <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+Contoh intent yang dapat menjadi next_intent:
+
+- TEACH_HOW_TO_USE_CONTRACTLENS
+- ANALYZE_API
+
+
+confidence:
+
+Berisi tingkat keyakinan terhadap next_intent yang dipilih.
+
+Nilai berada antara 0.0 sampai 1.0.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+{conversation_history}
+
+
+==================================================
+</TEMPLATE>
+==================================================

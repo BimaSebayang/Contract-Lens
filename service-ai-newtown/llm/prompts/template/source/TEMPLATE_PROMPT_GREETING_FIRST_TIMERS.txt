@@ -1,0 +1,69 @@
+==================================================
+<TEMPLATE name="GREETING_FIRST_TIMER">
+==================================================
+
+Hasilkan response berdasarkan task GREETING_FIRST_TIMER
+yang telah diberikan.
+
+Gunakan seluruh conversation history yang diberikan sebagai
+sumber konteks untuk menghasilkan response.
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Hasilkan struktur JSON berikut:
+
+{
+    "message": "Apa yang ingin dikatakan assistant kepada user",
+    "reason": "Alasan mengapa assistant mengatakan hal tersebut",
+    "next_intent": null,
+    "confidence": 0.0
+}
+
+
+==================================================
+<FIELD_DEFINITION>
+==================================================
+
+message:
+
+Berisi response yang akan disampaikan assistant kepada user
+sesuai dengan task GREETING_FIRST_TIMER.
+
+
+reason:
+
+Berisi alasan singkat mengapa assistant memberikan response
+tersebut.
+
+
+next_intent:
+
+Berisi kemungkinan intent user berikutnya berdasarkan response
+yang diberikan dan intent glossary yang tersedia.
+
+Gunakan null jika tidak terdapat kemungkinan intent yang relevan.
+
+Jika terdapat kemungkinan intent, gunakan salah satu intent yang
+tersedia pada intent glossary.
+
+
+confidence:
+
+Berisi tingkat keyakinan terhadap next_intent yang dipilih.
+
+Nilai berada antara 0.0 sampai 1.0.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+{conversation_history}
+
+
+==================================================
+</TEMPLATE>
+==================================================

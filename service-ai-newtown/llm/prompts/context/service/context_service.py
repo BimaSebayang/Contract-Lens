@@ -1,0 +1,31 @@
+from typing import Optional
+
+from db.postgres.client import SessionLocal
+from db.postgres.repositories.contractlens_ai_prompt_repository import (
+    ContractLensAiPromptRepository,
+)
+
+
+from db.postgres.models.contractlens_ai_prompt import ContractLensAiPrompt
+
+
+class ContextService:
+
+    def get_ai_prompt_architecture(
+            self
+    ) -> Optional[str]:
+
+        with SessionLocal() as session:
+
+            repository = ContractLensAiPromptRepository(
+                session
+            )
+
+            prompt : Optional[ContractLensAiPrompt] = repository.find_active_by_prompt_key(
+                prompt_key="AI_PROMPT_ARCHITECTURE"
+            )
+
+            if prompt is None:
+                return None
+            print(f"get_ai_prompt_architecture results : {prompt.content}")
+            return prompt.content

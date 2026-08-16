@@ -1,0 +1,115 @@
+==================================================
+<TEMPLATE name="INTENT_DETECTION">
+==================================================
+
+Hasilkan intent utama berdasarkan task INTENT_DETECTION
+yang telah diberikan.
+
+Gunakan conversation history sebagai sumber konteks untuk
+menentukan intent user.
+
+Gunakan hanya intent yang tersedia pada:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Hasilkan struktur JSON berikut:
+
+{
+    "intent": "INTENT_NAME",
+    "confidence": 0.0,
+    "reason": "Alasan singkat pemilihan intent"
+}
+
+
+==================================================
+<FIELD_DEFINITION>
+==================================================
+
+intent:
+
+Berisi satu intent utama yang paling sesuai dengan tujuan
+user berdasarkan:
+
+- User message
+- Conversation history
+- <CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Hanya gunakan intent yang tersedia pada:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Jika intent tidak dapat ditentukan dengan cukup jelas atau
+tidak terdapat intent yang sesuai, gunakan:
+
+"UNKNOWN"
+
+
+confidence:
+
+Berisi tingkat keyakinan terhadap intent yang dipilih.
+
+Nilai harus berada antara 0.0 sampai 1.0.
+
+
+reason:
+
+Berisi alasan singkat mengapa user message dikategorikan
+ke intent tersebut.
+
+Reason harus:
+
+- Berdasarkan informasi yang tersedia.
+- Maksimal 1-2 kalimat.
+- Tidak mengandung chain-of-thought.
+- Tidak mengungkapkan reasoning internal.
+
+
+==================================================
+<OUTPUT_RULES>
+==================================================
+
+1. Pilih tepat satu intent.
+
+2. Gunakan tujuan utama user untuk menentukan intent.
+
+3. Jangan menentukan intent hanya berdasarkan keyword tertentu.
+
+4. Jika user memberikan cURL, URL, atau HTTP request,
+   tentukan intent berdasarkan tujuan utama user.
+
+5. Gunakan conversation history jika tersedia dan relevan.
+
+6. Jangan menjawab atau menyelesaikan pertanyaan user.
+
+7. Jangan mengarang intent yang tidak tersedia pada:
+
+   <CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+8. Jangan menambahkan field selain:
+
+   - intent
+   - confidence
+   - reason
+
+9. Jangan menggunakan Markdown.
+
+10. Jangan memberikan teks sebelum atau sesudah JSON.
+
+11. Output harus berupa JSON yang valid.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+{conversation_history}
+
+
+==================================================
+</TEMPLATE>
+==================================================

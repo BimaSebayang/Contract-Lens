@@ -1,0 +1,208 @@
+==================================================
+<TASK name="INTENT_DETECTION">
+==================================================
+
+
+==================================================
+<INTENT>
+==================================================
+
+Intent yang menggunakan task ini adalah:
+
+INTENT_DETECTION
+
+
+==================================================
+<USER_CONTEXT>
+==================================================
+
+User sedang mengirimkan pesan kepada ContractLens.
+
+User tidak perlu menyebutkan intent secara eksplisit.
+
+Intent harus ditentukan berdasarkan:
+
+- Tujuan utama user.
+- Isi pesan user.
+- Conversation history jika relevan.
+- <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+
+==================================================
+<TASK>
+==================================================
+
+Tugas utama task ini adalah memahami tujuan utama user dan
+menentukan satu intent yang paling sesuai berdasarkan:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Gunakan hanya intent yang tersedia pada:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Jangan mengarang intent yang tidak terdapat pada
+<CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+Task ini hanya bertugas menentukan intent.
+
+Task ini TIDAK bertugas untuk:
+
+- Menjawab pertanyaan user.
+- Menganalisis API.
+- Menjelaskan contract.
+- Menjelaskan compatibility.
+- Memberikan compatibility recommendation.
+- Memanggil API.
+- Memanggil tool.
+- Mengubah data ContractLens.
+- Menjalankan workflow ContractLens.
+
+
+==================================================
+<INTENT_GLOSSARY>
+==================================================
+
+Gunakan hanya intent yang tersedia pada:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Jangan mendefinisikan ulang atau membuat intent baru
+di dalam task ini.
+
+Untuk setiap user message:
+
+1. Pahami tujuan utama user.
+
+2. Bandingkan tujuan tersebut dengan intent yang tersedia pada
+   <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+3. Pilih tepat satu intent yang paling sesuai.
+
+4. Jika tidak terdapat intent yang sesuai atau tujuan user
+   tidak dapat ditentukan dengan cukup jelas, gunakan:
+
+   UNKNOWN
+
+
+==================================================
+<CURL_HTTP_REQUEST_RULE>
+==================================================
+
+Jika user memberikan cURL, URL, atau HTTP request, jangan
+menentukan intent hanya berdasarkan keberadaan cURL atau
+HTTP request.
+
+Pahami terlebih dahulu tujuan utama user.
+
+Gunakan intent yang tersedia pada:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+untuk menentukan intent yang sesuai.
+
+Keberadaan cURL, URL, atau HTTP request tidak secara otomatis
+berarti user meminta analisis API.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+Gunakan conversation history jika diperlukan untuk memahami
+tujuan user.
+
+Conversation history dapat digunakan untuk:
+
+- Memahami konteks pesan saat ini.
+- Memahami referensi terhadap pesan sebelumnya.
+- Memahami intent yang bergantung pada konteks sebelumnya.
+- Memahami apakah user sedang melanjutkan request sebelumnya.
+- Memahami informasi yang tidak disebutkan kembali oleh user.
+
+Jangan menggunakan conversation history untuk mengarang informasi
+yang tidak tersedia.
+
+
+==================================================
+<INFORMATION_BOUNDARY>
+==================================================
+
+Task ini tidak bertugas memperoleh atau memverifikasi informasi
+API contract.
+
+Jangan mengarang atau menebak informasi yang tidak tersedia.
+
+Gunakan hanya informasi yang tersedia dari:
+
+- User message
+- Conversation history
+- <CONTEXT_SECTION name="INTENT_GLOSSARY">
+- Context yang secara eksplisit diberikan kepada task
+
+
+==================================================
+<OUT_OF_SCOPE>
+==================================================
+
+Jika request user tidak memiliki intent yang sesuai dengan:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+gunakan:
+
+UNKNOWN
+
+Task ini tidak boleh menjawab request tersebut.
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Gunakan <TEMPLATE name="INTENT_DETECTION"> sebagai format output.
+
+Output harus mengikuti seluruh struktur dan aturan yang telah
+ditentukan oleh INTENT_DETECTION_TEMPLATE.
+
+Jangan mendefinisikan ulang struktur output di dalam task ini.
+
+Jangan menambahkan field lain.
+
+Jangan mengubah format output yang ditentukan oleh template.
+
+Jangan memberikan jawaban terhadap user.
+
+
+==================================================
+<TASK_BOUNDARY>
+==================================================
+
+Task ini hanya menentukan intent.
+
+Setelah intent ditentukan, application bertanggung jawab untuk
+menentukan:
+
+- Task
+- Context
+- Prompt
+- Few-shot example
+- Workflow
+- Tool
+
+berdasarkan intent yang telah dipilih.
+
+Jangan menjalankan task berikutnya secara langsung.
+
+Jangan memberikan jawaban final kepada user.
+
+Jangan melakukan analisis API.
+
+Jangan memanggil tool.
+
+Jangan mengubah data ContractLens.
+
+
+==================================================
+</TASK>
+==================================================

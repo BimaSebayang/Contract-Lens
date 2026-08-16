@@ -1,21 +1,19 @@
+from modules.me_chat.service.orchestration_svc import OrchestrationService
+
 import logging
 from typing import List
 
-from commons import ai_lab_constants
 from commons.enums.role import Role
 from core.chat_request import ChatRequest
 from core.chat_response import ChatResponse
 from core.message import Message
-from core.prompt import Prompt
-from db.mongodb.models.conversation import ConversationDetail
 from db.mongodb.repositories.conversation_repository import ConversationRepository
-from llm.models.llm_chat_response import LlmChatResponse
-from llm.models.llm_message_response import LlmMessageResponse
-from llm.models.llm_usage_response import LlmUsageResponse
-from llm.prompts.context import contractlens_context
-from llm.prompts.system import contractlens_system
-from llm.prompts.template import contractlens_template
-from llm.providers.groq.client import GroqClient
+from llm.prompts.context.service.context_service import ContextService
+
+from llm.prompts.intents.service.intents_service import IntentPromptService
+from llm.prompts.system.service.system_prompt_service import SystemPromptService
+from llm.prompts.template.service.template_service import TemplateService
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,131 +21,169 @@ logger = logging.getLogger(__name__)
 class ChatMeService:
 
     def __init__(self):
-        self.groq = GroqClient()
+        self.orc = OrchestrationService()
         self.conversation_repository = ConversationRepository()
 
-    def last_chat(self, role: Role) -> str:
-        prompt = Prompt()
-
-        prompt.add_message(
-            Role.USER,
-            "This Is Contents"
-        )
-
-        prompt.add_message(
-            Role.SYSTEM,
-            "Yes This Is Contents"
-        )
-
-        content = prompt.get_last_message_by_role(role).content
-
-        logger.info(
-            "Last chat content: %s",
-            content
-        )
-
-        return content
-
-    def send_message(
+    def send_message_uji_coba(
             self,
             content: ChatRequest
     ) -> List[ChatResponse]:
 
         user_prompt = Message(
             role=Role.USER,
-            content=content.message
+            content=content.message,
+            reason=''
         )
 
         return [
             ChatResponse(
-                content=message.content
+                content=message.content,
+                reason=message.reason,
+                context=''
             )
-            for message in self.orchestrate(
+            for message in self.orc.orchestrate(
                 user_prompt,
-                content.conversation_id
+                content.conversation_id,
+                []
             )
         ]
 
-    def orchestrate(
+    def send_message_contract_lens_intents(
             self,
-            user_prompt: Message,
-            conversation_id: str
-    ) -> List[Message]:
+            content: ChatRequest
+    ) -> List[ChatResponse]:
 
-        # Start Prompt Setting
-        system_prompt = Message(
-            role=Role.SYSTEM,
-            content= f"""
-                    {contractlens_system.SYSTEM_PROMPT_CONTRACTLENS}
-                    {contractlens_system.SYSTEM_PROMPT_CREATOR_TEMP}
-                    {contractlens_context.CONTEXT_CONTRACTLENS}
-                    {contractlens_template.CONTRACT_ANALYSIS_TEMPLATE}
-                        """
-        )
-        # End Prompt Setting
+        context_service = ContextService()
+        system_prompt_service = SystemPromptService()
+        intent_prompt_service = IntentPromptService()
+        template_service = TemplateService()
 
-        messages: List[Message] = (
-            self.conversation_repository
-            .get_history(conversation_id)
+        user_prompt = Message(
+            role=Role.USER,
+            content=content.message,
+            reason=''
         )
 
-        messages.insert(0, system_prompt)
-        messages.append(user_prompt)
-
-        print(f"Chat Messages is: {messages}")
-
-        # Disini nanti provider model akan diganti
-        response: LlmChatResponse = self.groq.chat(
-            messages,
-            ai_lab_constants.GPT_OSS_120b
+        context_contractlens = (
+            context_service.get_ai_prompt_architecture()
         )
 
-        response_messages: List[Message] = []
-
-        self.conversation_repository.save_detail(
-            conversation_id,
-            ConversationDetail(
-                LlmMessageResponse(
-                    role=user_prompt.role,
-                    content=user_prompt.content,
-                    reasoning='',
-                    finishing_reason='',
-                    approve=True
-                ),
-                LlmUsageResponse(
-                    completion_tokens=response.usage.completion_tokens,
-                    prompt_tokens=response.usage.prompt_tokens,
-                    total_tokens=response.usage.total_tokens
-                )
+        system_prompt_creator = (
+            system_prompt_service.get_system_prompt(
+                prompt_key="SYSTEM_PROMPT_CREATOR"
             )
         )
 
-        for index, message in enumerate(response.messages):
-
-            response_messages.append(
-                Message(
-                    role=None,
-                    content=message.content
-                )
+        system_prompt_global = (
+            system_prompt_service.get_system_prompt(
+                prompt_key="SYSTEM_PROMPT_GLOBAL"
             )
+        )
 
-            self.conversation_repository.save_detail(
-                conversation_id,
-                ConversationDetail(
-                    LlmMessageResponse(
-                        role=message.role,
-                        content=message.content,
-                        reasoning=message.reasoning,
-                        finishing_reason=message.finishing_reason,
-                        approve=index == 0
-                    ),
-                    LlmUsageResponse(
-                        completion_tokens=response.usage.completion_tokens,
-                        prompt_tokens=response.usage.prompt_tokens,
-                        total_tokens=response.usage.total_tokens
-                    )
-                )
+        intent_detection_prompt = (
+            intent_prompt_service.get_intent_detection_prompt()
+        )
+
+        intent_glossary = (
+            intent_prompt_service.get_intent_glossary()
+        )
+
+        intent_detection_template = (
+            template_service.get_template(
+                prompt_key="TP_INTENT_DETECTION"
             )
+        )
+        main_content = (
+                (context_contractlens or "")
+                + (system_prompt_creator or "")
+                + (system_prompt_global or "")
+                + (intent_detection_prompt or "")
+                + (intent_glossary or "")
+                + (intent_detection_template or "")
+        )
 
-        return response_messages
+        additional_message: List[Message] = [
+            Message(
+                role=Role.SYSTEM,
+                content=main_content,
+                reason=''
+            )
+        ]
 
+        return [
+            ChatResponse(
+                content=message.content,
+                reason=message.reason,
+                context=main_content
+            )
+            for message in self.orc.orchestrate(
+                user_prompt,
+                content.conversation_id,
+                additional_message
+            )
+        ]
+
+    def send_message_contract_greeting_first_timer(
+            self,
+            content: ChatRequest
+    ) -> List[ChatResponse]:
+
+        context_service = ContextService()
+        system_prompt_service = SystemPromptService()
+        template_service = TemplateService()
+
+        user_prompt = Message(
+            role=Role.USER,
+            content=content.message,
+            reason=''
+        )
+
+        context_contractlens = (
+            context_service.get_ai_prompt_architecture()
+        )
+
+        system_prompt_creator = (
+            system_prompt_service.get_system_prompt(
+                prompt_key="SYSTEM_PROMPT_CREATOR"
+            )
+        )
+
+        greeting_first_timer_prompt = (
+            system_prompt_service.get_system_prompt(
+                prompt_key="GREETING_FIRST_TIMER"
+            )
+        )
+
+        greeting_first_timer_template = (
+            template_service.get_template(
+                prompt_key="TP_GREETING_FIRST_TIMER"
+            )
+        )
+
+        main_content = (
+                (context_contractlens or "")
+                + (system_prompt_creator or "")
+                + (greeting_first_timer_prompt or "")
+                + (greeting_first_timer_template or "")
+        )
+
+        additional_message: List[Message] = [
+            Message(
+                role=Role.SYSTEM,
+                content=main_content,
+                reason=''
+            )
+        ]
+
+        return [
+            ChatResponse(
+                content=message.content,
+                reason=message.reason,
+                context=main_content
+            )
+            for message in self.orc.orchestrate(
+                user_prompt,
+                content.conversation_id,
+                additional_message
+            )
+        ]

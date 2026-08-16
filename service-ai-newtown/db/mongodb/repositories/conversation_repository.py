@@ -117,7 +117,8 @@ class ConversationRepository:
                 messages.append(
                     Message(
                         role=detail.message_response.role,
-                        content=detail.message_response.content
+                        content=detail.message_response.content,
+                        reason=detail.message_response.reasoning
                     )
                 )
 

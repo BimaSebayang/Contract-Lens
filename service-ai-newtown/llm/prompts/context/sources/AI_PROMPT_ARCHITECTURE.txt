@@ -1,0 +1,308 @@
+==================================================
+<CONTEXT_SECTION name="AI_PROMPT_ARCHITECTURE">
+==================================================
+
+Bagian ini digunakan untuk menjelaskan struktur dan tanggung jawab
+komponen prompt yang digunakan oleh ContractLens AI.
+
+ContractLens AI menggunakan beberapa komponen utama:
+
+1. INTENT_GLOSSARY
+2. INTENT_DETECTION
+3. TASK
+4. TEMPLATE
+
+Setiap komponen memiliki tanggung jawab yang berbeda.
+
+Jangan menganggap setiap komponen sebagai instruksi yang memiliki
+fungsi yang sama.
+
+
+==================================================
+<INTENT_GLOSSARY>
+==================================================
+
+INTENT_GLOSSARY merupakan sumber utama untuk mengetahui intent yang
+tersedia pada ContractLens.
+
+INTENT_GLOSSARY berisi informasi mengenai:
+
+- Nama intent.
+- Definisi intent.
+- Tujuan intent.
+- Kondisi penggunaan intent.
+
+INTENT_GLOSSARY menentukan:
+
+"What intent exists?"
+
+INTENT_GLOSSARY bukan task.
+
+INTENT_GLOSSARY tidak menentukan response user.
+
+INTENT_GLOSSARY tidak menjalankan workflow.
+
+Gunakan hanya intent yang tersedia pada:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+Jangan mengarang intent yang tidak tersedia.
+
+
+==================================================
+<INTENT_DETECTION>
+==================================================
+
+INTENT_DETECTION merupakan task yang bertanggung jawab untuk
+menentukan intent utama berdasarkan pesan user.
+
+INTENT_DETECTION menggunakan:
+
+- User message.
+- Conversation history.
+- <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+INTENT_DETECTION menentukan:
+
+"What does the user want?"
+
+INTENT_DETECTION hanya memilih satu intent.
+
+INTENT_DETECTION tidak bertugas untuk:
+
+- Menjawab user.
+- Menjalankan task.
+- Menganalisis API.
+- Memberikan recommendation.
+- Memanggil tool.
+- Menjalankan workflow ContractLens.
+
+Jika intent tidak dapat ditentukan dengan cukup jelas atau tidak
+terdapat intent yang sesuai, gunakan:
+
+UNKNOWN.
+
+
+==================================================
+<TASK>
+==================================================
+
+TASK merupakan instruksi yang menjelaskan bagaimana ContractLens AI
+harus menangani suatu intent tertentu.
+
+TASK menentukan:
+
+"How should this intent be handled?"
+
+TASK dapat menjelaskan:
+
+- Tujuan task.
+- User context.
+- Scope.
+- Goal.
+- Rules.
+- Response constraint.
+- Task boundary.
+- Conversation history behavior.
+
+TASK digunakan setelah intent telah ditentukan.
+
+Contoh:
+
+INTENT:
+
+RECOMMEND_COMPATIBILITY
+
+↓
+
+TASK:
+
+<TASK name="RECOMMEND_COMPATIBILITY">
+
+Task tersebut menjelaskan bagaimana AI memberikan recommendation
+untuk menjaga API compatibility.
+
+
+==================================================
+<TEMPLATE>
+==================================================
+
+TEMPLATE merupakan format output yang digunakan untuk menghasilkan
+response dari sebuah TASK.
+
+TEMPLATE menentukan:
+
+"How should the result be formatted?"
+
+TEMPLATE dapat menentukan:
+
+- Struktur output.
+- Field yang harus dikembalikan.
+- Definisi setiap field.
+- Output rules.
+- Conversation history yang digunakan.
+
+TEMPLATE tidak menentukan intent.
+
+TEMPLATE tidak menentukan business logic task.
+
+TEMPLATE tidak digunakan untuk menentukan apakah suatu task harus
+dipilih.
+
+Contoh:
+
+<TEMPLATE name="INTENT_DETECTION">
+
+Template menentukan format hasil intent detection.
+
+
+==================================================
+<COMPONENT_RELATIONSHIP>
+==================================================
+
+Hubungan antar komponen:
+
+<CONTEXT_SECTION name="INTENT_GLOSSARY">
+                ↓
+        Available Intent
+                ↓
+INTENT_DETECTION
+                ↓
+        Selected Intent
+                ↓
+TASK
+                ↓
+      Task Execution
+                ↓
+TEMPLATE
+                ↓
+      Structured Output
+
+
+==================================================
+<RESPONSIBILITY_BOUNDARY>
+==================================================
+
+Gunakan pembagian tanggung jawab berikut:
+
+INTENT_GLOSSARY
+
+Menentukan:
+
+"What intents are available?"
+
+
+INTENT_DETECTION
+
+Menentukan:
+
+"Which intent does the user want?"
+
+
+TASK
+
+Menentukan:
+
+"How should that intent be handled?"
+
+
+TEMPLATE
+
+Menentukan:
+
+"How should the result be formatted?"
+
+
+==================================================
+<IMPORTANT_RULES>
+==================================================
+
+1. Jangan menggunakan TASK sebagai sumber daftar intent.
+
+2. Jangan menggunakan TEMPLATE sebagai sumber daftar intent.
+
+3. Gunakan hanya:
+
+   <CONTEXT_SECTION name="INTENT_GLOSSARY">
+
+   sebagai sumber intent yang tersedia.
+
+4. Jangan mendefinisikan ulang intent di dalam TASK jika intent
+   tersebut sudah tersedia pada Intent Glossary.
+
+5. TASK harus fokus pada behavior dan responsibility intent tersebut.
+
+6. TEMPLATE harus fokus pada output structure dan output rules.
+
+7. INTENT_DETECTION tidak boleh menjalankan TASK setelah intent
+   ditemukan.
+
+8. INTENT_DETECTION hanya menentukan intent.
+
+9. Setelah intent ditentukan, application bertanggung jawab untuk
+   mengambil TASK, context, prompt, few-shot example, dan TEMPLATE
+   yang sesuai.
+
+10. Jangan menggabungkan responsibility antar komponen tanpa alasan
+    yang jelas.
+
+
+==================================================
+<EXECUTION_FLOW>
+==================================================
+
+ContractLens AI secara konseptual menggunakan flow:
+
+User Message
+    ↓
+INTENT_DETECTION
+    ↓
+INTENT
+    ↓
+Load Relevant Context
+    ↓
+Load TASK
+    ↓
+Load Prompt
+    ↓
+Load Few-shot Example
+    ↓
+Load TEMPLATE
+    ↓
+LLM Response
+    ↓
+Application Processing
+
+
+==================================================
+<EXAMPLE>
+==================================================
+
+User:
+
+"Bagaimana supaya perubahan response ini tidak merusak consumer lama?"
+
+Flow:
+
+User Message
+    ↓
+INTENT_DETECTION
+    ↓
+RECOMMEND_COMPATIBILITY
+    ↓
+TASK: RECOMMEND_COMPATIBILITY
+    ↓
+Relevant Context
+    ↓
+Relevant Prompt
+    ↓
+Few-shot Example
+    ↓
+TEMPLATE: RECOMMEND_COMPATIBILITY
+    ↓
+Final Response
+
+
+==================================================
+</CONTEXT_SECTION>
+==================================================

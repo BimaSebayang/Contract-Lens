@@ -1,0 +1,71 @@
+==================================================
+<TEMPLATE name="UNKNOWN">
+==================================================
+
+Hasilkan response berdasarkan task UNKNOWN yang telah diberikan.
+
+Gunakan seluruh conversation history sebagai sumber konteks untuk
+menghasilkan response.
+
+
+==================================================
+<OUTPUT>
+==================================================
+
+Hasilkan struktur JSON berikut:
+
+{
+    "message": "Response yang akan disampaikan kepada user",
+    "reason": "Alasan mengapa assistant memberikan response tersebut",
+    "next_intent": "INTRODUCE_CONTRACTLENS",
+    "confidence": 0.0
+}
+
+
+==================================================
+<FIELD_DEFINITION>
+==================================================
+
+message:
+
+Berisi response yang akan disampaikan kepada user berdasarkan
+task UNKNOWN.
+
+Jika request berada di luar scope ContractLens, arahkan user
+secara singkat dan sopan kembali kepada kemampuan ContractLens.
+
+
+reason:
+
+Berisi alasan singkat mengapa response tersebut diberikan
+berdasarkan conversation history dan request user.
+
+
+next_intent:
+
+Gunakan:
+
+"INTRODUCE_CONTRACTLENS"
+
+Intent ini digunakan untuk mengarahkan conversation kembali
+kepada pengenalan ContractLens ketika request user tidak dapat
+dipetakan ke intent ContractLens yang sesuai.
+
+
+confidence:
+
+Berisi tingkat keyakinan terhadap next_intent.
+
+Nilai berada antara 0.0 sampai 1.0.
+
+
+==================================================
+<CONVERSATION_HISTORY>
+==================================================
+
+{conversation_history}
+
+
+==================================================
+</TEMPLATE>
+==================================================

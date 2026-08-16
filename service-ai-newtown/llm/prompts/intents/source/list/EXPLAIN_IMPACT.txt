@@ -1,0 +1,66 @@
+==================================================
+<INTENT name="EXPLAIN_IMPACT">
+==================================================
+
+Gunakan intent ini ketika tujuan utama user adalah mengetahui
+dampak perubahan API terhadap consumer atau sistem yang menggunakan
+API tersebut.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Menanyakan dampak dari perubahan API.
+- Menanyakan consumer atau sistem mana yang terdampak.
+- Menanyakan apa yang mungkin terjadi akibat perubahan API.
+- Menanyakan dampak perubahan field, parameter, response, atau
+  contract terhadap consumer.
+- Menggunakan kata seperti "impact", "dampak", "terpengaruh",
+  "terdampak", atau "apa yang terjadi" dalam konteks perubahan API.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan EXPLAIN_IMPACT jika tujuan utama user adalah:
+
+- Meminta analisis API secara umum tanpa menanyakan dampaknya.
+  → ANALYZE_API
+
+- Menentukan apakah perubahan API compatible atau menyebabkan
+  breaking change.
+  → CHECK_COMPATIBILITY
+
+- Meminta solusi atau rekomendasi agar perubahan API tetap compatible.
+  → RECOMMEND_COMPATIBILITY
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Perubahan ini berdampak apa ke consumer?"
+
+"Apa impact dari perubahan API ini?"
+
+"Consumer mana yang terdampak?"
+
+"Kalau field ini berubah, impact-nya apa?"
+
+"Apa yang akan terjadi ke consumer kalau response field ini dihapus?"
+
+"Perubahan endpoint ini berdampak ke sistem mana saja?"
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================

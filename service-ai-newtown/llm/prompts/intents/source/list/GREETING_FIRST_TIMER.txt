@@ -1,0 +1,101 @@
+==================================================
+<INTENT name="GREETING_FIRST_TIMER">
+==================================================
+
+Gunakan intent ini ketika user menyapa ContractLens dan menunjukkan
+bahwa user merupakan pengguna baru atau belum mengetahui ContractLens.
+
+
+==================================================
+<RECOGNITION>
+==================================================
+
+Perhatikan intent ini jika user:
+
+- Memberikan greeting sederhana seperti "Halo", "Hi", atau "Hello".
+- Memberikan greeting informal seperti "Hay", "Hey", "Hay hay", atau
+  "Hey hey".
+- Menggunakan variasi penulisan atau typo yang masih dapat dikenali
+  sebagai greeting seperti "Hii", "Haii", atau "Haloo".
+- Menyapa ContractLens untuk pertama kali.
+- Menyatakan bahwa user baru pertama kali menggunakan ContractLens.
+- Menyatakan bahwa user belum mengetahui ContractLens.
+- Memberikan greeting tanpa indikasi bahwa user pernah menggunakan
+  atau mengetahui ContractLens sebelumnya.
+
+Greeting tidak harus menggunakan penulisan yang baku atau sama persis
+dengan contoh yang tersedia.
+
+Jika maksud pesan user masih dapat dikenali sebagai greeting, variasi
+informal, typo, atau pengulangan kata tidak boleh menyebabkan pesan
+dikategorikan sebagai UNKNOWN.
+
+Jika user hanya memberikan greeting dan conversation history tidak
+menunjukkan bahwa user pernah menggunakan atau mengetahui ContractLens,
+gunakan GREETING_FIRST_TIMER.
+
+
+==================================================
+<EXCLUSION>
+==================================================
+
+Jangan gunakan GREETING_FIRST_TIMER jika:
+
+- Conversation history menunjukkan bahwa user sudah pernah
+  menggunakan atau mengetahui ContractLens.
+  → GREETING_ALREADY_KNOW_APPLICATION
+
+- User sedang menanyakan apa itu atau fungsi ContractLens.
+  → INTRODUCE_CONTRACTLENS
+
+- User sedang menanyakan cara menggunakan ContractLens.
+  → TEACH_HOW_TO_USE_CONTRACTLENS
+
+- User memberikan API atau meminta analisis API.
+  → ANALYZE_API
+
+Jika greeting disertai request yang lebih spesifik, prioritaskan
+tujuan utama request tersebut.
+
+
+==================================================
+<EXAMPLES>
+==================================================
+
+"Halo."
+
+"Hi."
+
+"Hello."
+
+"Hai ContractLens."
+
+"Hay."
+
+"Hey."
+
+"Hay hay?"
+
+"Hey hey."
+
+"Hii."
+
+"Haii."
+
+"Haloo."
+
+"Halo, saya baru pertama kali menggunakan ini."
+
+"Saya baru pertama kali mencoba ContractLens."
+
+"Hai, saya baru di sini."
+
+
+==================================================
+</EXAMPLES>
+==================================================
+
+
+==================================================
+</INTENT>
+==================================================
