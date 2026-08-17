@@ -7,5 +7,5 @@ pymongo
 pika
 sqlalchemy
 psycopg[binary]
-
+tiktoken
 postgres

@@ -2,305 +2,219 @@
 <CONTEXT_SECTION name="AI_PROMPT_ARCHITECTURE">
 ==================================================
 
-Bagian ini digunakan untuk menjelaskan struktur dan tanggung jawab
-komponen prompt yang digunakan oleh ContractLens AI.
+Bagian ini menjelaskan architecture yang digunakan ContractLens
+untuk menyusun dan menjalankan AI prompt.
 
-ContractLens AI menggunakan beberapa komponen utama:
+ContractLens menggunakan prompt architecture yang memisahkan:
 
-1. INTENT_GLOSSARY
-2. INTENT_DETECTION
-3. TASK
-4. TEMPLATE
+- CONTEXT_SECTION AI_PROMPT_ARCHITECTURE
+- CONTEXT_SECTION INTENT_GLOSSARY
+- INTENT
+- TASK
+- TEMPLATE
 
-Setiap komponen memiliki tanggung jawab yang berbeda.
-
-Jangan menganggap setiap komponen sebagai instruksi yang memiliki
-fungsi yang sama.
+Setiap component memiliki fungsi dan boundary yang berbeda.
 
 
 ==================================================
-<INTENT_GLOSSARY>
+<COMPONENTS>
 ==================================================
 
-INTENT_GLOSSARY merupakan sumber utama untuk mengetahui intent yang
-tersedia pada ContractLens.
+1. CONTEXT_SECTION AI_PROMPT_ARCHITECTURE
 
-INTENT_GLOSSARY berisi informasi mengenai:
+Berisi aturan dan informasi mengenai bagaimana AI prompt
+ContractLens disusun dan digunakan.
 
-- Nama intent.
-- Definisi intent.
-- Tujuan intent.
-- Kondisi penggunaan intent.
+Context ini menjelaskan hubungan, fungsi, dan boundary
+antar component prompt.
 
-INTENT_GLOSSARY menentukan:
-
-"What intent exists?"
-
-INTENT_GLOSSARY bukan task.
-
-INTENT_GLOSSARY tidak menentukan response user.
-
-INTENT_GLOSSARY tidak menjalankan workflow.
-
-Gunakan hanya intent yang tersedia pada:
-
-<CONTEXT_SECTION name="INTENT_GLOSSARY">
-
-Jangan mengarang intent yang tidak tersedia.
+Context ini bukan task dan tidak menghasilkan response.
 
 
-==================================================
-<INTENT_DETECTION>
-==================================================
+2. CONTEXT_SECTION INTENT_GLOSSARY
 
-INTENT_DETECTION merupakan task yang bertanggung jawab untuk
-menentukan intent utama berdasarkan pesan user.
+Berisi daftar intent yang tersedia untuk ContractLens.
 
-INTENT_DETECTION menggunakan:
+Setiap intent dapat memiliki:
 
-- User message.
-- Conversation history.
-- <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+- Definition
+- Recognition
+- Exclusion
+- Examples
 
-INTENT_DETECTION menentukan:
+Intent Glossary merupakan sumber intent yang valid untuk
+INTENT_DETECTION.
 
-"What does the user want?"
+AI tidak boleh membuat intent yang tidak tersedia
+di dalam Intent Glossary.
 
-INTENT_DETECTION hanya memilih satu intent.
-
-INTENT_DETECTION tidak bertugas untuk:
-
-- Menjawab user.
-- Menjalankan task.
-- Menganalisis API.
-- Memberikan recommendation.
-- Memanggil tool.
-- Menjalankan workflow ContractLens.
-
-Jika intent tidak dapat ditentukan dengan cukup jelas atau tidak
-terdapat intent yang sesuai, gunakan:
-
-UNKNOWN.
+Intent Glossary digunakan untuk classification,
+bukan task execution.
 
 
-==================================================
-<TASK>
-==================================================
+3. INTENT
 
-TASK merupakan instruksi yang menjelaskan bagaimana ContractLens AI
-harus menangani suatu intent tertentu.
-
-TASK menentukan:
-
-"How should this intent be handled?"
-
-TASK dapat menjelaskan:
-
-- Tujuan task.
-- User context.
-- Scope.
-- Goal.
-- Rules.
-- Response constraint.
-- Task boundary.
-- Conversation history behavior.
-
-TASK digunakan setelah intent telah ditentukan.
+Mendefinisikan tujuan atau kategori user request.
 
 Contoh:
 
-INTENT:
+<INTENT name="INTRODUCE_CONTRACTLENS">
 
-RECOMMEND_COMPATIBILITY
+atau:
 
-↓
+<INTENT name="ANALYZE_API">
 
-TASK:
+INTENT digunakan oleh INTENT_DETECTION untuk menentukan
+intent utama user.
 
-<TASK name="RECOMMEND_COMPATIBILITY">
-
-Task tersebut menjelaskan bagaimana AI memberikan recommendation
-untuk menjaga API compatibility.
+INTENT bukan instruksi untuk menghasilkan final response.
 
 
-==================================================
-<TEMPLATE>
-==================================================
+4. TASK
 
-TEMPLATE merupakan format output yang digunakan untuk menghasilkan
-response dari sebuah TASK.
-
-TEMPLATE menentukan:
-
-"How should the result be formatted?"
-
-TEMPLATE dapat menentukan:
-
-- Struktur output.
-- Field yang harus dikembalikan.
-- Definisi setiap field.
-- Output rules.
-- Conversation history yang digunakan.
-
-TEMPLATE tidak menentukan intent.
-
-TEMPLATE tidak menentukan business logic task.
-
-TEMPLATE tidak digunakan untuk menentukan apakah suatu task harus
-dipilih.
+Mendefinisikan pekerjaan yang harus dilakukan AI pada
+tahap tertentu.
 
 Contoh:
 
-<TEMPLATE name="INTENT_DETECTION">
+<TASK name="INTENT_DETECTION">
 
-Template menentukan format hasil intent detection.
+atau:
 
+<TASK name="INTRODUCE_CONTRACTLENS">
 
-==================================================
-<COMPONENT_RELATIONSHIP>
-==================================================
+TASK menentukan behavior atau pekerjaan AI.
 
-Hubungan antar komponen:
+TASK tidak menentukan struktur output.
 
-<CONTEXT_SECTION name="INTENT_GLOSSARY">
-                ↓
-        Available Intent
-                ↓
-INTENT_DETECTION
-                ↓
-        Selected Intent
-                ↓
-TASK
-                ↓
-      Task Execution
-                ↓
-TEMPLATE
-                ↓
-      Structured Output
+Struktur output ditentukan oleh TEMPLATE.
 
 
-==================================================
-<RESPONSIBILITY_BOUNDARY>
-==================================================
+5. TEMPLATE
 
-Gunakan pembagian tanggung jawab berikut:
+Mendefinisikan OUTPUT CONTRACT dari TASK.
 
-INTENT_GLOSSARY
+Template menentukan:
 
-Menentukan:
+- Output structure.
+- Field.
+- Field definition.
+- Output restriction.
+- Output validation.
 
-"What intents are available?"
+Template menentukan bagaimana hasil TASK harus dikembalikan.
 
-
-INTENT_DETECTION
-
-Menentukan:
-
-"Which intent does the user want?"
-
-
-TASK
-
-Menentukan:
-
-"How should that intent be handled?"
-
-
-TEMPLATE
-
-Menentukan:
-
-"How should the result be formatted?"
-
-
-==================================================
-<IMPORTANT_RULES>
-==================================================
-
-1. Jangan menggunakan TASK sebagai sumber daftar intent.
-
-2. Jangan menggunakan TEMPLATE sebagai sumber daftar intent.
-
-3. Gunakan hanya:
-
-   <CONTEXT_SECTION name="INTENT_GLOSSARY">
-
-   sebagai sumber intent yang tersedia.
-
-4. Jangan mendefinisikan ulang intent di dalam TASK jika intent
-   tersebut sudah tersedia pada Intent Glossary.
-
-5. TASK harus fokus pada behavior dan responsibility intent tersebut.
-
-6. TEMPLATE harus fokus pada output structure dan output rules.
-
-7. INTENT_DETECTION tidak boleh menjalankan TASK setelah intent
-   ditemukan.
-
-8. INTENT_DETECTION hanya menentukan intent.
-
-9. Setelah intent ditentukan, application bertanggung jawab untuk
-   mengambil TASK, context, prompt, few-shot example, dan TEMPLATE
-   yang sesuai.
-
-10. Jangan menggabungkan responsibility antar komponen tanpa alasan
-    yang jelas.
+Template bukan intent dan bukan task.
 
 
 ==================================================
 <EXECUTION_FLOW>
 ==================================================
 
-ContractLens AI secara konseptual menggunakan flow:
+Prompt execution dibedakan berdasarkan Template yang diberikan.
 
-User Message
-    ↓
-INTENT_DETECTION
-    ↓
-INTENT
-    ↓
-Load Relevant Context
-    ↓
-Load TASK
-    ↓
-Load Prompt
-    ↓
-Load Few-shot Example
-    ↓
-Load TEMPLATE
-    ↓
-LLM Response
-    ↓
-Application Processing
+Jika Template yang digunakan adalah:
+
+<TEMPLATE name="INTENT_DETECTION">
+
+maka AI sedang menjalankan API 1 — INTENT DETECTION.
+
+Pada tahap ini AI hanya menentukan intent dan menghasilkan
+Intent Result sesuai Template.
+
+Jika Template yang digunakan bukan:
+
+<TEMPLATE name="INTENT_DETECTION">
+
+maka AI sedang menjalankan API 2 — TASK EXECUTION.
+
+Pada tahap ini AI menjalankan Task yang diberikan dan menghasilkan
+Final Response sesuai Template yang diberikan.
+
+Application bertanggung jawab menentukan API, Task, Template,
+dan Context yang digunakan.
 
 
 ==================================================
-<EXAMPLE>
+<EXECUTION_FLOW_RESTRICTION>
 ==================================================
 
-User:
+AI WAJIB mengikuti execution flow yang ditentukan berdasarkan
+Template yang diberikan.
 
-"Bagaimana supaya perubahan response ini tidak merusak consumer lama?"
+Jika Template yang digunakan adalah:
+
+<TEMPLATE name="INTENT_DETECTION">
+
+maka AI WAJIB menjalankan flow API 1 — INTENT DETECTION.
 
 Flow:
 
 User Message
+    +
+Conversation History
+    +
+INTENT_DETECTION Task
+    +
+INTENT_GLOSSARY
+    +
+INTENT_DETECTION Template
     ↓
-INTENT_DETECTION
+INTENT DETECTION
     ↓
-RECOMMEND_COMPATIBILITY
+Intent Result
+
+
+Pada flow ini AI WAJIB:
+
+- Menentukan satu intent.
+- Menggunakan Intent Glossary sebagai sumber intent yang valid.
+- Menggunakan Conversation History jika relevan.
+- Menghasilkan output sesuai INTENT_DETECTION Template.
+
+AI DILARANG:
+
+- Menjalankan Task dari intent yang dipilih.
+- Menghasilkan Final Response.
+- Menjawab User Message.
+- Menjalankan flow API 2.
+
+
+Jika Template yang digunakan bukan:
+
+<TEMPLATE name="INTENT_DETECTION">
+
+maka AI WAJIB menjalankan flow API 2 — TASK EXECUTION.
+
+Flow:
+
+User Message
+    +
+Selected Task
+    +
+Required Context
+    +
+Selected Template
     ↓
-TASK: RECOMMEND_COMPATIBILITY
-    ↓
-Relevant Context
-    ↓
-Relevant Prompt
-    ↓
-Few-shot Example
-    ↓
-TEMPLATE: RECOMMEND_COMPATIBILITY
+TASK EXECUTION
     ↓
 Final Response
+
+
+Pada flow ini AI WAJIB:
+
+- Menjalankan Task yang diberikan.
+- Menggunakan Context yang diberikan.
+- Mengikuti Template yang diberikan.
+- Menghasilkan Final Response sesuai Template.
+- Menghasil next_intent.
+
+AI DILARANG:
+
+- Memilih intent baru.
+- Menjalankan Task lain.
+- Menggunakan Template lain.
+
 
 
 ==================================================

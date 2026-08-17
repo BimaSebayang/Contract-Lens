@@ -49,6 +49,7 @@ Task ini hanya bertugas menentukan intent.
 Task ini TIDAK bertugas untuk:
 
 - Menjawab pertanyaan user.
+- Menghasilkan final response.
 - Menganalisis API.
 - Menjelaskan contract.
 - Menjelaskan compatibility.
@@ -57,6 +58,43 @@ Task ini TIDAK bertugas untuk:
 - Memanggil tool.
 - Mengubah data ContractLens.
 - Menjalankan workflow ContractLens.
+- Menjalankan task dari intent yang dipilih.
+
+
+==================================================
+<EXECUTION_MODE>
+==================================================
+
+Task ini digunakan pada API 1 — INTENT DETECTION.
+
+AI WAJIB menjalankan task ini hanya untuk melakukan
+classification terhadap user request.
+
+Flow:
+
+User Message
+    +
+Conversation History
+    +
+INTENT_DETECTION Task
+    +
+INTENT_GLOSSARY
+    +
+INTENT_DETECTION Template
+    ↓
+Intent Detection
+    ↓
+Intent Result
+
+
+Setelah Intent Result dihasilkan, execution pada API 1
+SELESAI.
+
+AI DILARANG melanjutkan execution ke task berdasarkan
+intent yang telah dipilih.
+
+Application bertanggung jawab menggunakan Intent Result
+untuk menentukan Task, Template, dan Context pada API 2.
 
 
 ==================================================
@@ -67,8 +105,19 @@ Gunakan hanya intent yang tersedia pada:
 
 <CONTEXT_SECTION name="INTENT_GLOSSARY">
 
-Jangan mendefinisikan ulang atau membuat intent baru
-di dalam task ini.
+<CONTEXT_SECTION name="INTENT_GLOSSARY"> merupakan sumber
+kebenaran tunggal untuk daftar intent yang tersedia.
+
+Perlakukan daftar intent tersebut sebagai CLOSED ENUM.
+
+Artinya:
+
+- Intent yang tercantum pada Intent Glossary adalah VALID.
+- Intent yang tidak tercantum pada Intent Glossary adalah INVALID.
+- Jangan menganggap sebuah intent tersedia hanya karena nama
+  tersebut terdengar sesuai dengan permintaan user.
+- Jangan membuat intent baru berdasarkan interpretasi terhadap
+  user message.
 
 Untuk setiap user message:
 
@@ -77,12 +126,94 @@ Untuk setiap user message:
 2. Bandingkan tujuan tersebut dengan intent yang tersedia pada
    <CONTEXT_SECTION name="INTENT_GLOSSARY">.
 
-3. Pilih tepat satu intent yang paling sesuai.
+3. Pilih tepat satu intent resmi yang paling sesuai.
 
 4. Jika tidak terdapat intent yang sesuai atau tujuan user
    tidak dapat ditentukan dengan cukup jelas, gunakan:
 
    UNKNOWN
+
+
+==================================================
+<STRICT_INTENT_RESTRICTION>
+==================================================
+
+Field "intent" hanya boleh berisi:
+
+- Salah satu intent yang secara eksplisit tersedia pada
+  <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+- UNKNOWN.
+
+Tidak ada nilai lain yang valid.
+
+Jangan menggunakan nama intent yang tidak tercantum secara
+eksplisit pada Intent Glossary.
+
+
+==================================================
+<FORBIDDEN_INTENT_CREATION>
+==================================================
+
+DILARANG membuat intent baru.
+
+DILARANG menebak atau mengarang nama intent.
+
+DILARANG membuat intent berdasarkan nama capability,
+workflow, action, atau objek yang disebutkan oleh user.
+
+DILARANG menggunakan nama intent yang hanya terdengar cocok
+tetapi tidak tersedia pada Intent Glossary.
+
+DILARANG:
+
+- Membuat intent baru.
+- Membuat sinonim intent.
+- Membuat variasi nama intent.
+- Menggabungkan beberapa intent menjadi intent baru.
+- Mengubah nama intent yang tersedia.
+- Menggunakan nama capability sebagai intent.
+- Menggunakan nama workflow sebagai intent.
+- Menggunakan nama action sebagai intent.
+- Menggunakan nama API operation sebagai intent.
+
+Contoh nama intent yang INVALID jika tidak tersedia pada
+Intent Glossary:
+
+- CHECK_OWN_APIS
+- CHECK_API
+- LIST_APIS
+- LIST_OWN_APIS
+- INSPECT_APIS
+- API_INSPECTION
+- API_CHECK
+- API_ANALYSIS
+
+Contoh tersebut hanya ilustrasi.
+
+Jika nama tersebut tidak tercantum secara eksplisit pada
+Intent Glossary, nama tersebut TIDAK BOLEH digunakan.
+
+
+==================================================
+<UNKNOWN_RULE>
+==================================================
+
+Jika tidak terdapat intent yang sesuai pada Intent Glossary,
+WAJIB gunakan:
+
+UNKNOWN
+
+Jangan membuat intent baru untuk menggantikan UNKNOWN.
+
+Jika user meminta sesuatu yang secara semantic tidak memiliki
+intent yang sesuai, gunakan UNKNOWN.
+
+Jika terdapat beberapa intent yang terlihat mirip, pilih intent
+resmi yang definisinya paling sesuai pada Intent Glossary.
+
+Jika tidak ada intent resmi yang cukup sesuai:
+
+UNKNOWN.
 
 
 ==================================================
@@ -102,7 +233,25 @@ Gunakan intent yang tersedia pada:
 untuk menentukan intent yang sesuai.
 
 Keberadaan cURL, URL, atau HTTP request tidak secara otomatis
-berarti user meminta analisis API.
+berarti user meminta ANALYZE_API.
+
+Jika user memberikan API artifact tetapi tujuan utamanya adalah:
+
+- Compatibility
+- Breaking change
+- Impact
+- Recommendation
+
+gunakan intent resmi yang sesuai dengan tujuan tersebut.
+
+Jika user memberikan API artifact untuk benar-benar diperiksa,
+dipahami, atau dianalisis dan intent tersebut tersedia pada
+Intent Glossary, gunakan intent tersebut.
+
+Jika user hanya menanyakan kemampuan ContractLens untuk
+menganalisis API tanpa memberikan API artifact yang diminta
+untuk dianalisis, jangan menggunakan ANALYZE_API hanya karena
+kata "API" atau "analisis" muncul.
 
 
 ==================================================
@@ -116,12 +265,44 @@ Conversation history dapat digunakan untuk:
 
 - Memahami konteks pesan saat ini.
 - Memahami referensi terhadap pesan sebelumnya.
+- Memahami follow-up question.
 - Memahami intent yang bergantung pada konteks sebelumnya.
 - Memahami apakah user sedang melanjutkan request sebelumnya.
 - Memahami informasi yang tidak disebutkan kembali oleh user.
 
-Jangan menggunakan conversation history untuk mengarang informasi
-yang tidak tersedia.
+Jika user message merupakan follow-up yang singkat atau ambigu,
+gunakan conversation history untuk memahami maksud sebenarnya.
+
+Contoh:
+
+Previous conversation:
+
+User:
+"ContractLens bisa membantu apa?"
+
+Assistant:
+"ContractLens membantu developer memahami API contract."
+
+Current user:
+
+"Wah menarik yah? Ada dokumentasinya?"
+
+Intent:
+
+INTRODUCE_CONTRACTLENS
+
+
+Conversation history hanya digunakan sebagai sumber konteks.
+
+Conversation history BUKAN sumber daftar intent.
+
+Conversation history tidak boleh digunakan untuk:
+
+- Membuat intent baru.
+- Menganggap sebuah intent tersedia jika tidak ada di
+  Intent Glossary.
+- Mengubah nama intent.
+- Mengarang informasi yang tidak tersedia.
 
 
 ==================================================
@@ -135,10 +316,10 @@ Jangan mengarang atau menebak informasi yang tidak tersedia.
 
 Gunakan hanya informasi yang tersedia dari:
 
-- User message
-- Conversation history
-- <CONTEXT_SECTION name="INTENT_GLOSSARY">
-- Context yang secara eksplisit diberikan kepada task
+- User message.
+- Conversation history.
+- <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+- Context yang secara eksplisit diberikan kepada task.
 
 
 ==================================================
@@ -155,12 +336,54 @@ UNKNOWN
 
 Task ini tidak boleh menjawab request tersebut.
 
+Task ini juga tidak boleh membuat intent baru hanya untuk
+menyesuaikan request user dengan intent yang tidak tersedia.
+
+
+==================================================
+<FINAL_INTENT_VALIDATION>
+==================================================
+
+Sebelum menghasilkan output, validasi intent yang telah dipilih.
+
+1. Pastikan intent tercantum secara eksplisit pada
+   <CONTEXT_SECTION name="INTENT_GLOSSARY">.
+
+2. Jika intent tercantum:
+
+   Gunakan intent tersebut.
+
+3. Jika intent tidak tercantum:
+
+   Jangan gunakan intent tersebut.
+
+4. Cari intent resmi yang paling sesuai jika tersedia.
+
+5. Jika tidak ada intent resmi yang sesuai:
+
+   Gunakan UNKNOWN.
+
+6. Pastikan nama intent tidak:
+
+   - Dibuat.
+   - Dimodifikasi.
+   - Disingkat.
+   - Digabungkan.
+   - Diganti dengan sinonim.
+
+7. Pastikan output hanya menggunakan intent resmi dari
+   Intent Glossary atau UNKNOWN.
+
 
 ==================================================
 <OUTPUT>
 ==================================================
 
-Gunakan <TEMPLATE name="INTENT_DETECTION"> sebagai format output.
+Gunakan:
+
+<TEMPLATE name="INTENT_DETECTION">
+
+sebagai format output.
 
 Output harus mengikuti seluruh struktur dan aturan yang telah
 ditentukan oleh INTENT_DETECTION_TEMPLATE.
@@ -180,15 +403,16 @@ Jangan memberikan jawaban terhadap user.
 
 Task ini hanya menentukan intent.
 
-Setelah intent ditentukan, application bertanggung jawab untuk
+Setelah intent ditentukan, Application bertanggung jawab untuk
 menentukan:
 
-- Task
-- Context
-- Prompt
-- Few-shot example
-- Workflow
-- Tool
+- Task.
+- Context.
+- Prompt.
+- Few-shot example.
+- Template.
+- Workflow.
+- Tool.
 
 berdasarkan intent yang telah dipilih.
 
@@ -198,9 +422,18 @@ Jangan memberikan jawaban final kepada user.
 
 Jangan melakukan analisis API.
 
+Jangan melakukan compatibility analysis.
+
+Jangan melakukan impact analysis.
+
+Jangan memberikan compatibility recommendation.
+
 Jangan memanggil tool.
 
 Jangan mengubah data ContractLens.
+
+Intent Result hanya digunakan oleh Application untuk routing
+ke tahap berikutnya.
 
 
 ==================================================

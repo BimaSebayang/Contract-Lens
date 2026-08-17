@@ -20,6 +20,21 @@ class IntentPromptService:
             for intent in intents
         )
 
+    def get_intent_detail(
+        self,
+        template_key: str
+    ) -> Optional[str]:
+        with SessionLocal() as session:
+            intent_repository = ContractLensAiIntentRepository(
+                session
+            )
+
+        intent: Optional[ContractLensAiIntent] = (
+            intent_repository.find_active_by_intent_code(template_key)
+        )
+
+        return intent.description if intent else None
+
     def get_intent_glossary(
             self
     ) -> Optional[str]:

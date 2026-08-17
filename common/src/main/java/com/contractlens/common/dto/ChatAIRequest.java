@@ -8,11 +8,10 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IntentAiResponse {
+public class ChatAIRequest {
 
-    private String content;
+    private String message;
 
-    private String reason;
-
-    private String context;
+    @JsonProperty("conversation_id")
+    private String conversationId;
 }

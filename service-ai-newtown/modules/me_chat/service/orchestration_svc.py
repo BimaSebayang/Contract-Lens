@@ -8,13 +8,14 @@ from llm.models.llm_chat_response import LlmChatResponse
 from llm.models.llm_message_response import LlmMessageResponse
 from llm.models.llm_usage_response import LlmUsageResponse
 from llm.providers.groq.client import GroqClient
+from llm.providers.ollama.client import OllamaClient
 
 logger = logging.getLogger(__name__)
 
 
 class OrchestrationService:
     def __init__(self):
-        self.groq = GroqClient()
+        self.provider = OllamaClient()
         self.conversation_repository = ConversationRepository()
 
     def orchestrate(
@@ -36,9 +37,9 @@ class OrchestrationService:
             logger.info("Chat message: %s", message)
 
         # TODO: Replace provider implementation with configurable LLM provider.
-        response: LlmChatResponse = self.groq.chat(
+        response: LlmChatResponse = self.provider.chat(
             messages,
-            ai_lab_constants.GPT_OSS_SAFEGUARD
+            ai_lab_constants.NEMOTRON_3_NANO
         )
 
         response_messages: List[Message] = []

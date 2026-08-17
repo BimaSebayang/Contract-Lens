@@ -1,6 +1,3 @@
-from modules.me_chat.service.orchestration_svc import OrchestrationService
-
-import logging
 from typing import List
 
 from commons.enums.role import Role
@@ -12,9 +9,7 @@ from llm.prompts.context.service.context_service import ContextService
 from llm.prompts.intents.service.intents_service import IntentPromptService
 from llm.prompts.system.service.system_prompt_service import SystemPromptService
 from llm.prompts.template.service.template_service import TemplateService
-
-
-logger = logging.getLogger(__name__)
+from modules.me_chat.service.orchestration_svc import OrchestrationService
 
 
 def _build_contract_lens_message(
@@ -27,17 +22,34 @@ def _build_contract_lens_message(
     intent_prompt_service = IntentPromptService()
     template_service = TemplateService()
 
+    # ==================================================
+    # CONTEXT
+    # ==================================================
+
     context_contractlens = (
         context_service.get_ai_prompt_architecture()
     )
 
-    intent_detection_prompt = (
-        intent_prompt_service.get_intent_detection_prompt()
-    )
+    # ==================================================
+    # INTENT DETECTION COMPONENT
+    # ==================================================
 
-    intent_glossary = (
-        intent_prompt_service.get_intent_glossary()
-    )
+    intent_detection_prompt = ''
+    intent_glossary = ''
+
+    if system_prompt_key == "INTENT_DETECTION":
+
+        intent_detection_prompt = (
+            intent_prompt_service.get_intent_detection_prompt()
+        )
+
+        intent_glossary = (
+            intent_prompt_service.get_intent_glossary()
+        )
+
+    # ==================================================
+    # SYSTEM PROMPT
+    # ==================================================
 
     system_prompt = (
         system_prompt_service.get_system_prompt(
@@ -45,11 +57,19 @@ def _build_contract_lens_message(
         )
     )
 
+    # ==================================================
+    # TEMPLATE
+    # ==================================================
+
     template = (
         template_service.get_template(
             prompt_key=template_key
         )
     )
+
+    # ==================================================
+    # BUILD SYSTEM MESSAGE
+    # ==================================================
 
     main_content = (
             (context_contractlens or "")
@@ -73,6 +93,10 @@ class ChatMeService:
     def __init__(self):
         self.orc = OrchestrationService()
         self.conversation_repository = ConversationRepository()
+
+    # ==================================================
+    # TEST
+    # ==================================================
 
     def send_message_uji_coba(
             self,
@@ -98,6 +122,10 @@ class ChatMeService:
             )
         ]
 
+    # ==================================================
+    # INTENT DETECTION
+    # ==================================================
+
     def send_message_contract_lens_intents(
             self,
             content: ChatRequest
@@ -112,6 +140,10 @@ class ChatMeService:
             content,
             additional_message
         )
+
+    # ==================================================
+    # GREETING FIRST TIMER
+    # ==================================================
 
     def send_message_contract_greeting_first_timer(
             self,
@@ -128,6 +160,10 @@ class ChatMeService:
             additional_message
         )
 
+    # ==================================================
+    # UNKNOWN
+    # ==================================================
+
     def send_message_unknown(
             self,
             content: ChatRequest
@@ -142,6 +178,10 @@ class ChatMeService:
             content,
             additional_message
         )
+
+    # ==================================================
+    # INTRODUCE CONTRACTLENS
+    # ==================================================
 
     def send_introduce_contractlens(
             self,
@@ -158,6 +198,10 @@ class ChatMeService:
             additional_message
         )
 
+    # ==================================================
+    # GREETING ALREADY KNOW
+    # ==================================================
+
     def send_greeting_already_known(
             self,
             content: ChatRequest
@@ -173,6 +217,10 @@ class ChatMeService:
             additional_message
         )
 
+    # ==================================================
+    # TEACH HOW TO USE
+    # ==================================================
+
     def send_teach_how_to_use(
             self,
             content: ChatRequest
@@ -187,6 +235,10 @@ class ChatMeService:
             content,
             additional_message
         )
+
+    # ==================================================
+    # COMMON ORCHESTRATION
+    # ==================================================
 
     def _orchestrate_contract_lens(
             self,

@@ -1,7 +1,7 @@
 package com.contractlens.service.module.chat.controller;
 
 import com.contractlens.common.dto.ChatStandardMessage;
-import com.contractlens.common.dto.IntentAiRequest;
+import com.contractlens.common.dto.ChatAIRequest;
 import com.contractlens.common.dto.IntentDetectionResponse;
 import com.contractlens.service.module.chat.service.ContractLensChatLensService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ContractLensChatController {
 
     @PostMapping("/intents")
     public IntentDetectionResponse detectIntent(
-            @RequestBody IntentAiRequest request
+            @RequestBody ChatAIRequest request
     ) {
         return contractLensChatLensService.detectIntent(request);
     }

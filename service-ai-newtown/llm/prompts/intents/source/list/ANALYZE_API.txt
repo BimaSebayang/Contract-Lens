@@ -2,27 +2,45 @@
 <INTENT name="ANALYZE_API">
 ==================================================
 
-Gunakan intent ini ketika tujuan utama user adalah meminta
-ContractLens untuk memahami, memeriksa, atau menganalisis sebuah API
-secara umum.
+Gunakan intent ini HANYA ketika user memberikan API artifact
+atau informasi API yang dapat dianalisis oleh ContractLens.
+
+API artifact dapat berupa:
+
+- cURL
+- HTTP request
+- API endpoint
+- URL API
+- Request body
+- Response body
+- API contract
+- API specification
+- Informasi API lain yang secara konkret dapat dianalisis.
+
+Jika user BELUM memberikan API artifact atau informasi API yang
+dapat dianalisis, JANGAN gunakan ANALYZE_API.
+
+Pertanyaan mengenai apakah ContractLens dapat menganalisis,
+memeriksa, atau mengecek API bukan merupakan ANALYZE_API.
 
 
 ==================================================
 <RECOGNITION>
 ==================================================
 
-Perhatikan intent ini jika user:
+Gunakan ANALYZE_API jika:
 
-- Memberikan cURL dan meminta API tersebut diperiksa atau dianalisis.
-- Memberikan URL atau API endpoint untuk diperiksa.
-- Memberikan HTTP request dan meminta analisis.
-- Memberikan API request tanpa pertanyaan spesifik.
-- Menggunakan kata seperti "cek", "analisis", "periksa", atau
-  "lihat" dalam konteks API tanpa tujuan compatibility, impact,
-  atau recommendation yang lebih spesifik.
+- User memberikan cURL.
+- User memberikan HTTP request.
+- User memberikan API endpoint atau URL API.
+- User memberikan request atau response API.
+- User memberikan API contract atau specification.
+- User memberikan API artifact lain yang dapat dianalisis.
+- User memberikan API artifact dan meminta API tersebut diperiksa,
+  dianalisis, atau dipahami.
+- User hanya memberikan API artifact tanpa pertanyaan tambahan.
 
-Jika user hanya memberikan cURL, URL, HTTP request, atau API endpoint
-tanpa pertanyaan atau tujuan yang lebih spesifik, gunakan
+KEBERADAAN API ARTIFACT ADALAH SYARAT UTAMA UNTUK MENGGUNAKAN
 ANALYZE_API.
 
 
@@ -30,16 +48,56 @@ ANALYZE_API.
 <EXCLUSION>
 ==================================================
 
-Jangan gunakan ANALYZE_API jika tujuan utama user secara eksplisit
-adalah:
+JANGAN gunakan ANALYZE_API jika user BELUM memberikan API artifact.
 
-- Menentukan compatibility atau breaking change.
+Contoh:
+
+"ContractLens bisa cek API nggak?"
+→ INTRODUCE_CONTRACTLENS
+
+"Berarti bisa ngecek beberapa API yang aku punya?"
+→ INTRODUCE_CONTRACTLENS
+
+"ContractLens bisa analisis API?"
+→ INTRODUCE_CONTRACTLENS
+
+"Apa ContractLens bisa periksa API?"
+→ INTRODUCE_CONTRACTLENS
+
+"Gue punya beberapa API, bisa dicek?"
+→ INTRODUCE_CONTRACTLENS
+
+"Kalau mau cek API gimana?"
+→ TEACH_HOW_TO_USE_CONTRACTLENS
+
+
+Jika user memberikan API artifact:
+
+"Nih curl gue, coba cek."
+→ ANALYZE_API
+
+"Nih endpoint gue: GET /users/123"
+→ ANALYZE_API
+
+"Ini request API gue."
+→ ANALYZE_API
+
+[User hanya memberikan cURL]
+→ ANALYZE_API
+
+[User hanya memberikan HTTP request]
+→ ANALYZE_API
+
+
+Jangan gunakan ANALYZE_API jika tujuan utama user adalah:
+
+- Compatibility / breaking change.
   → CHECK_COMPATIBILITY
 
-- Mengetahui dampak perubahan terhadap consumer.
+- Impact terhadap consumer.
   → EXPLAIN_IMPACT
 
-- Meminta solusi atau rekomendasi untuk mempertahankan compatibility.
+- Recommendation untuk compatibility.
   → RECOMMEND_COMPATIBILITY
 
 
@@ -47,15 +105,23 @@ adalah:
 <EXAMPLES>
 ==================================================
 
-"Cek API ini."
+"Nih curl gue, coba analisis."
 
-"Analisis curl ini."
+"Ini endpoint saya, coba periksa."
 
-"Ini endpoint saya."
+"GET /users/123"
 
-"Tolong periksa request ini."
+"POST /payment"
 
-[User hanya memberikan cURL]
+"Nih request body saya."
+
+"Nih response API saya."
+
+[User memberikan cURL]
+
+[User memberikan HTTP request]
+
+[User memberikan API contract]
 
 
 ==================================================

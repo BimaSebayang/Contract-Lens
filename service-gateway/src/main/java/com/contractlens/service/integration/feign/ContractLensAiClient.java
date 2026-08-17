@@ -1,7 +1,7 @@
 package com.contractlens.service.integration.feign;
 
-import com.contractlens.common.dto.IntentAiRequest;
-import com.contractlens.common.dto.IntentAiResponse;
+import com.contractlens.common.dto.ChatAIRequest;
+import com.contractlens.common.dto.ChatAiResponse;
 import com.contractlens.service.infrastructure.MyFeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -22,6 +22,32 @@ public interface ContractLensAiClient {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    List<IntentAiResponse> detectIntent(@RequestBody IntentAiRequest request);
+    List<ChatAiResponse> detectIntent(@RequestBody ChatAIRequest request);
 
+
+
+    @PostMapping("/v1/chat/contract-lens/greeting-first-timer")
+    List<ChatAiResponse> greetingFirstTimer(
+            @RequestBody ChatAIRequest request
+    );
+
+    @PostMapping("/v1/chat/contract-lens/unknown")
+    List<ChatAiResponse> unknown(
+            @RequestBody ChatAIRequest request
+    );
+
+    @PostMapping("/v1/chat/contract-lens/greeting-already-know")
+    List<ChatAiResponse> greetingAlreadyKnow(
+            @RequestBody ChatAIRequest request
+    );
+
+    @PostMapping("/v1/chat/contract-lens/introduce-contract")
+    List<ChatAiResponse> introduceContract(
+            @RequestBody ChatAIRequest request
+    );
+
+    @PostMapping("/v1/chat/contract-lens/how-to-use")
+    List<ChatAiResponse> howToUse(
+            @RequestBody ChatAIRequest request
+    );
 }

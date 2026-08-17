@@ -3,8 +3,13 @@
 ==================================================
 
 Gunakan intent ini ketika tujuan utama user adalah mengetahui
-apa itu ContractLens, fungsi ContractLens, atau kemampuan
-ContractLens secara umum.
+apa itu ContractLens, fungsi ContractLens, kemampuan ContractLens,
+atau apakah ContractLens dapat melakukan suatu aktivitas tertentu
+secara umum.
+
+INTRODUCE_CONTRACTLENS digunakan untuk pertanyaan mengenai
+kemampuan atau fungsi ContractLens, bukan untuk menjalankan
+kemampuan tersebut terhadap API atau data tertentu.
 
 
 ==================================================
@@ -19,8 +24,14 @@ Perhatikan intent ini jika user:
 - Meminta penjelasan mengenai ContractLens.
 - Menanyakan apa yang dapat dilakukan AI ini.
 - Menanyakan bagaimana ContractLens membantu developer.
+- Menanyakan apakah ContractLens dapat melakukan suatu aktivitas
+  tertentu tanpa memberikan input atau artifact yang harus diproses.
+- Menanyakan apakah ContractLens dapat mengecek, menganalisis,
+  memeriksa, atau memahami API secara umum tanpa memberikan API
+  tertentu untuk dianalisis.
 - Menggunakan pertanyaan seperti "apa itu", "buat apa",
-  "bisa apa", atau "fungsinya apa" dalam konteks ContractLens.
+  "bisa apa", "fungsinya apa", "bisa nggak", atau
+  "apakah bisa" dalam konteks ContractLens.
 
 
 ==================================================
@@ -39,7 +50,17 @@ Jangan gunakan INTRODUCE_CONTRACTLENS jika tujuan utama user adalah:
   mengetahui ContractLens.
   → GREETING_ALREADY_KNOW_APPLICATION
 
-- Memberikan API untuk dianalisis.
+- Memberikan API artifact atau API request untuk dianalisis.
+  → ANALYZE_API
+
+- Memberikan cURL untuk dianalisis.
+  → ANALYZE_API
+
+- Memberikan URL atau API endpoint untuk diperiksa.
+  → ANALYZE_API
+
+- Memberikan HTTP request, API contract, atau API specification
+  untuk dianalisis.
   → ANALYZE_API
 
 - Menanyakan compatibility atau breaking change.
@@ -69,6 +90,16 @@ Jangan gunakan INTRODUCE_CONTRACTLENS jika tujuan utama user adalah:
 "Fungsi ContractLens sebenarnya apa?"
 
 "Kenapa saya perlu menggunakan ContractLens?"
+
+"ContractLens bisa ngecek API nggak?"
+
+"ContractLens bisa analisis API?"
+
+"Berarti ContractLens bisa ngecek beberapa API?"
+
+"ContractLens bisa periksa API yang saya punya?"
+
+"Apakah ContractLens bisa melakukan API analysis?"
 
 
 ==================================================
