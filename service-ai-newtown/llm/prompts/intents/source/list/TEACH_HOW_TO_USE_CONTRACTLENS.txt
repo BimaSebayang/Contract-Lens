@@ -2,9 +2,13 @@
 <INTENT name="TEACH_HOW_TO_USE_CONTRACTLENS">
 ==================================================
 
-Gunakan intent ini ketika tujuan utama user adalah mengetahui cara
-menggunakan ContractLens atau meminta panduan untuk berinteraksi
-dengan kemampuan ContractLens.
+Gunakan intent ini ketika tujuan utama user adalah mengetahui
+bagaimana cara menggunakan, menyiapkan, atau berinteraksi dengan
+ContractLens secara praktis.
+
+Intent ini mencakup panduan penggunaan ContractLens mulai dari
+mendaftarkan API sampai menggunakan ContractLens AI untuk memahami
+informasi contract.
 
 
 ==================================================
@@ -15,34 +19,87 @@ Perhatikan intent ini jika user:
 
 - Menanyakan cara menggunakan ContractLens.
 - Meminta tutorial atau panduan penggunaan ContractLens.
-- Menanyakan input apa yang dapat diberikan kepada ContractLens.
-- Menanyakan bagaimana cara memberikan cURL atau HTTP request.
-- Menanyakan bagaimana cara melakukan analisis API.
-- Menanyakan bagaimana cara meminta compatibility analysis.
-- Menanyakan bagaimana cara meminta impact analysis.
-- Menanyakan bagaimana cara meminta compatibility recommendation.
-- Menggunakan pertanyaan seperti "cara pakai", "gimana caranya",
-  "harus kasih input apa", atau "gimana menggunakan" dalam konteks
+- Menanyakan cara mendaftarkan API ke ContractLens.
+- Menanyakan cara mengonfigurasi atau menyiapkan API pada
   ContractLens.
+- Menanyakan cara mendapatkan token.
+- Menanyakan cara menggunakan token.
+- Menanyakan bagaimana API terhubung dengan ContractLens Gateway.
+- Menanyakan ke mana API request harus dikirim.
+- Menanyakan bagaimana API traffic masuk ke ContractLens.
+- Menanyakan bagaimana contract dibuat atau tersedia di
+  ContractLens.
+- Menanyakan bagaimana Contract Snapshot terbentuk.
+- Menanyakan bagaimana Contract Analyzer memproses API.
+- Menanyakan bagaimana Contract Intelligence digunakan.
+- Menanyakan bagaimana cara melihat perubahan API menggunakan
+  ContractLens.
+- Menanyakan bagaimana cara menggunakan ContractLens AI setelah
+  contract tersedia.
+- Menanyakan cara meminta compatibility analysis.
+- Menanyakan cara meminta impact analysis.
+- Menanyakan cara meminta compatibility recommendation.
+- Menanyakan input atau langkah apa yang diperlukan untuk mulai
+  menggunakan ContractLens.
+- Menggunakan pertanyaan seperti "cara pakai", "gimana caranya",
+  "mulai dari mana", "harus daftar dulu nggak", "token-nya dari
+  mana", "request-nya dikirim ke mana", atau "setelah itu ngapain"
+  dalam konteks ContractLens.
+
+
+Jika conversation history menunjukkan bahwa user sedang berada
+di tengah workflow penggunaan ContractLens, gunakan intent ini
+untuk pertanyaan lanjutan mengenai langkah berikutnya.
+
+Contoh:
+
+User:
+"API-nya udah gue daftarin."
+
+User:
+"Terus token-nya gimana?"
+
+→ TEACH_HOW_TO_USE_CONTRACTLENS
+
+
+User:
+"Token udah ada."
+
+User:
+"Terus request-nya dikirim ke mana?"
+
+→ TEACH_HOW_TO_USE_CONTRACTLENS
+
+
+User:
+"Contract-nya udah tersedia."
+
+User:
+"Terus sekarang gue bisa ngapain?"
+
+→ TEACH_HOW_TO_USE_CONTRACTLENS
 
 
 ==================================================
 <EXCLUSION>
 ==================================================
 
-Jangan gunakan TEACH_HOW_TO_USE_CONTRACTLENS jika tujuan utama user:
+Jangan gunakan TEACH_HOW_TO_USE_CONTRACTLENS jika tujuan utama
+user:
 
-- Hanya ingin mengetahui apa itu atau fungsi ContractLens.
+- Hanya ingin mengetahui apa itu, fungsi, atau kemampuan
+  ContractLens secara umum.
   → INTRODUCE_CONTRACTLENS
 
 - Hanya memberikan greeting sebagai pengguna baru.
   → GREETING_FIRST_TIMER
 
-- Menyapa atau melanjutkan percakapan sebagai user yang sudah
-  mengetahui ContractLens.
+- Menyapa atau melanjutkan percakapan tanpa request penggunaan
+  yang spesifik.
   → GREETING_ALREADY_KNOW_APPLICATION
 
-- Memberikan API untuk dianalisis.
+- Memberikan API, cURL, URL, HTTP request, atau API artifact
+  untuk dianalisis.
   → ANALYZE_API
 
 - Menanyakan apakah perubahan API compatible atau breaking.
@@ -51,8 +108,22 @@ Jangan gunakan TEACH_HOW_TO_USE_CONTRACTLENS jika tujuan utama user:
 - Menanyakan dampak perubahan API terhadap consumer.
   → EXPLAIN_IMPACT
 
-- Meminta solusi atau rekomendasi untuk mempertahankan compatibility.
+- Meminta solusi atau rekomendasi untuk mempertahankan
+  compatibility.
   → RECOMMEND_COMPATIBILITY
+
+
+Jika user bertanya tentang kemampuan ContractLens tetapi tidak
+menanyakan bagaimana cara menggunakan kemampuan tersebut,
+gunakan:
+
+→ INTRODUCE_CONTRACTLENS
+
+
+Jika user bertanya bagaimana cara melakukan atau menggunakan
+kemampuan tersebut, gunakan:
+
+→ TEACH_HOW_TO_USE_CONTRACTLENS
 
 
 ==================================================
@@ -63,24 +134,49 @@ Jangan gunakan TEACH_HOW_TO_USE_CONTRACTLENS jika tujuan utama user:
 
 "Cara menggunakan ContractLens gimana?"
 
-"Gw harus kasih input apa?"
+"Gw harus mulai dari mana?"
 
-"Cara analisis API di sini gimana?"
+"Gimana cara daftar API ke ContractLens?"
 
-"Ajarin gw cara pakai ContractLens."
+"Cara register API-nya gimana?"
 
-"Kalau mau cek API, harus kirim apa?"
+"API gue harus didaftarin dulu nggak?"
 
-"Gimana cara minta compatibility analysis?"
+"Token ContractLens dapet dari mana?"
 
-"Cara kasih cURL ke ContractLens gimana?"
+"Token ini cara pakainya gimana?"
+
+"Setelah API didaftarin, terus ngapain?"
+
+"Request API-nya dikirim ke mana?"
+
+"API traffic masuk ke ContractLens lewat mana?"
+
+"Contract Snapshot itu dibuat gimana?"
+
+"Contract Analyzer mulai bekerja kapan?"
+
+"Setelah contract tersedia, gue harus ngapain?"
+
+"Gimana cara lihat perubahan API di ContractLens?"
+
+"Gimana cara cek compatibility lewat ContractLens?"
+
+"Cara minta impact analysis gimana?"
+
+"Gimana cara minta recommendation?"
+
+"Kalau mau mulai analisis API, langkahnya apa aja?"
+
+"Kalau API gue udah terdaftar, langkah berikutnya apa?"
+
+"Token udah ada, sekarang gue harus ngapain?"
+
+"Contract udah tersedia, terus cara pakai AI-nya gimana?"
 
 
 ==================================================
 </EXAMPLES>
-==================================================
-
-
 ==================================================
 </INTENT>
 ==================================================

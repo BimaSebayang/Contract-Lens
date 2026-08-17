@@ -2,14 +2,16 @@
 <INTENT name="INTRODUCE_CONTRACTLENS">
 ==================================================
 
-Gunakan intent ini ketika tujuan utama user adalah mengetahui
-apa itu ContractLens, fungsi ContractLens, kemampuan ContractLens,
-atau apakah ContractLens dapat melakukan suatu aktivitas tertentu
-secara umum.
+Gunakan intent ini ketika tujuan utama user adalah mengetahui,
+memahami, atau memperjelas apa yang dilakukan ContractLens,
+bagaimana ContractLens bekerja secara umum, atau bagaimana
+ContractLens membantu menemukan dan memahami perubahan API contract.
 
-INTRODUCE_CONTRACTLENS digunakan untuk pertanyaan mengenai
-kemampuan atau fungsi ContractLens, bukan untuk menjalankan
-kemampuan tersebut terhadap API atau data tertentu.
+INTRODUCE_CONTRACTLENS digunakan untuk memahami konsep, fungsi,
+workflow, dan kemampuan ContractLens secara umum.
+
+Intent ini tidak digunakan untuk menjalankan analisis terhadap
+API atau contract tertentu.
 
 
 ==================================================
@@ -21,17 +23,60 @@ Perhatikan intent ini jika user:
 - Menanyakan apa itu ContractLens.
 - Menanyakan fungsi atau tujuan ContractLens.
 - Menanyakan kemampuan ContractLens secara umum.
-- Meminta penjelasan mengenai ContractLens.
+- Menanyakan masalah apa yang diselesaikan ContractLens.
+- Menanyakan perubahan API apa yang dapat diketahui ContractLens.
+- Menanyakan bagaimana ContractLens mengetahui adanya perubahan API.
+- Menanyakan bagaimana ContractLens membandingkan API contract
+  secara umum.
+- Menanyakan bagaimana ContractLens bekerja secara umum.
+- Menanyakan workflow ContractLens secara umum.
+- Menanyakan peran Gateway, Contract Analyzer, Contract Intelligence,
+  atau ContractLens AI secara umum.
+- Menanyakan bagaimana ContractLens membantu memahami compatibility,
+  breaking change, atau impact secara umum.
 - Menanyakan apa yang dapat dilakukan AI ini.
-- Menanyakan bagaimana ContractLens membantu developer.
 - Menanyakan apakah ContractLens dapat melakukan suatu aktivitas
-  tertentu tanpa memberikan input atau artifact yang harus diproses.
+  tertentu tanpa memberikan API atau contract tertentu untuk
+  dianalisis.
 - Menanyakan apakah ContractLens dapat mengecek, menganalisis,
   memeriksa, atau memahami API secara umum tanpa memberikan API
   tertentu untuk dianalisis.
-- Menggunakan pertanyaan seperti "apa itu", "buat apa",
-  "bisa apa", "fungsinya apa", "bisa nggak", atau
-  "apakah bisa" dalam konteks ContractLens.
+
+
+Gunakan intent ini juga ketika conversation history menunjukkan
+bahwa user sedang mencoba memahami penjelasan ContractLens
+sebelumnya.
+
+Contohnya:
+
+- User mengatakan masih belum memahami ContractLens.
+- User meminta penjelasan ulang.
+- User meminta penjelasan yang lebih sederhana.
+- User meminta contoh untuk memahami ContractLens.
+- User meminta contoh sederhana mengenai cara kerja ContractLens.
+- User meminta penjelasan mengenai perubahan API dalam konteks
+  ContractLens.
+- User meminta penjelasan mengenai workflow ContractLens.
+- User meminta penjelasan mengenai hubungan Gateway, Analyzer,
+  Contract Intelligence, dan AI.
+
+
+Perhatikan konteks conversation ketika user menggunakan pesan
+singkat seperti:
+
+- "Masih belum paham."
+- "Gue masih bingung."
+- "Jelasin lagi dong."
+- "Contohnya gimana?"
+- "Masih nggak ngerti."
+- "Bisa kasih contoh sederhana?"
+- "Cara kerjanya gimana?"
+- "Terus ContractLens tahu perubahannya dari mana?"
+- "Analyzer itu buat apa?"
+- "AI-nya sebenarnya ngapain?"
+
+Jika pesan tersebut merupakan lanjutan dari pembahasan
+ContractLens, gunakan INTRODUCE_CONTRACTLENS.
 
 
 ==================================================
@@ -63,13 +108,13 @@ Jangan gunakan INTRODUCE_CONTRACTLENS jika tujuan utama user adalah:
   untuk dianalisis.
   → ANALYZE_API
 
-- Menanyakan compatibility atau breaking change.
+- Menanyakan apakah suatu perubahan API compatible atau breaking.
   → CHECK_COMPATIBILITY
 
-- Menanyakan dampak perubahan API.
+- Menanyakan dampak suatu perubahan API terhadap consumer.
   → EXPLAIN_IMPACT
 
-- Meminta solusi atau rekomendasi compatibility.
+- Meminta solusi atau rekomendasi untuk mempertahankan compatibility.
   → RECOMMEND_COMPATIBILITY
 
 
@@ -85,11 +130,27 @@ Jangan gunakan INTRODUCE_CONTRACTLENS jika tujuan utama user adalah:
 
 "Apa yang bisa dilakukan AI ini?"
 
-"ContractLens bisa membantu developer apa?"
+"ContractLens sebenarnya menyelesaikan masalah apa?"
 
-"Fungsi ContractLens sebenarnya apa?"
+"ContractLens bisa membantu apa?"
 
-"Kenapa saya perlu menggunakan ContractLens?"
+"ContractLens bisa mendeteksi perubahan API?"
+
+"ContractLens tahu kalau API berubah dari mana?"
+
+"ContractLens membandingkan API gimana?"
+
+"ContractLens cara kerjanya gimana?"
+
+"Workflow ContractLens seperti apa?"
+
+"Gateway di ContractLens buat apa?"
+
+"Contract Analyzer itu apa?"
+
+"Contract Intelligence itu apa?"
+
+"AI ContractLens sebenarnya ngapain?"
 
 "ContractLens bisa ngecek API nggak?"
 
@@ -101,12 +162,33 @@ Jangan gunakan INTRODUCE_CONTRACTLENS jika tujuan utama user adalah:
 
 "Apakah ContractLens bisa melakukan API analysis?"
 
+"Masih belum paham ContractLens."
+
+"Gue masih bingung ContractLens itu apa."
+
+"Jelasin lagi dong."
+
+"Masih nggak ngerti."
+
+"Contoh sederhananya gimana?"
+
+"Bisa kasih contoh?"
+
+"Kalau dalam kasus API gimana?"
+
+"ContractLens sebenarnya kerjanya gimana?"
+
+"Jelasin dengan bahasa yang lebih gampang."
+
+"Terus perubahan API-nya diketahui dari mana?"
+
+"Kenapa ContractLens butuh Gateway?"
+
+"Contract Intelligence itu gunanya apa?"
+
 
 ==================================================
 </EXAMPLES>
-==================================================
-
-
 ==================================================
 </INTENT>
 ==================================================
