@@ -6,7 +6,7 @@ spring:
     name: SERVICE_GATEWAY
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/contractlens_gateway
+    url: jdbc:postgresql://192.168.8.2:5432/contractlens_gateway
     username: sa
     password: sa
     driver-class-name: org.postgresql.Driver
@@ -29,7 +29,7 @@ spring:
 
   data:
     mongodb:
-      host: localhost
+      host: 192.168.8.2
       port: 27017
       database: contractlens
       username: contractlens
@@ -37,7 +37,7 @@ spring:
       authentication-database: admin
 
     redis:
-      host: localhost
+      host: 192.168.8.2
       port: 7000
       password:
       timeout: 5000ms
@@ -48,7 +48,7 @@ spring:
           enabled: true
 
   rabbitmq:
-    host: localhost
+    host: 192.168.8.2
     port: 5672
     username: contractlens_user
     password: contractlens_pass

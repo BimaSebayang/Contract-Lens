@@ -14,19 +14,19 @@ services:
       SPRING_PROFILES_ACTIVE: dev
 
       # PostgreSQL
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/contract_lens_anz
+      SPRING_DATASOURCE_URL: jdbc:postgresql://192.168.8.2:5432/contract_lens_anz
       SPRING_DATASOURCE_USERNAME: sa
       SPRING_DATASOURCE_PASSWORD: sa
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
 
       # RabbitMQ
-      SPRING_RABBITMQ_HOST: host.docker.internal
+      SPRING_RABBITMQ_HOST: 192.168.8.2
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: contractlens_user
       SPRING_RABBITMQ_PASSWORD: contractlens_pass
 
       # MongoDB
-      SPRING_DATA_MONGODB_HOST: host.docker.internal
+      SPRING_DATA_MONGODB_HOST: 192.168.8.2
       SPRING_DATA_MONGODB_PORT: 27017
       SPRING_DATA_MONGODB_DATABASE: contractlens
       SPRING_DATA_MONGODB_USERNAME: contractlens
@@ -35,7 +35,7 @@ services:
 
 
       # Redis
-      SPRING_DATA_REDIS_HOST: host.docker.internal
+      SPRING_DATA_REDIS_HOST: 192.168.8.2
       SPRING_DATA_REDIS_PORT: 7000
       SPRING_DATA_REDIS_PASSWORD: ""
       SPRING_DATA_REDIS_TIMEOUT: 5000ms

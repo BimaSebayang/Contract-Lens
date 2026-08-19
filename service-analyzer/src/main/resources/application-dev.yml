@@ -5,7 +5,7 @@ spring:
   application:
     name: EKYC_DEV
   datasource:
-    url: jdbc:postgresql://localhost:5432/contract_lens_anz
+    url: jdbc:postgresql://192.168.8.2:5432/contract_lens_anz
     username: sa
     password: sa
     driver-class-name: org.postgresql.Driver
@@ -22,7 +22,7 @@ spring:
 
   data:
     mongodb:
-      host: localhost
+      host: 192.168.8.2
       port: 27017
       database: contractlens
       username: contractlens
@@ -33,14 +33,14 @@ spring:
       lettuce:
         pool:
           enabled: true
-      host: localhost
+      host: 192.168.8.2
       port: 7000
       password:
       timeout: 5000ms
       database: 0
 
   rabbitmq:
-    host: localhost
+    host: 192.168.8.2
     port: 5672
     username: contractlens_user
     password: contractlens_pass

@@ -12,7 +12,7 @@ services:
 
     environment:
       # MongoDB
-      MONGODB_HOST: host.docker.internal
+      MONGODB_HOST: 192.168.8.2
       MONGODB_PORT: 27017
       MONGODB_DATABASE: contractlens
       MONGODB_USERNAME: contractlens
@@ -20,14 +20,14 @@ services:
       MONGODB_AUTHENTICATION_DATABASE: admin
 
       # RabbitMQ
-      RABBITMQ_HOST: host.docker.internal
+      RABBITMQ_HOST: 192.168.8.2
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: contractlens_user
       RABBITMQ_PASSWORD: contractlens_pass
       RABBITMQ_VIRTUAL_HOST: /
 
       # PostgreSQL
-      DATABASE_HOST: host.docker.internal
+      DATABASE_HOST: 192.168.8.2
       DATABASE_PORT: 5432
       DATABASE_NAME: contractlens_gateway
       DATABASE_USERNAME: sa

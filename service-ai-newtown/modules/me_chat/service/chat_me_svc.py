@@ -4,11 +4,11 @@ from commons.enums.role import Role
 from core.chat_request import ChatRequest
 from core.chat_response import ChatResponse
 from core.message import Message
-from db.mongodb.repositories.conversation_repository import ConversationRepository
-from llm.prompts.context.service.context_service import ContextService
-from llm.prompts.intents.service.intents_service import IntentPromptService
-from llm.prompts.system.service.system_prompt_service import SystemPromptService
-from llm.prompts.template.service.template_service import TemplateService
+from dbs.mongodb.repositories.conversation_repository import ConversationRepository
+from llms.prompts.context.service.context_service import ContextService
+from llms.prompts.intents.service.intents_service import IntentPromptService
+from llms.prompts.system.service.system_prompt_service import SystemPromptService
+from llms.prompts.template.service.template_service import TemplateService
 from modules.me_chat.service.orchestration_svc import OrchestrationService
 
 
