@@ -1,3 +1,5 @@
+from bson import ObjectId
+
 from dbs.mongodb.client import MongoDbClient
 from dbs.mongodb.models.intent import (
     Intent,
@@ -436,20 +438,36 @@ dan tidak melebihi 300 karakter.
 
 
 
-    def get_all_active(self) -> list[Intent]:
-        global document
-        documents = self.collection.find({
+    from bson import ObjectId
+
+
+    def get_by_ids(
+            self,
+            intent_ids: list[str]
+    ) -> list[Intent]:
+
+        query = {
             "enabled": True
-        })
+        }
+
+        if intent_ids:
+            query["_id"] = {
+                "$in": [
+                    ObjectId(intent_id)
+                    for intent_id in intent_ids
+                ]
+            }
+
+        documents = self.collection.find(query)
 
         intents = []
 
-        for document in documents:
-            document["id"] = document.pop("_id")
+        for docu in documents:
+            docu["id"] = str(docu.pop("_id"))
 
-        intents.append(
-            Intent(**document)
-        )
+            intents.append(
+                Intent(**docu)
+            )
 
         return intents
 
@@ -484,7 +502,7 @@ dan tidak melebihi 300 karakter.
         },
         {
             "$addToSet": {
-                "classification.examples": {
+                "classification.keywords": {
                     "other_clara_response": other_clara_response,
                     "user_message_examples": [
                         example.model_dump()

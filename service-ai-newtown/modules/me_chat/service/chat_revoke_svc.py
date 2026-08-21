@@ -31,7 +31,8 @@ class ChatOrchestrationService:
     def create_intent(
             self,
             user_prompt: str,
-            conversation_id: str
+            conversation_id: str,
+            intent_selection:List[str]
     ) -> IntentResponse:
 
 
@@ -47,8 +48,10 @@ class ChatOrchestrationService:
         )
 
         all_intents = (
-            self.intent_repository.get_all_active()
+            self.intent_repository.get_by_ids(intent_selection)
         )
+
+        print(f"Total intents: {len(all_intents)}")
 
         final_context = f"""
 Task: {content_intent_task}
@@ -57,18 +60,50 @@ Dengan Semua Intent Yaitu:
 """
 
         for index, intent in enumerate(all_intents):
-            print(f"LOOP INTENT [{index}]: {intent}")
-
             final_context += f"""
 Intent: {intent.name}
 Threshold: {intent.classification.threshold}
 Required Context: {intent.execution.required_context}
 Exclude Context: {intent.execution.exclude_context}
-Response Strategy: {intent.response.strategy}
-Response Format: {intent.response.template} 
 """
 
-        print(f"final_context for _revoke_intent adalah : {final_context}")
+
+        final_context += f"""
+Response Intent Strategy: JSON
+Response Intent Format:
+{{
+    "intent": "{intent.name}",
+    "example_user_message": [
+        "<variasi pesan 1>",
+        "<variasi pesan 2>",
+        "<variasi pesan 3>",
+        "<variasi pesan 4>",
+        "<variasi pesan 5>"
+    ]
+}}
+
+Buat tepat 5 variasi pesan pengguna dalam bahasa Indonesia yang memiliki
+maksud dan konteks spesifik yang sama dengan pesan pengguna.
+
+Setiap contoh harus memiliki variasi yang jelas dalam pilihan kata, struktur
+kalimat, gaya bahasa, tingkat formalitas, dan cara pengguna menyampaikan maksud.
+
+Pertahankan atribut penting dari pesan asli. Jangan mengubah informasi spesifik
+yang membedakan makna atau konteks pesan.
+
+Khusus untuk salam berdasarkan waktu, setiap zona waktu dianggap sebagai konteks
+yang berbeda dan BUKAN sinonim. Jangan mengganti atau mencampurkan "pagi",
+"siang", "sore", atau "malam" dalam satu kelompok variasi.
+
+Contoh:
+"Selamat pagi" hanya boleh divariasikan menjadi salam dengan konteks pagi.
+"Selamat siang" hanya boleh divariasikan menjadi salam dengan konteks siang.
+"Selamat sore" hanya boleh divariasikan menjadi salam dengan konteks sore.
+"Selamat malam" hanya boleh divariasikan menjadi salam dengan konteks malam.
+
+Jangan menghasilkan contoh yang identik atau hanya mengganti satu atau dua kata.
+Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan asli.
+"""
 
 
         messages: List[Message] = self._revoke_intent(
@@ -76,6 +111,8 @@ Response Format: {intent.response.template}
             conversation_id,
             final_context
         )
+
+        print(f"create intent message is {messages[0].content}")
 
         intent_response = IntentResponse.model_validate_json(
             messages[0].content
@@ -90,6 +127,30 @@ Response Format: {intent.response.template}
             user_prompt: str,
             conversation_id: str
     ) -> ChatResponse:
+
+        # =========== Pembatas Dari Vector
+        chat_responses:List[ChatResponse]=self.embedding_service.find_similar_intents(user_prompt=user_prompt)
+
+        if not chat_responses or len(chat_responses) > 2:
+            intent_datas = []
+            for chat_r in chat_responses:
+                intent_datas.append(chat_r.selected_intent)
+        else:
+            return ChatResponse(
+                content=chat_responses[0].content,
+                selected_intent=chat_responses[0].selected_intent,
+                reason=chat_responses[0].reason,
+                message_context=chat_responses[0].message_context,
+                intent_context=chat_responses[0].intent_context
+            )
+
+        # =========== Pembatas Dari LLM
+
+        intent_response = self.create_intent(
+            user_prompt,
+            conversation_id,
+            intent_datas
+        )
 
         clara_identity = (
             self.contract_ai_prompt_repository
@@ -113,11 +174,6 @@ Response Format: {intent.response.template}
             else None
         )
 
-        intent_response = self.create_intent(
-            user_prompt,
-            conversation_id
-        )
-
         intent_task = self.intent_repository.get_by_id(
             intent_response.intent
         )
@@ -139,8 +195,6 @@ Task:
 {intent_task.execution.task_context}
 """
 
-        print(f"final_context for _create_{intent_task.id}_message adalah : {final_context}")
-
 
         message_result: List[Message] = self._orchestrate(
             user_prompt,
@@ -152,7 +206,9 @@ Task:
         )
 
         self.update_keywords(
-            intent_response
+            intent_response,
+            user_prompt,
+            message_result[0]
         )
 
         return ChatResponse(
@@ -192,8 +248,6 @@ ContractLens.
 Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
 """
 
-        print(f"final_context for _create_unknown_message adalah : {final_context}")
-
         message_result: List[Message] = self._orchestrate(
             user_prompt,
             conversation_id,
@@ -213,14 +267,14 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
 
     def update_keywords(
             self,
-            intent_response: IntentResponse
+            intent_response: IntentResponse,
+            user_prompt:str,
+            message_response: Message
     ):
-
         intent_id = intent_response.intent
 
-        other_clara_response = (
-            intent_response.other_clara_response
-        )
+
+        other_clara_response = [message_response.content]
 
         example_synonymous_user_messages = (
             self.embedding_service.create_vectors(
@@ -228,13 +282,16 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             )
         )
 
+        example_synonymous_user_messages.append(
+            self.embedding_service.create_vector(user_prompt)
+        )
+
         user_message_examples: List[UserMessageExample] = [
             UserMessageExample(
                 message=example_user_message.message,
                 vector=example_user_message.vector
             )
-            for example_user_message
-            in example_synonymous_user_messages
+            for example_user_message in example_synonymous_user_messages
         ]
 
         self.intent_repository.update_user_message_examples(
