@@ -34,28 +34,54 @@ class ChatOrchestrationService:
             conversation_id: str
     ) -> IntentResponse:
 
-        print(
-            f"Message use for {user_prompt} {conversation_id}"
+
+        intent_task = (
+            self.contract_ai_prompt_repository
+            .find_active_by_prompt_key("INTENTS_TASK")
         )
+
+        content_intent_task = (
+            intent_task.content
+            if intent_task
+            else None
+        )
+
+        all_intents = (
+            self.intent_repository.get_all_active()
+        )
+
+        final_context = f"""
+Task: {content_intent_task}
+
+Dengan Semua Intent Yaitu:
+"""
+
+        for index, intent in enumerate(all_intents):
+            print(f"LOOP INTENT [{index}]: {intent}")
+
+            final_context += f"""
+Intent: {intent.name}
+Threshold: {intent.classification.threshold}
+Required Context: {intent.execution.required_context}
+Exclude Context: {intent.execution.exclude_context}
+Response Strategy: {intent.response.strategy}
+Response Format: {intent.response.template} 
+"""
+
+        print(f"final_context for _revoke_intent adalah : {final_context}")
+
 
         messages: List[Message] = self._revoke_intent(
             user_prompt,
-            conversation_id
+            conversation_id,
+            final_context
         )
-
-        # for index, message in enumerate(messages):
-        #     print(
-        #         f"Message create_intent [{index}] | "
-        #         f"role={message.role} | "
-        #         f"content={message.content} | "
-        #         f"reason={message.reason}"
-        #     )
 
         intent_response = IntentResponse.model_validate_json(
             messages[0].content
         )
 
-        intent_response.context = messages[0].reason
+        intent_response.context = final_context
 
         return intent_response
 
@@ -121,7 +147,8 @@ Task:
             conversation_id,
             final_context,
             True,
-            ai_lab_constants.GPT_OSS_20b
+            ai_lab_constants.GPT_OSS_20b,
+            "medium"
         )
 
         self.update_keywords(
@@ -172,14 +199,15 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             conversation_id,
             final_context,
             True,
-            ai_lab_constants.GPT_OSS_20b
+            ai_lab_constants.GPT_OSS_20b,
+            "none"
         )
 
         return ChatResponse(
             content=message_result[0].content,
             selected_intent="UNKNOWN",
-            reason="intent undetected",
-            message_context="none",
+            reason=message_result[0].reason,
+            message_context=final_context,
             intent_context=intent_response.context
         )
 
@@ -218,50 +246,17 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
     def _revoke_intent(
             self,
             user_prompt: str,
-            conversation_id: str
+            conversation_id: str,
+            context: str,
     ) -> List[Message]:
-
-        intent_task = (
-            self.contract_ai_prompt_repository
-            .find_active_by_prompt_key("INTENTS_TASK")
-        )
-
-        content_intent_task = (
-            intent_task.content
-            if intent_task
-            else None
-        )
-
-        all_intents = (
-            self.intent_repository.get_all_active()
-        )
-
-        final_context = f"""
-Task: {content_intent_task}
-
-Dengan Semua Intent Yaitu:
-"""
-
-        for index, intent in enumerate(all_intents):
-            print(f"LOOP INTENT [{index}]: {intent}")
-
-            final_context += f"""
-Intent: {intent.name}
-Threshold: {intent.classification.threshold}
-Required Context: {intent.execution.required_context}
-Exclude Context: {intent.execution.exclude_context}
-Response Strategy: {intent.response.strategy}
-Response Format: {intent.response.template}
-"""
-
-        print(f"final_context for _revoke_intent adalah : {final_context}")
 
         return self._orchestrate(
             user_prompt,
             conversation_id,
-            final_context,
+            context,
             False,
-            ai_lab_constants.GPT_OSS_120b
+            ai_lab_constants.GPT_OSS_120b,
+            "medium"
         )
 
     def _orchestrate(
@@ -270,7 +265,8 @@ Response Format: {intent.response.template}
             conversation_id: str,
             system_message: str,
             need_save: bool,
-            bot_model:str
+            bot_model:str,
+            effort:str
     ) -> List[Message]:
 
         history = (
@@ -304,7 +300,8 @@ Response Format: {intent.response.template}
 
         response: LlmChatResponse = self.provider.chat(
             messages,
-            bot_model
+            bot_model,
+            effort
         )
 
         response_messages: List[Message] = []

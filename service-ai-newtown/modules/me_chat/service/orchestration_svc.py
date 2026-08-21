@@ -8,7 +8,6 @@ from dbs.mongodb.repositories.conversation_repository import ConversationReposit
 from llms.models.llm_chat_response import LlmChatResponse
 from llms.models.llm_message_response import LlmMessageResponse
 from llms.models.llm_usage_response import LlmUsageResponse
-from llms.providers.groq.client import GroqClient
 from llms.providers.ollama.client import OllamaClient
 
 logger = logging.getLogger(__name__)
@@ -40,7 +39,8 @@ class OrchestrationService:
         # TODO: Replace provider implementation with configurable LLM provider.
         response: LlmChatResponse = self.provider.chat(
             messages,
-            ai_lab_constants.NEMOTRON_3_NANO
+            ai_lab_constants.NEMOTRON_3_NANO,
+            'none'
         )
 
         response_messages: List[Message] = []
@@ -116,7 +116,8 @@ class OrchestrationService:
         # TODO: Replace provider implementation with configurable LLM provider.
         response: LlmChatResponse = self.provider.chat(
             messages,
-            ai_lab_constants.NEMOTRON_3_NANO
+            ai_lab_constants.NEMOTRON_3_NANO,
+            'none'
         )
 
         response_messages: List[Message] = []

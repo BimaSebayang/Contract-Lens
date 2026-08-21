@@ -28,7 +28,8 @@ class OllamaClient(LLMClient):
     def chat(
             self,
             memory_message: list[Message],
-            model: str
+            model: str,
+            effort: str
     ) -> LlmChatResponse:
 
         messages = []
@@ -42,7 +43,7 @@ class OllamaClient(LLMClient):
 
         start_time = time.perf_counter()
 
-        print(f"Start Send Chat to Ollama {model} | {start_time}")
+        print(f"Start Send Chat to Ollama {model} with effort {effort}| {start_time}")
 
         response = self.client.chat.completions.create(
             model=model,
@@ -52,8 +53,15 @@ class OllamaClient(LLMClient):
         end_time = time.perf_counter()
         duration = end_time - start_time
 
-        print(f"Finish Send Chat to Ollama {model} | {end_time}")
+        mapped_usage = LlmUsageResponse(
+            prompt_tokens=response.usage.prompt_tokens,
+            completion_tokens=response.usage.completion_tokens,
+            total_tokens=response.usage.total_tokens
+        )
+
+        print(f"Finish Send Chat to Ollama {model} with effort {effort} | {end_time}")
         print(f"Ollama takes: {duration:.2f} seconds")
+        print(f"Ollama token for model {model} is {mapped_usage}")
 
         mapped_messages = [
             LlmMessageResponse(
@@ -70,11 +78,7 @@ class OllamaClient(LLMClient):
             for choice in response.choices
         ]
 
-        mapped_usage = LlmUsageResponse(
-            prompt_tokens=response.usage.prompt_tokens,
-            completion_tokens=response.usage.completion_tokens,
-            total_tokens=response.usage.total_tokens
-        )
+
 
         return LlmChatResponse(
             messages=mapped_messages,

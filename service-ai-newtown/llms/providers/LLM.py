@@ -10,6 +10,7 @@ class LLMClient(ABC):
     def chat(
             self,
             memory_message: list[Message],
-            model:str
+            model:str,
+            effort:str
     ) -> LlmChatResponse:
         pass
