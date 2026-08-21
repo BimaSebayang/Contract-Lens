@@ -6,7 +6,7 @@ from dbs.postgres.repositories.contractlens_ai_prompt_repository import (
 )
 
 
-from db.postgres.models.contractlens_ai_prompt import ContractLensAiPrompt
+from dbs.postgres.models.contractlens_ai_prompt import ContractLensAiPrompt
 
 
 class ContextService:

@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from db.postgres.models.contractlens_ai_intent import ContractLensAiIntent
+from dbs.postgres.models.contractlens_ai_intent import ContractLensAiIntent
 
 
 class ContractLensAiIntentRepository:

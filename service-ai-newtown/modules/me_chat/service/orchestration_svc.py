@@ -1,6 +1,7 @@
 from typing import List
 import logging
 from commons import ai_lab_constants
+from commons.enums.role import Role
 from core.message import Message
 from dbs.mongodb.models.conversation import ConversationDetail
 from dbs.mongodb.repositories.conversation_repository import ConversationRepository
@@ -98,12 +99,16 @@ class OrchestrationService:
             self,
             user_prompt: Message,
             conversation_id: str,
-            additional_messages: List[Message]
+            system_message: str
     ) -> List[Message]:
 
-        messages: List[Message] = []
-
-        messages.extend(additional_messages)
+        messages: List[Message] = [Message(
+            role=Role.SYSTEM,
+            content=system_message,
+            reason=''
+            ),
+            self.conversation_repository.get_history(conversation_id),
+            user_prompt]
 
         for message in messages:
             logger.info("Chat message: %s", message)

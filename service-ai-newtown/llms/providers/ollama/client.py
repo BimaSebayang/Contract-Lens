@@ -8,7 +8,7 @@ from llms.models.llm_chat_response import LlmChatResponse
 from llms.models.llm_message_response import LlmMessageResponse
 from llms.models.llm_usage_response import LlmUsageResponse
 from llms.providers.LLM import LLMClient
-
+import time
 
 load_dotenv()
 
@@ -39,10 +39,21 @@ class OllamaClient(LLMClient):
                 "content": mm.content
             })
 
+
+        start_time = time.perf_counter()
+
+        print(f"Start Send Chat to Ollama {model} | {start_time}")
+
         response = self.client.chat.completions.create(
             model=model,
             messages=messages
         )
+
+        end_time = time.perf_counter()
+        duration = end_time - start_time
+
+        print(f"Finish Send Chat to Ollama {model} | {end_time}")
+        print(f"Ollama takes: {duration:.2f} seconds")
 
         mapped_messages = [
             LlmMessageResponse(

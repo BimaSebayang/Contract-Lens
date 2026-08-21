@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from core.message import Message
-from llm.models.llm_chat_response import LlmChatResponse
+from llms.models.llm_chat_response import LlmChatResponse
 
 
 class LLMClient(ABC):

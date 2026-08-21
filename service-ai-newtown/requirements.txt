@@ -9,3 +9,4 @@ sqlalchemy
 psycopg[binary]
 tiktoken
 postgres
+sentence-transformers
