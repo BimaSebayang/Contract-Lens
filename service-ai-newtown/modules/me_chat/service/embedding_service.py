@@ -8,7 +8,10 @@ from core.example_synonymous_user_message import (
     ExampleSynonymousUserMessage
 )
 from dbs.mongodb.repositories.intent_repository import IntentRepository
-
+from dbs.qdrants.repositories.contract_lens_example_repository import ContractLensExampleRepository
+from dbs.qdrants.models.contract_lens_example import (
+    ContractLensExample
+)
 
 class EmbeddingService:
 
@@ -18,6 +21,8 @@ class EmbeddingService:
         )
 
         self.intent_repository = IntentRepository()
+        self.contract_lens_example_repository = ContractLensExampleRepository()
+
 
     def _normalize_message(
             self,
@@ -70,12 +75,36 @@ class EmbeddingService:
                 vector=vector.tolist()
             )
             for message, vector in zip(
-                messages,
+                normalized_messages,
                 vectors
             )
         ]
 
     def find_similar_intents(
+            self,
+            user_prompt: str
+    ) -> List[ChatResponse]:
+        contract_lens_example:list[ContractLensExample] = self.contract_lens_example_repository.search_determenistic_wording(
+                user_prompt= self.create_vector(user_prompt),
+                threshold= 0.85
+            )
+
+        return [
+            ChatResponse(
+                content=result.response_llm,
+                selected_intent=result.intent_id,
+                reason=(
+                    f"find_similar_result = "
+                    f"{result.score}"
+                ),
+                message_context="",
+                intent_context=""
+            )
+            for result in contract_lens_example
+        ]
+
+
+    def find_similar_intents_manual(
             self,
             user_prompt: str
     ) -> List[ChatResponse]:

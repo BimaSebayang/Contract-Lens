@@ -11,7 +11,7 @@ from dbs.mongodb.repositories.conversation_repository import ConversationReposit
 from dbs.mongodb.repositories.intent_repository import IntentRepository
 from dbs.postgres.client import SessionLocal
 from dbs.postgres.repositories import ContractLensAiPromptRepository
-from llms.models import llm_chat_response
+from dbs.qdrants.repositories.contract_lens_example_repository import ContractLensExampleRepository
 from llms.models.llm_chat_response import LlmChatResponse
 from llms.models.llm_message_response import LlmMessageResponse
 from llms.models.llm_usage_response import LlmUsageResponse
@@ -25,6 +25,7 @@ class ChatOrchestrationService:
         self.conversation_repository = ConversationRepository()
         self.intent_repository = IntentRepository()
         self.embedding_service = EmbeddingService()
+        self.contract_lens_example_repository = ContractLensExampleRepository()
 
         with SessionLocal() as session:
             self.contract_ai_prompt_repository = ContractLensAiPromptRepository(session)
@@ -150,7 +151,7 @@ Task:
             "medium"
         )
 
-        self.update_keywords(
+        self.teach_contract_lens_keywords(
             intent_response,
             user_prompt,
             message_result[0]
@@ -286,29 +287,28 @@ Jangan menghasilkan contoh yang identik atau hanya mengganti satu atau dua kata.
 Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan asli.
 """
 
-
-        messages: List[Message] = self._revoke_intent(
+        messages: List[Message] = self._orchestrate_llm(
             user_prompt,
             conversation_id,
-            final_context
+            final_context,
+            False,
+            ai_lab_constants.GPT_OSS_120b,
+            "medium"
         )
-
         print(f"create intent message is {messages[0].content}")
-
         intent_response = IntentResponse.model_validate_json(
             messages[0].content
         )
-
         intent_response.context = final_context
-
         return intent_response
 
-    def update_keywords(
+
+    def teach_contract_lens_keywords(
             self,
             intent_response: IntentResponse,
             user_prompt:str,
-            message_response: Message
-    ):
+            message_response: Message):
+
         intent_id = intent_response.intent
         other_clara_response = [message_response.content]
 
@@ -330,27 +330,15 @@ Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan a
             for example_user_message in example_synonymous_user_messages
         ]
 
-        self.intent_repository.update_user_message_examples(
+        self.contract_lens_example_repository.teach_user_message_examples(
             intent_id=intent_id,
-            other_clara_response=other_clara_response,
-            user_message_examples=user_message_examples
+            clara_response=other_clara_response,
+            user_message_examples=user_message_examples,
         )
 
-    def _revoke_intent(
-            self,
-            user_prompt: str,
-            conversation_id: str,
-            context: str,
-    ) -> List[Message]:
 
-        return self._orchestrate_llm(
-            user_prompt,
-            conversation_id,
-            context,
-            False,
-            ai_lab_constants.GPT_OSS_120b,
-            "medium"
-        )
+
+
 
     def _save_history_detail(
             self,

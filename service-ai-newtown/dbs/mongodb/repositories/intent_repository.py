@@ -485,7 +485,7 @@ dan tidak melebihi 300 karakter.
 
         return Intent(**document)
 
-    def update_user_message_examples(
+    def teach_user_message_examples(
             self,
             intent_id: str,
             other_clara_response: list[str],
@@ -502,10 +502,7 @@ dan tidak melebihi 300 karakter.
                 "classification.keywords": {
                     "other_clara_response": other_clara_response,
                     "user_message_examples": [
-                        UserMessageExample(
-                            message = example.message,
-                            vector=[]
-                        )
+                        example.model_dump(exclude='vector')
                         for example in user_message_examples
                     ]
                 }
