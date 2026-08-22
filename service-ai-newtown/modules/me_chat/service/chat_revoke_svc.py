@@ -11,6 +11,7 @@ from dbs.mongodb.repositories.conversation_repository import ConversationReposit
 from dbs.mongodb.repositories.intent_repository import IntentRepository
 from dbs.postgres.client import SessionLocal
 from dbs.postgres.repositories import ContractLensAiPromptRepository
+from llms.models import llm_chat_response
 from llms.models.llm_chat_response import LlmChatResponse
 from llms.models.llm_message_response import LlmMessageResponse
 from llms.models.llm_usage_response import LlmUsageResponse
@@ -28,123 +29,65 @@ class ChatOrchestrationService:
         with SessionLocal() as session:
             self.contract_ai_prompt_repository = ContractLensAiPromptRepository(session)
 
-    def create_intent(
+
+    def create_message(self,
+                       user_prompt: str,
+                       conversation_id: str
+                       ) -> ChatResponse:
+        chat_responses:List[ChatResponse]=self.embedding_service.find_similar_intents(user_prompt=user_prompt)
+
+        if len(chat_responses) == 1:
+            return self.create_vector_message(user_prompt, conversation_id, chat_responses)
+        else:
+            return self.create_llm_message(user_prompt, conversation_id,chat_responses)
+
+
+
+    def create_vector_message(
             self,
             user_prompt: str,
             conversation_id: str,
-            intent_selection:List[str]
-    ) -> IntentResponse:
+            chat_responses:List[ChatResponse])-> ChatResponse:
 
+        vector_messages:List[LlmMessageResponse]=[
+            LlmMessageResponse(
+                role=Role.ASSISTANT,
+                content=chat_responses[0].content,
+                reasoning=chat_responses[0].reason,
+                finishing_reason=chat_responses[0].reason,
+                approve=True
+            )
+        ]
 
-        intent_task = (
-            self.contract_ai_prompt_repository
-            .find_active_by_prompt_key("INTENTS_TASK")
+        vector_chat_response:LlmChatResponse = LlmChatResponse(
+            messages=vector_messages,
+            latency=0.0,
+            model='vector',
+            usage=LlmUsageResponse(
+                completion_tokens=0,
+                prompt_tokens=0,
+                total_tokens=0
+            )
         )
 
-        content_intent_task = (
-            intent_task.content
-            if intent_task
-            else None
+        self._save_history_detail(conversation_id,user_prompt,vector_chat_response)
+        return ChatResponse(
+            content=chat_responses[0].content,
+            selected_intent=chat_responses[0].selected_intent,
+            reason=chat_responses[0].reason,
+            message_context=chat_responses[0].message_context,
+            intent_context=chat_responses[0].intent_context
         )
 
-        all_intents = (
-            self.intent_repository.get_by_ids(intent_selection)
-        )
-
-        print(f"Total intents: {len(all_intents)}")
-
-        final_context = f"""
-Task: {content_intent_task}
-
-Dengan Semua Intent Yaitu:
-"""
-
-        for index, intent in enumerate(all_intents):
-            final_context += f"""
-Intent: {intent.name}
-Threshold: {intent.classification.threshold}
-Required Context: {intent.execution.required_context}
-Exclude Context: {intent.execution.exclude_context}
-"""
-
-
-        final_context += f"""
-Response Intent Strategy: JSON
-Response Intent Format:
-{{
-    "intent": "{intent.name}",
-    "example_user_message": [
-        "<variasi pesan 1>",
-        "<variasi pesan 2>",
-        "<variasi pesan 3>",
-        "<variasi pesan 4>",
-        "<variasi pesan 5>"
-    ]
-}}
-
-Buat tepat 5 variasi pesan pengguna dalam bahasa Indonesia yang memiliki
-maksud dan konteks spesifik yang sama dengan pesan pengguna.
-
-Setiap contoh harus memiliki variasi yang jelas dalam pilihan kata, struktur
-kalimat, gaya bahasa, tingkat formalitas, dan cara pengguna menyampaikan maksud.
-
-Pertahankan atribut penting dari pesan asli. Jangan mengubah informasi spesifik
-yang membedakan makna atau konteks pesan.
-
-Khusus untuk salam berdasarkan waktu, setiap zona waktu dianggap sebagai konteks
-yang berbeda dan BUKAN sinonim. Jangan mengganti atau mencampurkan "pagi",
-"siang", "sore", atau "malam" dalam satu kelompok variasi.
-
-Contoh:
-"Selamat pagi" hanya boleh divariasikan menjadi salam dengan konteks pagi.
-"Selamat siang" hanya boleh divariasikan menjadi salam dengan konteks siang.
-"Selamat sore" hanya boleh divariasikan menjadi salam dengan konteks sore.
-"Selamat malam" hanya boleh divariasikan menjadi salam dengan konteks malam.
-
-Jangan menghasilkan contoh yang identik atau hanya mengganti satu atau dua kata.
-Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan asli.
-"""
-
-
-        messages: List[Message] = self._revoke_intent(
-            user_prompt,
-            conversation_id,
-            final_context
-        )
-
-        print(f"create intent message is {messages[0].content}")
-
-        intent_response = IntentResponse.model_validate_json(
-            messages[0].content
-        )
-
-        intent_response.context = final_context
-
-        return intent_response
-
-    def create_message(
+    def create_llm_message(
             self,
             user_prompt: str,
-            conversation_id: str
-    ) -> ChatResponse:
+            conversation_id: str,
+            chat_responses:List[ChatResponse]) -> ChatResponse:
+        intent_datas = []
+        for chat_r in chat_responses:
+            intent_datas.append(chat_r.selected_intent)
 
-        # =========== Pembatas Dari Vector
-        chat_responses:List[ChatResponse]=self.embedding_service.find_similar_intents(user_prompt=user_prompt)
-
-        if not chat_responses or len(chat_responses) > 2:
-            intent_datas = []
-            for chat_r in chat_responses:
-                intent_datas.append(chat_r.selected_intent)
-        else:
-            return ChatResponse(
-                content=chat_responses[0].content,
-                selected_intent=chat_responses[0].selected_intent,
-                reason=chat_responses[0].reason,
-                message_context=chat_responses[0].message_context,
-                intent_context=chat_responses[0].intent_context
-            )
-
-        # =========== Pembatas Dari LLM
 
         intent_response = self.create_intent(
             user_prompt,
@@ -178,6 +121,7 @@ Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan a
             intent_response.intent
         )
 
+        # Part For UNKNOWN-MESSAGE
         if intent_task is None:
             return self._create_unknown_message(
                 user_prompt=user_prompt,
@@ -187,6 +131,7 @@ Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan a
                 intent_response=intent_response
             )
 
+        # Part For KNOWN-MESSAGE
         final_context = f"""
 Clara Identity: {clara_identity_context}
 ContractLens Overview: {clx_overview_context}
@@ -196,7 +141,7 @@ Task:
 """
 
 
-        message_result: List[Message] = self._orchestrate(
+        message_result: List[Message] = self._orchestrate_llm(
             user_prompt,
             conversation_id,
             final_context,
@@ -248,7 +193,7 @@ ContractLens.
 Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
 """
 
-        message_result: List[Message] = self._orchestrate(
+        message_result: List[Message] = self._orchestrate_llm(
             user_prompt,
             conversation_id,
             final_context,
@@ -265,6 +210,99 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             intent_context=intent_response.context
         )
 
+    def create_intent(
+            self,
+            user_prompt: str,
+            conversation_id: str,
+            intent_selection:List[str]
+    ) -> IntentResponse:
+
+
+        intent_task = (
+            self.contract_ai_prompt_repository
+            .find_active_by_prompt_key("INTENTS_TASK")
+        )
+
+        content_intent_task = (
+            intent_task.content
+            if intent_task
+            else None
+        )
+
+        all_intents = (
+            self.intent_repository.get_by_ids(intent_selection)
+        )
+
+        print(f"Total intents: {len(all_intents)}")
+
+        final_context = f"""
+Task: {content_intent_task}
+
+Dengan Semua Intent Yaitu:
+"""
+
+        for index, intent in enumerate(all_intents):
+            final_context += f"""
+Intent: {intent.name}
+Threshold: {intent.classification.threshold}
+Required Context: {intent.execution.required_context}
+Exclude Context: {intent.execution.exclude_context}
+Response Intent Strategy: JSON
+Response Intent Format:
+{{
+    "intent": "{intent.name}",
+    "example_user_message": [
+        "<variasi pesan 1>",
+        "<variasi pesan 2>",
+        "<variasi pesan 3>",
+        "<variasi pesan 4>",
+        "<variasi pesan 5>"
+    ]
+}}
+"""
+
+
+        final_context += f"""
+Buat tepat 5 variasi pesan pengguna dalam bahasa Indonesia yang memiliki
+maksud dan konteks spesifik yang sama dengan pesan pengguna.
+
+Setiap contoh harus memiliki variasi yang jelas dalam pilihan kata, struktur
+kalimat, gaya bahasa, tingkat formalitas, dan cara pengguna menyampaikan maksud.
+
+Pertahankan atribut penting dari pesan asli. Jangan mengubah informasi spesifik
+yang membedakan makna atau konteks pesan.
+
+Khusus untuk salam berdasarkan waktu, setiap zona waktu dianggap sebagai konteks
+yang berbeda dan BUKAN sinonim. Jangan mengganti atau mencampurkan "pagi",
+"siang", "sore", atau "malam" dalam satu kelompok variasi.
+
+Contoh:
+"Selamat pagi" hanya boleh divariasikan menjadi salam dengan konteks pagi.
+"Selamat siang" hanya boleh divariasikan menjadi salam dengan konteks siang.
+"Selamat sore" hanya boleh divariasikan menjadi salam dengan konteks sore.
+"Selamat malam" hanya boleh divariasikan menjadi salam dengan konteks malam.
+
+Jangan menghasilkan contoh yang identik atau hanya mengganti satu atau dua kata.
+Pastikan setiap variasi tetap mempertahankan maksud dan konteks spesifik pesan asli.
+"""
+
+
+        messages: List[Message] = self._revoke_intent(
+            user_prompt,
+            conversation_id,
+            final_context
+        )
+
+        print(f"create intent message is {messages[0].content}")
+
+        intent_response = IntentResponse.model_validate_json(
+            messages[0].content
+        )
+
+        intent_response.context = final_context
+
+        return intent_response
+
     def update_keywords(
             self,
             intent_response: IntentResponse,
@@ -272,8 +310,6 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             message_response: Message
     ):
         intent_id = intent_response.intent
-
-
         other_clara_response = [message_response.content]
 
         example_synonymous_user_messages = (
@@ -307,7 +343,7 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             context: str,
     ) -> List[Message]:
 
-        return self._orchestrate(
+        return self._orchestrate_llm(
             user_prompt,
             conversation_id,
             context,
@@ -316,14 +352,76 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             "medium"
         )
 
-    def _orchestrate(
+    def _save_history_detail(
+            self,
+            conversation_id: str,
+            user_prompt: str,
+            response: LlmChatResponse
+    ) -> None:
+
+        self.conversation_repository.save_detail(
+            conversation_id,
+            ConversationDetail(
+                LlmMessageResponse(
+                    role=Role.USER,
+                    content=user_prompt,
+                    reasoning="",
+                    finishing_reason="",
+                    approve=True
+                ),
+                LlmUsageResponse(
+                    completion_tokens=(
+                        response.usage.completion_tokens
+                    ),
+                    prompt_tokens=(
+                        response.usage.prompt_tokens
+                    ),
+                    total_tokens=(
+                        response.usage.total_tokens
+                    )
+                )
+            )
+        )
+
+        for index, message in enumerate(
+                response.messages
+        ):
+
+            self.conversation_repository.save_detail(
+                conversation_id,
+                ConversationDetail(
+                    LlmMessageResponse(
+                        role=message.role,
+                        content=message.content,
+                        reasoning=message.reasoning,
+                        finishing_reason=(
+                            message.finishing_reason
+                        ),
+                        approve=index == 0
+                    ),
+                    LlmUsageResponse(
+                        completion_tokens=(
+                            response.usage.completion_tokens
+                        ),
+                        prompt_tokens=(
+                            response.usage.prompt_tokens
+                        ),
+                        total_tokens=(
+                            response.usage.total_tokens
+                        )
+                    )
+                )
+            )
+
+
+    def _orchestrate_llm(
             self,
             user_prompt: str,
             conversation_id: str,
             system_message: str,
             need_save: bool,
-            bot_model:str,
-            effort:str
+            bot_model: str,
+            effort: str
     ) -> List[Message]:
 
         history = (
@@ -347,42 +445,22 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
             )
         ]
 
-        # for index, message in enumerate(messages):
-        #     print(
-        #         f"Chat message [{index}] | "
-        #         f"role={message.role} | "
-        #         f"content={message.content} | "
-        #         f"reason={message.reason}"
-        #     )
-
         response: LlmChatResponse = self.provider.chat(
             messages,
             bot_model,
             effort
         )
 
-        response_messages: List[Message] = []
-
         if need_save:
-            self.conversation_repository.save_detail(
-                conversation_id,
-                ConversationDetail(
-                    LlmMessageResponse(
-                        role=Role.USER,
-                        content=user_prompt,
-                        reasoning="",
-                        finishing_reason="",
-                        approve=True
-                    ),
-                    LlmUsageResponse(
-                        completion_tokens=response.usage.completion_tokens,
-                        prompt_tokens=response.usage.prompt_tokens,
-                        total_tokens=response.usage.total_tokens
-                    )
-                )
+            self._save_history_detail(
+                conversation_id=conversation_id,
+                user_prompt=user_prompt,
+                response=response
             )
 
-        for index, message in enumerate(response.messages):
+        response_messages: List[Message] = []
+
+        for message in response.messages:
 
             response_messages.append(
                 Message(
@@ -391,24 +469,5 @@ Gunakan emoji seperti 🤔 atau ❓ secara natural agar pesan lebih menarik.
                     reason=message.reasoning
                 )
             )
-
-            if need_save:
-                self.conversation_repository.save_detail(
-                    conversation_id,
-                    ConversationDetail(
-                        LlmMessageResponse(
-                            role=message.role,
-                            content=message.content,
-                            reasoning=message.reasoning,
-                            finishing_reason=message.finishing_reason,
-                            approve=index == 0
-                        ),
-                        LlmUsageResponse(
-                            completion_tokens=response.usage.completion_tokens,
-                            prompt_tokens=response.usage.prompt_tokens,
-                            total_tokens=response.usage.total_tokens
-                        )
-                    )
-                )
 
         return response_messages

@@ -10,3 +10,4 @@ psycopg[binary]
 tiktoken
 postgres
 sentence-transformers
+qdrant-client

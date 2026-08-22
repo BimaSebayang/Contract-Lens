@@ -438,9 +438,6 @@ dan tidak melebihi 300 karakter.
 
 
 
-    from bson import ObjectId
-
-
     def get_by_ids(
             self,
             intent_ids: list[str]
@@ -505,7 +502,10 @@ dan tidak melebihi 300 karakter.
                 "classification.keywords": {
                     "other_clara_response": other_clara_response,
                     "user_message_examples": [
-                        example.model_dump()
+                        UserMessageExample(
+                            message = example.message,
+                            vector=[]
+                        )
                         for example in user_message_examples
                     ]
                 }
