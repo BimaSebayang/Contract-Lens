@@ -139,4 +139,14 @@ public class ContractLensChatLensService {
         }
     }
 
+    public ChatAiMessageResponse chatV2(ChatStandardMessage request) {
+        ChatAIRequest chatAIRequest = new ChatAIRequest();
+        chatAIRequest.setMessage(request.getMessage());
+        chatAIRequest.setConversationId(request.getConversationId());
+        ChatAiResponse aiResponse = contractLensAiClientService.chatMe(chatAIRequest);
+
+        ChatAiMessageResponse standardMessage = new ChatAiMessageResponse();
+        standardMessage.setAiResponse(aiResponse.getContent());
+        return standardMessage;
+    }
 }

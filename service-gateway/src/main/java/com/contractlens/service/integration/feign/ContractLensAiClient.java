@@ -50,4 +50,6 @@ public interface ContractLensAiClient {
     List<ChatAiResponse> howToUse(
             @RequestBody ChatAIRequest request
     );
+
+
 }
