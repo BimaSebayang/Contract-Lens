@@ -4,7 +4,7 @@
     "slug": "ContractLens-Snapshot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/icon.png",
+    "icon": "./assets/images/clara-ai/clara-avatar.png",
     "scheme": "servicemobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,23 +15,24 @@
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/clara-ai/clara-avatar.png",
+        "backgroundImage": "./assets/images/clara-ai/clara-avatar.png",
+        "monochromeImage": "./assets/images/clara-ai/clara-avatar.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.roxas01.ContractLensSnapshot"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/clara-ai/clara-avatar.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/clara-ai/clara-avatar.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -44,6 +45,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8cd3a0b6-cd3c-470a-be3d-7f0e962d62fc"
+      }
     }
   }
 }
