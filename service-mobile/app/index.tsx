@@ -15,7 +15,7 @@ export default function HomeScreen() {
   const handleStartChat = () => {
 
     router.push(
-        '/chat/conversation'
+        '/chat/page'
     );
   };
 

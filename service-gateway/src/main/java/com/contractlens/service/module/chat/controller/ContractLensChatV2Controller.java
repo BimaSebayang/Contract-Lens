@@ -1,5 +1,6 @@
 package com.contractlens.service.module.chat.controller;
 
+import com.contractlens.common.dto.ChatAiMessageRequest;
 import com.contractlens.common.dto.ChatAiMessageResponse;
 import com.contractlens.common.dto.ChatStandardMessage;
 import com.contractlens.service.module.chat.service.ContractLensChatLensService;
@@ -19,7 +20,7 @@ public class ContractLensChatV2Controller {
 
     @PostMapping
     public ChatAiMessageResponse chat(
-            @RequestBody ChatStandardMessage request
+            @RequestBody ChatAiMessageRequest request
     ) {
         return contractLensChatLensService.chatV2(request);
     }

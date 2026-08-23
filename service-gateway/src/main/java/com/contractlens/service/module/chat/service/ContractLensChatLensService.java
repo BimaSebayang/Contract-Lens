@@ -139,7 +139,7 @@ public class ContractLensChatLensService {
         }
     }
 
-    public ChatAiMessageResponse chatV2(ChatStandardMessage request) {
+    public ChatAiMessageResponse chatV2(ChatAiMessageRequest request) {
         ChatAIRequest chatAIRequest = new ChatAIRequest();
         chatAIRequest.setMessage(request.getMessage());
         chatAIRequest.setConversationId(request.getConversationId());
