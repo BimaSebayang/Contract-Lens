@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
 
     profileSubtitle: {
         color: '#E0E7FF',
-        fontSize: 11,
+        fontSize: 10,
         marginTop: 4,
     },
 
@@ -108,7 +108,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 12,
-        marginTop: 8,
         marginBottom: 28,
     },
 
@@ -227,13 +226,12 @@ export const styles = StyleSheet.create({
     aiMessageRow: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        marginTop: 20,
+        marginTop: 10,
     },
 
     aiMessageAvatar: {
-        width: 42,
-        height: 42,
-        borderRadius: 14,
+        width: 50,
+        height: 50,
         marginRight: 12,
     },
 

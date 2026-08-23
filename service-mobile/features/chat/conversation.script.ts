@@ -228,9 +228,9 @@ export function useConversationScript() {
             content: result.content[0],
             feedback: null,
             timestamp:result.timestamp,
-            showFeedback:true
+            showFeedback:true,
+            intent:result.intent
         };
-
 
 
         setConversations(

@@ -147,6 +147,7 @@ public class ContractLensChatLensService {
 
         ChatAiMessageResponse standardMessage = new ChatAiMessageResponse();
         standardMessage.setAiResponse(aiResponse.getContent());
+        standardMessage.setIntent(aiResponse.getSelectedIntent());
         return standardMessage;
     }
 }

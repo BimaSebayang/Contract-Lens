@@ -27,7 +27,7 @@ const chatService = {
             );
 
         return {
-
+            intent: response.intent,
             feedback: null,
 
             content: [{

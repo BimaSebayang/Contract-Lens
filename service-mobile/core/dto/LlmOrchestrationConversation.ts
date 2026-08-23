@@ -5,4 +5,5 @@ export interface LlmOrchestrationConversation {
     content: [LlmMessageMap];
     timestamp:string;
     conversation_id:string;
+    intent ?: string;
 }

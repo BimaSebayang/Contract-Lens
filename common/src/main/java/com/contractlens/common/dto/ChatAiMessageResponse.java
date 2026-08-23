@@ -17,4 +17,6 @@ public class ChatAiMessageResponse {
     @JsonProperty("ai_response")
     private String aiResponse;
 
+    private String intent;
+
 }

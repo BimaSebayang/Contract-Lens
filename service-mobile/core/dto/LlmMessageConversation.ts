@@ -23,4 +23,5 @@ export interface LlmMessageConversation {
 
     showFeedback: boolean | null;
 
+    intent?:string;
 }

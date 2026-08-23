@@ -37,6 +37,22 @@ import {
 
 export default function ConversationScreen() {
 
+    const claraImages = {
+        GREETING_USER: require('@/assets/images/clara-ai/clara_hi.png'),
+
+        UNKNOWN: require(
+            '@/assets/images/clara-ai/clara_confused.png'
+        ),
+
+        GLOSSARY_CONTRACTLENS: require(
+            '@/assets/images/clara-ai/clara_info.png'
+        ),
+
+        ONBOARDING_CONTRACTLENS: require(
+            '@/assets/images/clara-ai/clara_onboarding.png'
+        ),
+    } as const;
+
     const {
         conversations,
         message,
@@ -122,7 +138,7 @@ export default function ConversationScreen() {
                         <Text
                             style={styles.profileSubtitle}
                         >
-                            ContractLens AI
+                            ContractLens AI Robot Assistent
                         </Text>
 
 
@@ -326,9 +342,12 @@ export default function ConversationScreen() {
                                 >
 
                                     <Image
-                                        source={require(
-                                            '@/assets/images/clara-ai/clara-avatar.png'
-                                        )}
+                                        source={
+                                            claraImages[
+                                                conversation.intent as keyof typeof claraImages
+                                                ] ??
+                                            claraImages.UNKNOWN
+                                        }
                                         style={
                                             styles.aiMessageAvatar
                                         }
@@ -679,7 +698,7 @@ const ClaraLoading = () => {
 
             <Image
                 source={require(
-                    '@/assets/images/clara-ai/clara-avatar.png'
+                    '@/assets/images/clara-ai/clara_typing.png'
                 )}
                 style={
                     styles.aiMessageAvatar
