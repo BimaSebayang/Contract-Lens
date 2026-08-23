@@ -9,6 +9,13 @@ from dbs.mongodb.models.intent import (
 )
 from dbs.mongodb.models.intent import UserMessageExample
 
+# Intent yang harus dibuat
+# GREETING_USER
+# GLOSSARY_CONTRACTLENS
+# REGISTER_API
+# LOGIN_CONTRACTLENS
+# ANALYZE_API_CONTRACT
+# UNKNOWN
 
 class IntentRepository:
 
