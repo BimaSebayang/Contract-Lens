@@ -204,3 +204,4 @@
 /service-analyzer/target/contractlens-analyzer.jar.original
 /service-analyzer/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 /service-analyzer/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/common/target/classes/com/contractlens/common/dto/ChatAiMessageRequest$ChatAiMessageRequestBuilder.class
