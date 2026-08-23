@@ -12,67 +12,103 @@ import {
 } from 'react-native';
 
 
-export type FeedbackType =
-    | 'like'
-    | 'dislike'
-    | null;
 
+import {
+    styles,
+} from './conversation.style';
 
-export type ChatMessage = {
-    id: string;
-
-    type:
-        | 'user'
-        | 'assistant';
-
-    message: string;
-};
+import {LlmMessageConversation, LlmMessageMap, LlmMessageRole} from "@/core/dto/LlmMessageConversation";
+import chatService from "@/integration/chat/service/chat.service";
 
 
 export function useConversationScript() {
 
+    /* ================= STATE ================= */
+
+    const getConversationId = (): string => {
+
+        if (conversationId) {
+            return conversationId;
+        }
+
+
+        const newConversationId =
+            Math.random()
+                .toString(36)
+                .substring(2, 15);
+
+
+        setConversationId(
+            newConversationId
+        );
+
+
+        return newConversationId;
+
+    };
+
     const [
-        message,
-        setMessage,
+        conversationId,
+        setConversationId,
     ] = useState('');
 
     const [
-        feedback,
-        setFeedback,
-    ] = useState<FeedbackType>(null);
+        message,
+        setMessage,
+    ] = useState<LlmMessageMap>({
+        message:'',
+        styleView:'',
+        styleText:'',
+        styleTime:''
+    });
+
 
     const [
-        messages,
-        setMessages,
-    ] = useState<ChatMessage[]>([]);
+        conversations,
+        setConversations,
+    ] = useState<
+        LlmMessageConversation[]
+    >([]);
 
     const [
         keyboardHeight,
         setKeyboardHeight,
-    ] = useState(0);
+    ] = useState<number>(0);
 
+
+    /* ================= REF ================= */
 
     const scrollViewRef =
         useRef<ScrollView>(null);
-
 
     const keyboardOffset = useRef(
         new Animated.Value(0)
     ).current;
 
 
+    /* ================= SCROLL ================= */
+
     const scrollToBottom = (
         animated = true
     ) => {
+
         requestAnimationFrame(() => {
+
             setTimeout(() => {
-                scrollViewRef.current?.scrollToEnd({
-                    animated,
-                });
+
+                scrollViewRef.current
+                    ?.scrollToEnd({
+                        animated,
+                    });
+
             }, 50);
+
         });
+
     };
 
+
+    /* ================= KEYBOARD ================= */
 
     useEffect(() => {
 
@@ -80,7 +116,6 @@ export function useConversationScript() {
             Platform.OS === 'ios'
                 ? 'keyboardWillShow'
                 : 'keyboardDidShow';
-
 
         const keyboardHideEvent =
             Platform.OS === 'ios'
@@ -96,9 +131,7 @@ export function useConversationScript() {
                     const height =
                         event.endCoordinates.height;
 
-
                     setKeyboardHeight(height);
-
 
                     Animated.timing(
                         keyboardOffset,
@@ -114,9 +147,10 @@ export function useConversationScript() {
                         }
                     ).start();
 
-
                     setTimeout(() => {
+
                         scrollToBottom();
+
                     }, 100);
 
                 }
@@ -129,7 +163,6 @@ export function useConversationScript() {
                 (event) => {
 
                     setKeyboardHeight(0);
-
 
                     Animated.timing(
                         keyboardOffset,
@@ -160,101 +193,154 @@ export function useConversationScript() {
     }, []);
 
 
+    /* ================= AUTO SCROLL ================= */
+
     useEffect(() => {
 
-        if (messages.length > 0) {
+        if (
+            conversations.length > 0
+        ) {
             scrollToBottom();
         }
 
-    }, [messages]);
+    }, [conversations]);
 
+    /* ================= LLM MESSAGE ================= */
+    const chatClaraSendCallback = async () => {
 
-    const handleSendMessage = () => {
+        const result =
+            await chatService.sendMessage(
+                getConversationId(),
+                message.message
+            );
 
-        const trimmedMessage =
-            message.trim();
+        const aiConversation: LlmMessageConversation = {
+            role: 'assistant',
+            content: result.content[0],
+            feedback: null,
+            timestamp:result.timestamp,
+            showFeedback:true
+        };
 
+        setConversations(
+            (previousConversations) => [
+                ...previousConversations,
+                aiConversation,
+            ]
+        );
+    }
 
-        if (!trimmedMessage) {
-            return;
+    /* ================= SEND MESSAGE ================= */
+
+    const handleChatClara = async () => {
+        const send_message : LlmMessageMap = {
+            message:message.message,
+            styleView:styles.userMessage,
+            styleText:styles.userMessageText,
+            styleTime:styles.messageTime
         }
 
-
-        const userMessage: ChatMessage = {
-            id: Date.now().toString(),
-
-            type: 'user',
-
-            message: trimmedMessage,
+        const userConversation: LlmMessageConversation = {
+            role: 'user',
+            content: send_message,
+            feedback: false,
+            timestamp:
+                new Date()
+                    .toLocaleTimeString(
+                        [],
+                        {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        }
+                    ),
+            showFeedback:true
         };
 
 
-        setMessages(
-            (previousMessages) => [
-                ...previousMessages,
-                userMessage,
+        setConversations(
+            (previousConversations) => [
+                ...previousConversations,
+                userConversation,
             ]
         );
 
 
-        setMessage('');
+        await chatClaraSendCallback();
 
     };
 
 
+    const handleMessageChange = (
+        text: string
+    ) => {
+        setMessage(
+            (previousMessage) => ({
+                ...previousMessage,
+                message: text,
+            })
+        );
+
+    };
+
+    /* ================= FEEDBACK ================= */
+
     const handleFeedback = (
-        type: FeedbackType
+        index: number,
+        feedback: boolean
     ) => {
 
-        setFeedback(
-            (currentFeedback) => {
+        setConversations(
+            (previousConversations) =>
+                previousConversations.map(
+                    (
+                        conversation,
+                        conversationIndex
+                    ) => {
 
-                if (
-                    currentFeedback === type
-                ) {
-                    return null;
-                }
+                        if (
+                            conversationIndex !== index
+                        ) {
+                            return conversation;
+                        }
 
-                return type;
 
-            }
+                        return {
+                            ...conversation,
+                            feedback,
+                        };
+
+                    }
+                )
         );
 
     };
 
 
+    /* ================= RETURN ================= */
+
     return {
 
-        /* ================= STATE ================= */
+        conversations,
 
         message,
 
-        feedback,
-
-        messages,
-
         keyboardHeight,
 
-
-        /* ================= REF ================= */
 
         scrollViewRef,
 
         keyboardOffset,
 
 
-        /* ================= SETTER ================= */
-
         setMessage,
 
 
-        /* ================= FUNCTION ================= */
-
         scrollToBottom,
 
-        handleSendMessage,
+        handleChatClara,
 
         handleFeedback,
+        handleMessageChange
 
     };
 

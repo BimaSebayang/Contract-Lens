@@ -1,3 +1,4 @@
-export interface ChatAiMessageResponse {
-    ai_response: string;
+export interface ChatAiMessageRequest {
+    message: string;
+    conversation_id: string;
 }
