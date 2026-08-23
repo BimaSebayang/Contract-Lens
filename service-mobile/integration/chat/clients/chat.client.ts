@@ -28,11 +28,7 @@ const chatClient = {
                 >(
                     environment.apiUrl +
                     '/v2/chat/contract-lens',
-
-                    request,
-                    {
-                        timeout: 10000,
-                    }
+                    request
                 );
             return response.data;
         } catch (error) {

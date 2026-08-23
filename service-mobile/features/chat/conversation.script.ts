@@ -33,9 +33,13 @@ export function useConversationScript() {
 
 
         const newConversationId =
-            Math.random()
-                .toString(36)
-                .substring(2, 15);
+            Array.from(
+                { length: 5 },
+                () =>
+                    Math.random()
+                        .toString(36)
+                        .substring(2)
+            ).join('');
 
 
         setConversationId(
@@ -46,6 +50,11 @@ export function useConversationScript() {
         return newConversationId;
 
     };
+
+    const [
+        isClaraLoading,
+        setIsClaraLoading,
+    ] = useState(false);
 
     const [
         conversationId,
@@ -222,12 +231,16 @@ export function useConversationScript() {
             showFeedback:true
         };
 
+
+
         setConversations(
             (previousConversations) => [
                 ...previousConversations,
                 aiConversation,
             ]
         );
+
+        setIsClaraLoading(false)
     }
 
     /* ================= SEND MESSAGE ================= */
@@ -264,7 +277,14 @@ export function useConversationScript() {
             ]
         );
 
+        setMessage({
+            message:'',
+            styleView:'',
+            styleText:'',
+            styleTime:''
+        });
 
+        setIsClaraLoading(true)
         await chatClaraSendCallback();
 
     };
@@ -340,8 +360,8 @@ export function useConversationScript() {
         handleChatClara,
 
         handleFeedback,
-        handleMessageChange
-
+        handleMessageChange,
+        isClaraLoading
     };
 
 }

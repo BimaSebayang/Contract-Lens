@@ -311,4 +311,11 @@ export const styles = StyleSheet.create({
     sendButtonDisabled: {
         opacity: 0.5,
     },
+
+    claraThinkingText: {
+        fontSize: 13,
+        fontWeight: '500',
+        color: '#64748B',
+        fontStyle: 'italic',
+    },
 });
