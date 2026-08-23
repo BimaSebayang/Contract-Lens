@@ -246,46 +246,48 @@ export function useConversationScript() {
     /* ================= SEND MESSAGE ================= */
 
     const handleChatClara = async () => {
-        const send_message : LlmMessageMap = {
-            message:message.message,
-            styleView:styles.userMessage,
-            styleText:styles.userMessageText,
-            styleTime:styles.messageTime
+        if(message.message && !isClaraLoading){
+            const send_message : LlmMessageMap = {
+                message:message.message,
+                styleView:styles.userMessage,
+                styleText:styles.userMessageText,
+                styleTime:styles.messageTime
+            }
+
+            const userConversation: LlmMessageConversation = {
+                role: 'user',
+                content: send_message,
+                feedback: false,
+                timestamp:
+                    new Date()
+                        .toLocaleTimeString(
+                            [],
+                            {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            }
+                        ),
+                showFeedback:true
+            };
+
+
+            setConversations(
+                (previousConversations) => [
+                    ...previousConversations,
+                    userConversation,
+                ]
+            );
+
+            setMessage({
+                message:'',
+                styleView:'',
+                styleText:'',
+                styleTime:''
+            });
+
+            setIsClaraLoading(true)
+            await chatClaraSendCallback();
         }
-
-        const userConversation: LlmMessageConversation = {
-            role: 'user',
-            content: send_message,
-            feedback: false,
-            timestamp:
-                new Date()
-                    .toLocaleTimeString(
-                        [],
-                        {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                        }
-                    ),
-            showFeedback:true
-        };
-
-
-        setConversations(
-            (previousConversations) => [
-                ...previousConversations,
-                userConversation,
-            ]
-        );
-
-        setMessage({
-            message:'',
-            styleView:'',
-            styleText:'',
-            styleTime:''
-        });
-
-        setIsClaraLoading(true)
-        await chatClaraSendCallback();
 
     };
 

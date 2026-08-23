@@ -89,7 +89,9 @@ export default function ConversationScreen() {
                     <Pressable
                         style={styles.backButton}
                         onPress={() =>
-                            router.back()
+                            router.push(
+                                '/chat/page'
+                            )
                         }
                     >
                         <ArrowLeft
@@ -555,7 +557,6 @@ export default function ConversationScreen() {
                     <Pressable
                         style={[
                             styles.sendButton,
-
                             !message.message.trim() &&
                             styles.sendButtonDisabled,
                         ]}

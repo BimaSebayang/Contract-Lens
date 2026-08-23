@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "ContractLens-Snapshot",
-    "slug": "ContractLens-Snapshot",
+    "name": "ContractLens",
+    "slug": "ContractLens",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/clara-ai/clara-avatar.png",
+    "icon": "./assets/images/clara-ai/icon-cls.png",
     "scheme": "servicemobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -15,9 +15,9 @@
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/clara-ai/clara-avatar.png",
-        "backgroundImage": "./assets/images/clara-ai/clara-avatar.png",
-        "monochromeImage": "./assets/images/clara-ai/clara-avatar.png"
+        "foregroundImage": "./assets/images/clara-ai/icon-cls.png",
+        "backgroundImage": "./assets/images/clara-ai/icon-cls.png",
+        "monochromeImage": "./assets/images/clara-ai/icon-cls.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -25,14 +25,14 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/clara-ai/clara-avatar.png"
+      "favicon": "./assets/images/clara-ai/icon-cls.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/clara-ai/clara-avatar.png",
+          "image": "./assets/images/clara-ai/splash-cls.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -40,7 +40,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
