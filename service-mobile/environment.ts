@@ -5,13 +5,6 @@ import {
 import {
     environment as production,
 } from './environment.production';
-
-
-const isProduction =
-    process.env.NODE_ENV === 'production';
-
-
-export const environment =
-    isProduction
-        ? production
-        : development;
+export const environment = {
+    apiUrl: 'http://192.168.8.248:9001',
+}
