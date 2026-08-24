@@ -2,9 +2,9 @@
 
 > **Observe. Detect. Protect.**
 
-ContractLens adalah **API Gateway dan Platform Contract Intelligence** yang dapat dijalankan secara self-hosted, dirancang untuk membantu tim engineering mendeteksi perubahan API, menganalisis kompatibilitas, melindungi consumer yang sudah ada, dan mengembangkan backend service dengan lebih aman.
+ContractLens is a self-hosted **API Gateway and Contract Intelligence Platform** designed to help engineering teams detect API changes, analyze compatibility, protect existing consumers, and evolve backend services safely.
 
-Pada intinya, ContractLens dibangun di atas tiga kemampuan utama:
+At its core, ContractLens is built around three primary capabilities:
 
 ```text
 OBSERVE
@@ -24,49 +24,49 @@ PROTECT
    └── Compatibility Engine
 ```
 
-**CLAra — ContractLens AI Robot Assistant — merupakan lapisan interaksi yang dibangun di atas platform ContractLens.**
+**CLAra — ContractLens AI Robot Assistant — is an interaction layer built on top of the ContractLens platform.**
 
-CLAra tidak menggantikan Gateway, Analyzer, maupun Compatibility Engine. CLAra membantu pengguna memahami, mengakses, dan berinteraksi dengan intelligence yang disediakan oleh ContractLens.
-
----
-
-# Visi
-
-> **Memberikan developer rasa percaya diri saat melakukan deployment API.**
-
-ContractLens memungkinkan backend service berkembang dengan lebih aman tanpa merusak consumer API yang sudah ada.
-
-Platform ini mengamati traffic API, menangkap dan menganalisis perubahan contract, menentukan dampak kompatibilitas, serta menyediakan perlindungan pada runtime ketika strategi compatibility tersedia.
+CLAra does not replace the Gateway, Analyzer, or Compatibility Engine. It helps users understand, access, and interact with the intelligence already provided by ContractLens.
 
 ---
 
-# Apa Itu ContractLens?
+# Vision
 
-API modern terus berkembang.
+> **Give developers confidence when deploying APIs.**
 
-Sebuah perubahan yang terlihat sederhana dapat berdampak pada consumer yang sudah ada:
+ContractLens enables backend services to evolve safely without breaking existing API consumers.
+
+The platform observes API traffic, captures and analyzes contract changes, determines compatibility impact, and provides runtime protection where compatibility strategies are available.
+
+---
+
+# What Is ContractLens?
+
+Modern APIs evolve continuously.
+
+A seemingly simple change can affect existing consumers:
 
 ```text
-API Lama
+Old API
 ──────────────────────
 amount: Integer
 
-API Baru
+New API
 ──────────────────────
 amount: String
 ```
 
-Perubahan lainnya dapat mencakup:
+Other changes may include:
 
-- Perubahan Request Body
-- Perubahan Response Body
-- Perubahan Header
-- Perubahan Required Field
-- Perubahan Struktur JSON
+- Request Body Changes
+- Response Body Changes
+- Header Changes
+- Required Field Changes
+- JSON Structure Changes
 
-Tanpa adanya visibilitas terhadap perubahan tersebut, API producer dapat melakukan deployment versi baru sementara consumer lama masih mengharapkan contract sebelumnya.
+Without visibility into those changes, an API producer may deploy a new version while existing consumers continue expecting the previous contract.
 
-ContractLens dirancang untuk membantu mengatasi masalah tersebut.
+ContractLens is designed to address that problem.
 
 ```text
                   API Ecosystem
@@ -82,7 +82,7 @@ ContractLens dirancang untuk membantu mengatasi masalah tersebut.
 
 ---
 
-# Arsitektur Utama Platform
+# Core Platform Architecture
 
 ```text
                          Client
@@ -120,15 +120,15 @@ ContractLens dirancang untuk membantu mengatasi masalah tersebut.
                                    MongoDB
 ```
 
-Gateway, Contract Analyzer, dan Compatibility Engine memiliki tanggung jawab yang berbeda, tetapi bekerja bersama untuk mendukung evolusi API yang aman.
+The Gateway, Contract Analyzer, and Compatibility Engine have different responsibilities but work together to support safe API evolution.
 
 ---
 
 # API Gateway
 
-ContractLens Gateway merupakan operational entry point untuk API yang telah terdaftar.
+The ContractLens Gateway is the operational entry point for registered APIs.
 
-Tanggung jawabnya meliputi:
+Its responsibilities include:
 
 - Reverse Proxy
 - Dynamic Route Resolution
@@ -139,9 +139,9 @@ Tanggung jawabnya meliputi:
 - Reliable Event Publishing
 - Runtime Compatibility Protection
 - Runtime Payload Transformation
-- Low-overhead Execution
+- Low-overhead execution
 
-Gateway dirancang dengan alur:
+The Gateway is designed around:
 
 ```text
 Client
@@ -165,15 +165,15 @@ Runtime Transformation
 Target Service
 ```
 
-## Contoh
+## Example
 
-Bayangkan sebuah client mengirimkan request:
+Imagine a client sends a request to:
 
 ```http
 GET /api/payment/123
 ```
 
-Gateway akan melakukan resolusi terhadap route yang telah terdaftar:
+The Gateway resolves the registered route:
 
 ```text
 /api/payment/**
@@ -182,7 +182,7 @@ Gateway akan melakukan resolusi terhadap route yang telah terdaftar:
 https://payment-service.internal
 ```
 
-Request kemudian diteruskan ke target service.
+The request is then forwarded to the target service.
 
 ```text
 Client
@@ -196,7 +196,7 @@ ContractLens Gateway
 Payment Service
 ```
 
-Pada saat yang sama, Gateway dapat mempublikasikan event traffic API atau informasi contract secara asynchronous untuk dianalisis:
+At the same time, the Gateway can publish API traffic or contract-related events asynchronously for analysis:
 
 ```text
 Request / Response
@@ -215,17 +215,17 @@ ContractLens Gateway
               RabbitMQ
 ```
 
-Gateway tidak melakukan contract comparison yang berat pada setiap request.
+The Gateway does not perform expensive contract comparison for every request.
 
-Tanggung jawab utamanya adalah menjaga traffic API tetap berjalan secara efisien.
+Its primary responsibility is to keep API traffic flowing efficiently.
 
-> **Gateway menjawab: Bagaimana traffic API mengalir?**
+> **Gateway asks: How does traffic flow?**
 
 ---
 
 # Contract Analyzer
 
-Contract Analyzer bertanggung jawab untuk mengamati dan menganalisis perubahan contract API secara asynchronous.
+The Contract Analyzer is responsible for observing and analyzing API contract changes asynchronously.
 
 ```text
 Gateway Event
@@ -252,9 +252,9 @@ Compatibility Analysis
 Compatibility Plan
 ```
 
-Analyzer bertanggung jawab membangun pemahaman ContractLens terhadap evolusi sebuah API.
+The Analyzer is responsible for building ContractLens' understanding of API evolution.
 
-Cakupan analisis saat ini meliputi:
+Current analysis coverage includes:
 
 - Request Body Changes
 - Response Body Changes
@@ -264,9 +264,9 @@ Cakupan analisis saat ini meliputi:
 - Contract Comparison
 - API History
 
-## Contoh
+## Example
 
-Misalkan sebelumnya Payment API mengembalikan:
+Assume the Payment API previously returned:
 
 ```json
 {
@@ -276,7 +276,7 @@ Misalkan sebelumnya Payment API mengembalikan:
 }
 ```
 
-Kemudian versi baru API mengembalikan:
+A new version of the API now returns:
 
 ```json
 {
@@ -286,57 +286,57 @@ Kemudian versi baru API mengembalikan:
 }
 ```
 
-Analyzer membuat atau membandingkan contract snapshot:
+The Analyzer creates or compares contract snapshots:
 
 ```text
-Snapshot Sebelumnya
+Previous Snapshot
 ──────────────────────
 
 amount: Integer
 
 
-Snapshot Saat Ini
+Current Snapshot
 ──────────────────────
 
 amount: String
 ```
 
-Analyzer mendeteksi:
+The Analyzer detects:
 
 ```text
-PERUBAHAN CONTRACT TERDETEKSI
+CONTRACT CHANGE DETECTED
 
 Field:
 amount
 
-Tipe Sebelumnya:
+Previous Type:
 Integer
 
-Tipe Saat Ini:
+Current Type:
 String
 ```
 
-Perubahan yang terdeteksi kemudian diteruskan ke compatibility analysis.
+The detected change is then passed into compatibility analysis.
 
-Analyzer menjawab:
+The Analyzer answers:
 
-> **Apa yang berubah?**
+> **What changed?**
 
-Proses analisis ini dilakukan secara asynchronous agar proses contract intelligence tidak menambah latency secara signifikan pada request API.
+This analysis is performed asynchronously so that contract intelligence processing does not unnecessarily increase API request latency.
 
 ---
 
 # Compatibility Engine
 
-Compatibility Engine bertugas menginterpretasikan perubahan contract yang terdeteksi, menentukan dampaknya terhadap consumer yang sudah ada, dan menghasilkan strategi compatibility apabila memungkinkan.
+The Compatibility Engine interprets detected contract changes, determines their impact on existing consumers, and generates a compatibility strategy when possible.
 
-Secara konseptual:
+Conceptually:
 
 ```text
-Contract Sebelumnya
+Previous Contract
        │
        ▼
-Contract Saat Ini
+Current Contract
        │
        ▼
 Contract Comparison
@@ -351,27 +351,27 @@ Compatibility Engine
        └── Transformation Strategy
 ```
 
-Compatibility Engine menjawab pertanyaan seperti:
+The Compatibility Engine answers questions such as:
 
-- Apakah consumer yang sudah ada masih dapat menggunakan API dengan aman?
-- Apakah perubahan ini bersifat breaking?
-- Apakah contract lama masih dapat dipertahankan?
-- Apakah runtime transformation memungkinkan?
+- Can existing consumers continue to use the API safely?
+- Is the change breaking?
+- Can the old contract be preserved?
+- Is a runtime transformation possible?
 
-Fokus compatibility saat ini adalah:
+Current compatibility work is focused on:
 
 - Data Type Compatibility
 
-Arsitektur dirancang untuk berkembang ke arah:
+The architecture is designed to expand toward:
 
 - Required Field Compatibility
 - JSON Structure Compatibility
 - Runtime Payload Transformation
 - Runtime Compatibility Protection
 
-## Contoh: Perubahan Compatible
+## Example: Compatible Change
 
-Bayangkan sebuah API mengalami perubahan:
+Imagine an API changes:
 
 ```text
 amount: Integer
@@ -380,13 +380,13 @@ amount: Integer
 amount: Long
 ```
 
-Compatibility Engine mengevaluasi perubahan:
+The Compatibility Engine evaluates the change:
 
 ```text
 Integer → Long
 ```
 
-Dan dapat menentukan:
+And may determine:
 
 ```text
 Compatibility Result:
@@ -394,13 +394,13 @@ Compatibility Result:
 COMPATIBLE
 ```
 
-Tidak diperlukan runtime transformation.
+No runtime transformation is required.
 
 ---
 
-## Contoh: Perubahan Breaking
+## Example: Breaking Change
 
-Bayangkan sebuah API mengalami perubahan:
+Imagine an API changes:
 
 ```text
 customer: Object
@@ -409,13 +409,13 @@ customer: Object
 customer: String
 ```
 
-Compatibility Engine mengevaluasi:
+The Compatibility Engine evaluates:
 
 ```text
 Object → String
 ```
 
-Hasilnya:
+Result:
 
 ```text
 Compatibility Result:
@@ -423,7 +423,7 @@ Compatibility Result:
 BREAKING
 ```
 
-Consumer lama yang mengharapkan:
+Existing consumers expecting:
 
 ```json
 {
@@ -434,7 +434,7 @@ Consumer lama yang mengharapkan:
 }
 ```
 
-mungkin tidak lagi dapat memproses:
+may no longer be able to process:
 
 ```json
 {
@@ -442,13 +442,13 @@ mungkin tidak lagi dapat memproses:
 }
 ```
 
-Compatibility Engine mengidentifikasi dampak perubahan tersebut dan dapat melaporkan bahwa belum tersedia strategi transformasi yang aman.
+The Compatibility Engine identifies the impact and can report that no safe transformation strategy is currently available.
 
 ---
 
-## Contoh: Perubahan yang Dapat Ditransformasikan
+## Example: Transformable Change
 
-Bayangkan consumer lama mengharapkan:
+Imagine an old consumer expects:
 
 ```json
 {
@@ -456,7 +456,7 @@ Bayangkan consumer lama mengharapkan:
 }
 ```
 
-Namun API versi baru mengembalikan:
+But the new API returns:
 
 ```json
 {
@@ -464,13 +464,13 @@ Namun API versi baru mengembalikan:
 }
 ```
 
-Compatibility Engine menentukan bahwa perubahan tersebut mungkin dapat ditransformasikan:
+The Compatibility Engine determines that the change may be transformable:
 
 ```text
-Tipe Sebelumnya:
+Previous Type:
 Integer
 
-Tipe Saat Ini:
+Current Type:
 String
         │
         ▼
@@ -480,7 +480,7 @@ Transformation Strategy
 String → Integer
 ```
 
-Kemudian sebuah Compatibility Plan dapat dibuat:
+A Compatibility Plan can then be generated:
 
 ```text
 Field:
@@ -494,10 +494,10 @@ STRING_TO_INTEGER
 
 # Compatibility Plan
 
-Compatibility Plan dipersiapkan pada saat proses analysis, bukan dihitung berulang kali ketika API sedang menerima traffic.
+Compatibility plans are prepared during analysis rather than calculated repeatedly during live API traffic.
 
 ```text
-Waktu Analisis
+Analysis Time
 ────────────────────────
 
 Compare Contracts
@@ -512,7 +512,7 @@ Generate Compatibility Plan
 Persist Result
 ```
 
-Contohnya:
+For example:
 
 ```text
 Compatibility Plan
@@ -523,17 +523,17 @@ Payment API
 Field:
 amount
 
-Tipe Sebelumnya:
+Previous Type:
 Integer
 
-Tipe Saat Ini:
+Current Type:
 String
 
 Strategy:
 STRING_TO_INTEGER
 ```
 
-Pada runtime, Gateway tidak perlu melakukan contract comparison kembali.
+During runtime, the Gateway does not need to compare contracts again.
 
 ```text
 Runtime
@@ -551,9 +551,9 @@ O(1) Compatibility Plan Lookup
 Apply Transformation
 ```
 
-## Contoh pada Runtime
+## Runtime Example
 
-Target service mengembalikan:
+The target service returns:
 
 ```json
 {
@@ -563,14 +563,14 @@ Target service mengembalikan:
 }
 ```
 
-Gateway menemukan Compatibility Plan yang sebelumnya telah dibuat:
+The Gateway finds the previously generated Compatibility Plan:
 
 ```text
 amount
 STRING_TO_INTEGER
 ```
 
-Runtime transformation menghasilkan:
+The runtime transformation produces:
 
 ```json
 {
@@ -580,21 +580,21 @@ Runtime transformation menghasilkan:
 }
 ```
 
-Consumer yang sudah ada tetap menerima contract sesuai dengan yang diharapkannya.
+The existing consumer continues receiving the contract it expects.
 
-> **Compatibility Engine menjawab: Apa arti perubahan ini, dan apakah compatibility masih dapat dipertahankan?**
+> **Compatibility Engine asks: What does this change mean, and can compatibility be preserved?**
 
 ---
 
-# Bagaimana Semua Komponen Bekerja Bersama?
+# How the Components Work Together
 
-Alur utama ContractLens dapat dirangkum sebagai berikut:
+The complete ContractLens flow can be summarized as:
 
 ```text
 1. Gateway
 ────────────────────────────
 
-"Bagaimana traffic API mengalir?"
+"How does traffic flow?"
 
 Client
    │
@@ -608,7 +608,7 @@ Target API
 2. Analyzer
 ────────────────────────────
 
-"Apa yang berubah?"
+"What changed?"
 
 API Event
    │
@@ -625,7 +625,7 @@ Detected Change
 3. Compatibility Engine
 ────────────────────────────
 
-"Apa dampak dari perubahan ini?"
+"What does this change mean?"
 
 Detected Change
    │
@@ -643,7 +643,7 @@ Compatibility Evaluation
 4. Gateway Runtime
 ────────────────────────────
 
-"Terapkan perlindungan jika diperlukan."
+"Apply protection when needed."
 
 API Response
    │
@@ -657,43 +657,43 @@ Runtime Transformation
 Client
 ```
 
-Secara singkat:
+In short:
 
 ```text
 Gateway
     │
-    └── Bagaimana traffic API mengalir?
+    └── How does traffic flow?
 
 Analyzer
     │
-    └── Apa yang berubah?
+    └── What changed?
 
 Compatibility Engine
     │
-    └── Apa dampak perubahan tersebut,
-        dan apakah compatibility dapat dipertahankan?
+    └── What does the change mean,
+        and can compatibility be preserved?
 
 Gateway Runtime
     │
-    └── Terapkan perlindungan yang telah dipersiapkan.
+    └── Apply the prepared protection.
 
 CLAra
     │
-    └── Membantu pengguna memahami
-        apa yang ditemukan ContractLens.
+    └── Help the user understand
+        what ContractLens discovered.
 ```
 
 ---
 
-# Filosofi Arsitektur
+# Architecture Philosophy
 
-ContractLens memisahkan operational data, contract intelligence, runtime protection, dan conversational interaction.
+ContractLens separates operational data, contract intelligence, runtime protection, and conversational interaction.
 
 ## Operational Domain
 
 **Source of Truth: PostgreSQL**
 
-Menyimpan:
+Stores:
 
 - Route Configuration
 - Token Configuration
@@ -705,7 +705,7 @@ Menyimpan:
 
 **Source of Truth: MongoDB**
 
-Menyimpan:
+Stores:
 
 - Contract Snapshot
 - Baseline
@@ -713,29 +713,29 @@ Menyimpan:
 - Compatibility Plan
 - API History
 
-MongoDB berperan sebagai **Contract Intelligence Knowledge Base**.
+MongoDB acts as the **Contract Intelligence Knowledge Base**.
 
 ## Runtime Domain
 
-Gateway dioptimalkan untuk eksekusi yang cepat.
+The Gateway is optimized for fast execution.
 
-Prinsip utama:
+Key principles:
 
-- Memory-first Execution
-- Cached Compatibility Plans
-- Tidak ada Contract Comparison pada Runtime
-- O(1) Compatibility Plan Lookup
-- Minimal Runtime Overhead
+- Memory-first execution
+- Cached compatibility plans
+- No runtime contract comparison
+- O(1) compatibility plan lookup
+- Minimal runtime overhead
 
 ---
 
 # CLAra — ContractLens AI Robot Assistant
 
-**CLAra** merupakan singkatan dari **ContractLens AI Robot Assistant**.
+**CLAra** stands for **ContractLens AI Robot Assistant**.
 
-CLAra bukan core engine dari ContractLens.
+CLAra is not the ContractLens core engine.
 
-CLAra adalah **assistant dan conversational interaction layer** yang membantu pengguna berinteraksi dengan ContractLens secara lebih natural.
+CLAra is the **assistant and conversational interaction layer** that helps users interact with ContractLens more naturally.
 
 ```text
                     ContractLens
@@ -754,83 +754,83 @@ CLAra adalah **assistant dan conversational interaction layer** yang membantu pe
               Conversational Interaction
 ```
 
-ContractLens tetap bertanggung jawab terhadap:
+ContractLens remains responsible for:
 
-- API Traffic Handling
-- Contract Detection
-- Contract Comparison
-- Compatibility Decisions
-- Runtime Protection
-- Authoritative Data
+- API traffic handling
+- Contract detection
+- Contract comparison
+- Compatibility decisions
+- Runtime protection
+- Authoritative data
 
-CLAra membantu pengguna untuk:
+CLAra helps users:
 
-- Memahami konsep ContractLens
-- Mengambil informasi API yang relevan
-- Memahami hasil analysis
-- Menavigasi kemampuan platform
-- Berinteraksi dengan ContractLens menggunakan bahasa natural
+- Understand ContractLens concepts
+- Retrieve relevant API information
+- Understand analysis results
+- Navigate platform capabilities
+- Interact with ContractLens using natural language
 
 ---
 
-# Mengapa CLAra?
+# Why CLAra?
 
-Interaksi platform secara tradisional mungkin mengharuskan pengguna membuka beberapa layar:
+Traditional platform interaction may require users to navigate multiple screens:
 
 ```text
 Dashboard
    │
    ▼
-Pilih Workspace
+Select Workspace
    │
    ▼
-Pilih API
+Select API
    │
    ▼
-Buka Contract History
+Open Contract History
    │
    ▼
-Buka Analysis Result
+Open Analysis Result
    │
    ▼
-Periksa Compatibility
+Inspect Compatibility
 ```
 
-CLAra menyediakan jalur interaksi tambahan:
+CLAra introduces an additional interaction path:
 
 ```text
-"CLAra, cek perubahan terbaru pada Payment API."
+"CLAra, check the latest change on payment API."
 ```
 
-Pengguna tidak harus mengetahui layar mana yang menyimpan informasi tersebut.
+The user should not necessarily need to know which screen contains the information.
 
-CLAra membantu menyelesaikan:
+CLAra helps resolve:
 
 ```text
-Apa yang dimaksud oleh pengguna?
+What does the user mean?
         │
         ▼
-Informasi ContractLens apa yang relevan?
+What ContractLens information is relevant?
         │
         ▼
-Ambil data yang authoritative
+Retrieve authoritative data
         │
         ▼
-Sajikan dengan jelas
+Present it clearly
 ```
 
-Traditional UI dan conversational interaction dapat berjalan secara berdampingan.
+The traditional UI and conversational interaction can coexist.
 
-CLAra melengkapi kemampuan platform dan tidak menggantikan deterministic capability dari ContractLens.
+CLAra complements the platform; it does not replace deterministic platform capabilities.
 
 ---
 
-# Arsitektur Interaksi CLAra
+# CLAra Interaction Architecture
 
-CLAra menggunakan arsitektur hybrid antara AI dan deterministic retrieval.
+CLAra uses a hybrid AI and deterministic retrieval architecture.
 
 ```text
-                    Pesan Pengguna
+                    User Message
                          │
                          ▼
                  Intent Understanding
@@ -862,21 +862,21 @@ CLAra menggunakan arsitektur hybrid antara AI dan deterministic retrieval.
                    CLAra Response
 ```
 
-Prinsip utamanya adalah:
+The central principle is:
 
-> **CLAra memahami pengguna. ContractLens menyediakan kebenaran.**
+> **CLAra understands the user. ContractLens provides the truth.**
 
-AI bukan merupakan source of truth.
+AI is not the source of truth.
 
-AI membantu menginterpretasikan permintaan pengguna. ContractLens services dan database tetap bertanggung jawab terhadap data authoritative dan deterministic analysis.
+The AI layer helps interpret the user's request. ContractLens services and databases remain responsible for authoritative data and deterministic analysis.
 
 ---
 
-# Kemampuan CLAra Saat Ini
+# Current CLAra Capabilities
 
 ## Intent Understanding
 
-Intent utama saat ini:
+Current primary intents:
 
 ```text
 GREETING_USER
@@ -887,9 +887,9 @@ ANALYZE_API_CONTRACT
 UNKNOWN
 ```
 
-CLAra dirancang untuk memahami variasi bahasa secara semantic, bukan hanya bergantung pada exact command matching.
+CLAra is designed to understand semantic variations rather than depending entirely on exact command matching.
 
-Contoh:
+Example:
 
 ```text
 "Daftarin API baru dong"
@@ -897,7 +897,7 @@ Contoh:
 "Mau register endpoint baru"
 ```
 
-dapat diselesaikan menjadi:
+can resolve to:
 
 ```text
 REGISTER_API
@@ -905,47 +905,47 @@ REGISTER_API
 
 ---
 
-## Semantic dan Vector Retrieval
+## Semantic and Vector Retrieval
 
-Vector embeddings digunakan untuk semantic understanding dan retrieval.
+Vector embeddings are used for semantic understanding and retrieval.
 
-Vector retrieval dapat membantu dalam:
+They can help resolve:
 
-- Memahami intent pengguna
-- Mengenali terminology ContractLens
-- Menemukan knowledge yang relevan
-- Memahami context references
-- Mengenali variasi ekspresi
+- User intent
+- ContractLens terminology
+- Relevant knowledge
+- Context references
+- Similar expressions
 
-Vector retrieval tidak menggantikan authoritative operational maupun contract data.
+Vector retrieval does not replace authoritative operational or contract data.
 
-Data platform yang bersifat live tetap diambil dari sistem ContractLens secara lokal.
+Live platform data remains grounded in local ContractLens systems.
 
 ---
 
 ## Context-Aware Interaction
 
-CLAra dapat menggunakan context yang tersedia untuk memahami apa yang sedang dirujuk oleh pengguna.
+CLAra can use available context to understand what the user is referring to.
 
-Contohnya:
-
-```text
-"Cek Payment API."
-```
-
-Kemudian pengguna melanjutkan:
+For example:
 
 ```text
-"Perubahan terakhirnya aman nggak?"
+"Check the payment API."
 ```
 
-Tujuannya adalah agar permintaan kedua dapat diselesaikan berdasarkan context yang relevan, bukan memperlakukan setiap pesan sebagai informasi yang sepenuhnya terpisah.
+followed by:
+
+```text
+"Is the latest change safe?"
+```
+
+The goal is to resolve the second request against the relevant available context instead of treating every message as completely independent.
 
 ---
 
 ## Local Data Grounding
 
-Informasi authoritative diambil dari:
+Authoritative information is retrieved from:
 
 - PostgreSQL
 - MongoDB
@@ -955,20 +955,20 @@ Informasi authoritative diambil dari:
 - API History
 
 ```text
-AI memahami permintaan
+AI understands the request
           │
           ▼
-ContractLens mengambil fakta
+ContractLens retrieves the facts
           │
           ▼
-CLAra menyajikan hasil
+CLAra presents the result
 ```
 
 ---
 
-# Arsitektur Model AI
+# AI Model Architecture
 
-Model AI merupakan implementasi yang dapat diganti pada understanding layer CLAra.
+The AI model is an interchangeable implementation behind CLAra's understanding layer.
 
 ```text
                      CLAra
@@ -990,24 +990,24 @@ Model AI merupakan implementasi yang dapat diganti pada understanding layer CLAr
           ContractLens Retrieval Layer
 ```
 
-Model membantu CLAra memahami permintaan pengguna dalam bahasa natural.
+The model helps CLAra understand the user's natural-language request.
 
-ContractLens tetap bertanggung jawab terhadap:
+ContractLens remains responsible for:
 
-- Data Retrieval
-- Business Logic
+- Data retrieval
+- Business logic
 - Authorization
-- Contract Analysis
-- Compatibility Decisions
-- Source-of-Truth Management
+- Contract analysis
+- Compatibility decisions
+- Source-of-truth management
 
-Dengan demikian, AI provider dapat berubah tanpa harus mengubah core architecture dari ContractLens.
+The AI provider can therefore evolve without changing the core ContractLens architecture.
 
 ---
 
-# Prinsip Engineering
+# Engineering Principles
 
-## Prinsip Fungsional
+## Functional Principles
 
 - API First
 - Contract First
@@ -1019,7 +1019,7 @@ Dengan demikian, AI provider dapat berubah tanpa harus mengubah core architectur
 - Locally Grounded Data Retrieval
 - AI-Assisted Understanding
 
-## Prinsip Non-Fungsional
+## Non-Functional Principles
 
 - Performance First
 - Reactive Processing
@@ -1034,32 +1034,32 @@ Dengan demikian, AI provider dapat berubah tanpa harus mengubah core architectur
 
 ---
 
-# Filosofi Self-Hosted dan Privasi
+# Self-Hosted and Privacy Philosophy
 
-ContractLens dirancang dengan self-hosting sebagai salah satu model deployment utama.
+ContractLens is designed with self-hosting as a primary deployment model.
 
-Data customer diusahakan tetap berada di dalam environment customer.
+Customer data should remain within the customer's environment whenever possible.
 
-Hal ini penting terutama untuk:
+This is particularly important for:
 
-- API Definitions
-- Request dan Response Structures
+- API definitions
+- Request and response structures
 - Headers
-- Authentication-related Configuration
-- Contract Snapshots
-- API History
-- Compatibility Results
-- Internal Service Topology
+- Authentication-related configuration
+- Contract snapshots
+- API history
+- Compatibility results
+- Internal service topology
 
-Cloud maupun local AI model dapat digunakan di belakang CLAra sesuai dengan kebutuhan deployment.
+Cloud or local AI models may be used behind CLAra depending on deployment requirements.
 
-Platform ContractLens yang authoritative tetap berorientasi pada data lokal.
+The authoritative ContractLens platform remains locally grounded.
 
-Arah pengembangan jangka panjang mencakup dukungan terhadap private AI deployment di dalam infrastruktur customer.
+The long-term direction includes support for private AI deployment within customer infrastructure.
 
 ---
 
-# Fitur
+# Features
 
 ## API Gateway
 
@@ -1165,9 +1165,9 @@ Arah pengembangan jangka panjang mencakup dukungan terhadap private AI deploymen
 
 ## Sprint 6 🚧
 
-### Tujuan
+### Goal
 
-Membangun Compatibility Engine sekaligus melakukan migrasi Gateway ke Spring WebFlux.
+Build the Compatibility Engine while migrating the Gateway to Spring WebFlux.
 
 | Story | Status |
 |---|---|
@@ -1182,16 +1182,16 @@ Membangun Compatibility Engine sekaligus melakukan migrasi Gateway ke Spring Web
 | Story 6.8 — Performance Optimization | ⬜ |
 | Story 6.9 — Sprint Validation | ⬜ |
 
-### Keputusan Teknis Sprint 6
+### Sprint 6 Technical Decisions
 
-- Spring WebFlux untuk Gateway Runtime
-- MongoDB sebagai Contract Intelligence Source of Truth
-- PostgreSQL sebagai Operational Source of Truth
-- Caffeine sebagai Local Compatibility Cache
-- Compatibility Plans dimuat saat Gateway Startup
-- Tidak ada Runtime Contract Comparison
-- Memory-first Execution
-- O(1) CompatibilityPlan Lookup
+- Spring WebFlux for Gateway runtime
+- MongoDB as Contract Intelligence Source of Truth
+- PostgreSQL as Operational Source of Truth
+- Caffeine as Local Compatibility Cache
+- Compatibility Plans loaded at Gateway startup
+- No runtime contract comparison
+- Memory-first execution
+- O(1) CompatibilityPlan lookup
 
 ---
 
@@ -1200,51 +1200,51 @@ Membangun Compatibility Engine sekaligus melakukan migrasi Gateway ke Spring Web
 ### Interactive Platform
 
 - Interactive Dashboard
-- Improved Platform Interaction
-- API dan Contract Visibility
+- Improved platform interaction
+- API and contract visibility
 
 ---
 
 ## Sprint 8
 
-### CLAra dan AI-Assisted Interaction
+### CLAra and AI-Assisted Interaction
 
-- CLAra Integration
-- Intent Understanding
-- Semantic dan Vector Retrieval
-- Context-aware Interaction
-- Local Data Grounding
-- Conversational ContractLens Interaction
-- Response Quality Refinement
+- CLAra integration
+- Intent understanding
+- Semantic and vector retrieval
+- Context-aware interaction
+- Local data grounding
+- Conversational ContractLens interaction
+- Response quality refinement
 
-Prioritas CLAra saat ini:
+Current CLAra priority:
 
 ```text
-Memahami dengan akurat
+Understand accurately
         ↓
-Mengambil fakta
+Retrieve the truth
         ↓
-Menjelaskan dengan jelas
+Explain clearly
 ```
 
 ---
 
 ## Sprint 9
 
-### Enterprise dan Private AI
+### Enterprise and Private AI
 
 - Enterprise Features
-- Self-hosted AI Deployment Options
-- Private Model Integration
-- Deployment-specific Model Selection
-- AI Privacy Controls
-- Advanced Observability
+- Self-hosted AI deployment options
+- Private model integration
+- Deployment-specific model selection
+- AI privacy controls
+- Advanced observability
 
 ---
 
 # Sprint Validation 🧪
 
-Validation mencakup:
+Validation includes:
 
 - Unit Testing
 - Integration Testing
@@ -1258,7 +1258,7 @@ Validation mencakup:
 - Load Testing
 - Stress Testing
 
-Validasi interaksi AI secara bertahap akan mencakup:
+AI interaction validation will progressively include:
 
 - Intent Accuracy
 - Context Resolution Accuracy
@@ -1268,7 +1268,7 @@ Validasi interaksi AI secara bertahap akan mencakup:
 - Failure Rate
 - Informal Language Understanding
 
-Target performa Gateway:
+Target gateway performance:
 
 - Average Overhead < 20 ms
 - P95 < 50 ms
@@ -1276,11 +1276,11 @@ Target performa Gateway:
 
 ---
 
-# Status Saat Ini
+# Current Status
 
-## Selesai
+## Completed
 
-### Gateway dan Contract Intelligence
+### Gateway and Contract Intelligence
 
 - API Gateway
 - Dynamic Routing
@@ -1293,23 +1293,23 @@ Target performa Gateway:
 - Response Body Change Detection
 - Header Change Detection
 
-### Foundation CLAra
+### CLAra Foundation
 
 - Intent-based Understanding
 - Vector Embeddings
 - Semantic Retrieval
 - Context-Aware Interaction
-- Local Data Retrieval dan Grounding
+- Local Data Retrieval and Grounding
 - Conversational Interaction Foundation
 
-## Sedang Dikerjakan
+## In Progress
 
 - Spring WebFlux Migration
 - Compatibility Engine Foundation
 - Data Type Compatibility
-- CLAra Interaction dan Response Refinement
+- CLAra Interaction and Response Refinement
 
-## Direncanakan
+## Planned
 
 ### ContractLens Core
 
@@ -1326,26 +1326,26 @@ Target performa Gateway:
 - Structured Interpretation
 - Model Benchmarking
 - Local AI Model Experimentation
-- AI Evaluation dan Observability
+- AI Evaluation and Observability
 
 ---
 
-# Visi Masa Depan
+# Future Vision
 
-ContractLens bertujuan menjadi **API Contract Intelligence Platform** yang mampu:
+ContractLens aims to become a complete **API Contract Intelligence Platform** capable of:
 
-- Mengamati traffic API dan evolusi contract
-- Mendeteksi perubahan API yang signifikan
-- Mempertahankan backward compatibility
-- Menjalankan runtime transformation
-- Menyediakan API dan Contract History
-- Mendukung conversational interaction melalui CLAra
-- Menjelaskan hasil analysis ContractLens menggunakan bahasa natural
-- Mendukung private dan self-hosted AI deployment
-- Merekomendasikan compatibility strategy
-- Menyediakan enterprise-grade observability
+- Observing API traffic and contract evolution
+- Detecting meaningful API changes
+- Preserving backward compatibility
+- Executing runtime transformations
+- Providing API and contract history
+- Supporting conversational interaction through CLAra
+- Explaining ContractLens analysis in natural language
+- Supporting private and self-hosted AI deployments
+- Recommending compatibility strategies
+- Providing enterprise-grade observability
 
-CLAra akan berkembang bersama platform:
+CLAra will evolve alongside the platform:
 
 ```text
 Understand
@@ -1359,14 +1359,14 @@ Recommend
 Act
 ```
 
-Namun fondasi utamanya tetap:
+But the foundation remains the same:
 
-> **ContractLens adalah platformnya. CLAra adalah asistennya.**
+> **ContractLens is the platform. CLAra is the assistant.**
 
 ---
 
-# Penutup
+# Closing
 
 > **Observe. Detect. Protect.**
 
-ContractLens menggabungkan kemampuan API Gateway, asynchronous contract analysis, compatibility protection, dan conversational assistance untuk membantu tim engineering melakukan deployment API dengan lebih percaya diri.
+ContractLens combines API Gateway capabilities, asynchronous contract analysis, compatibility protection, and conversational assistance to help engineering teams deploy APIs with confidence.
