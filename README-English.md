@@ -2,42 +2,40 @@
 
 > **Observe. Detect. Protect.**
 
-ContractLens adalah **platform API Contract Intelligence yang dirancang untuk
-self-hosted deployment**, membantu tim engineering mengamati, memahami,
-menganalisis, dan mengembangkan API dengan lebih aman tanpa harus
-mengirim traffic API, contract, maupun data internal keluar dari
-infrastruktur mereka.
+ContractLens is a **self-hosted API Contract Intelligence Platform**
+designed to help engineering teams observe, understand, analyze, and safely
+evolve their APIs without exposing sensitive API traffic, contracts, or
+internal data outside their own infrastructure.
 
-Di pusat pengalaman interaksinya terdapat **CLAra — ContractLens AI Robot Assistant**.
+At the center of the platform is **CLAra — ContractLens AI Robot Assistant**.
 
-CLAra menyediakan lapisan interaksi percakapan untuk ekosistem ContractLens,
-sementara Gateway, Analyzer, Compatibility Engine, dan seluruh data service
-tetap berjalan di lingkungan milik pengguna.
+CLAra provides a conversational interaction layer for the ContractLens
+ecosystem, while the Gateway, Analyzer, Compatibility Engine, and data
+services operate inside the customer's environment.
 
 > **Observe. Detect. Protect.**
 
 ---
 
-# Visi
+# Vision
 
-> **Memberikan kepercayaan kepada developer saat mengembangkan API tanpa kehilangan kendali atas data mereka.**
+> **Give developers confidence when evolving APIs — without giving up control of their data.**
 
-API terus berkembang.
+Modern APIs constantly evolve.
 
-Field dapat ditambahkan, dihapus, diubah namanya, atau berganti tipe data.
-Header dapat berubah. Struktur request dan response dapat berevolusi.
-Consumer lama mungkin masih bergantung pada contract yang sebelumnya stabil.
+Fields may be added, removed, renamed, or changed. Headers may evolve.
+Request and response structures may change. Existing consumers may depend
+on contracts that were previously stable.
 
-Perubahan kecil pada API dapat menyebabkan **breaking change** tanpa
-langsung terlihat.
+A seemingly small API change can silently introduce a breaking change.
 
-ContractLens membantu tim engineering untuk mengamati dan memahami perubahan
-tersebut, menganalisis dampaknya, serta mempersiapkan strategi compatibility
-dengan tetap menjaga seluruh API intelligence di dalam lingkungan mereka.
+ContractLens helps engineering teams observe and understand these changes,
+analyze their impact, and prepare compatibility strategies while keeping
+API intelligence inside their own environment.
 
-Visi jangka panjangnya adalah:
+The long-term vision is:
 
-> **Memberikan setiap tim engineering seorang intelligent API guardian yang hidup di dalam infrastruktur mereka sendiri.**
+> **Give every engineering team an intelligent API guardian that lives inside their infrastructure.**
 
 ---
 
@@ -45,30 +43,29 @@ Visi jangka panjangnya adalah:
 
 > **ContractLens AI Robot Assistant**
 
-CLAra adalah lapisan interaksi percakapan dari ContractLens.
+CLAra is the conversational interaction layer of ContractLens.
 
-CLAra tidak dirancang hanya sebagai chatbot generik yang ditempelkan ke
-sebuah dashboard.
+CLAra is not intended to be a generic chatbot attached to a dashboard.
 
-Tujuannya adalah membantu pengguna memahami dan mengoperasikan ekosistem
-ContractLens melalui interaksi natural.
+Its purpose is to help users understand and operate the ContractLens
+ecosystem through natural interaction.
 
-Daripada pengguna harus membuka banyak halaman konfigurasi, pengguna cukup
-menyampaikan apa yang ingin mereka lakukan.
+Instead of navigating through multiple configuration pages, users should
+be able to express what they want to accomplish.
 
-Contohnya:
+For example:
 
-> **"CLAra, daftarkan API payment saya."**
+> **"CLAra, register my payment API."**
 
-> **"Analisis contract API ini."**
+> **"Analyze the contract for this API."**
 
-> **"Apa yang berubah sejak versi sebelumnya?"**
+> **"What changed since the last version?"**
 
-> **"Kenapa perubahan ini breaking?"**
+> **"Why is this change breaking?"**
 
-> **"Tampilkan hasil compatibility-nya."**
+> **"Show me the compatibility result."**
 
-Model interaksi yang dituju:
+The intended interaction model is:
 
 ```text
 User Intent
@@ -76,27 +73,27 @@ User Intent
      ▼
 CLAra
      │
-     ├── Memahami
-     ├── Mengambil Context
-     ├── Mengumpulkan Informasi
-     ├── Menjalankan Tools
-     └── Menjelaskan Hasil
+     ├── Understand
+     ├── Retrieve Context
+     ├── Collect Information
+     ├── Execute Tools
+     └── Explain Results
              │
              ▼
       ContractLens Platform
 ```
 
-Saat ini CLAra sedang berkembang dari **intent-based assistant** menuju
-**conversational API operations assistant**.
+CLAra is currently evolving from an **intent-based assistant** into a
+conversational API operations assistant.
 
 ---
 
-# Arsitektur CLAra Saat Ini
+# Current CLAra Architecture
 
-CLAra saat ini menggunakan pemahaman semantik melalui **vector embedding**
-untuk membantu mengenali intent pengguna.
+CLAra currently uses semantic understanding through vector embeddings to
+help identify user intent.
 
-Alur saat ini:
+The current flow is:
 
 ```text
 User Message
@@ -117,7 +114,7 @@ Intent Handler
 Response / Action Flow
 ```
 
-Intent yang saat ini tersedia:
+Current intents include:
 
 ```text
 GREETING_USER
@@ -128,7 +125,7 @@ ANALYZE_API_CONTRACT
 UNKNOWN
 ```
 
-Contoh:
+Examples:
 
 ```text
 "Hi CLAra"
@@ -158,24 +155,24 @@ REGISTER_API
 ANALYZE_API_CONTRACT
 ```
 
-Arsitektur ini memberikan fondasi ringan untuk memahami operasi-operasi umum
-ContractLens tanpa membutuhkan AI reasoning yang kompleks pada setiap
-interaksi.
+This architecture provides a lightweight foundation for understanding
+common ContractLens operations without requiring complex AI reasoning for
+every interaction.
 
 ---
 
-# Evolusi CLAra
+# CLAra Evolution
 
-CLAra dirancang untuk berkembang secara bertahap.
+CLAra is designed to evolve incrementally.
 
-Tujuannya bukan langsung menggunakan Large Language Model untuk setiap
-percakapan.
+The goal is not to immediately depend on a large language model for every
+conversation.
 
-Sebaliknya, CLAra akan berkembang melalui beberapa tahap.
+Instead, CLAra will gradually evolve through several stages.
 
 ## Level 1 — Intent Assistant
 
-**Tahap Saat Ini**
+**Current Stage**
 
 ```text
 User Message
@@ -190,7 +187,7 @@ Intent Detection
 Intent Handler
 ```
 
-Kemampuan saat ini:
+Current capabilities:
 
 - Greeting
 - ContractLens glossary
@@ -203,16 +200,16 @@ Kemampuan saat ini:
 
 ## Level 2 — Conversational Operator
 
-Tahap berikutnya memperkenalkan conversation state dan pengumpulan parameter.
+The next stage introduces conversation state and parameter collection.
 
 ```text
 User
  │
- │ "CLAra, daftarkan API."
+ │ "CLAra, register an API."
  ▼
 REGISTER_API
  │
- ├── Nama API?
+ ├── API Name?
  │
  ▼
 Conversation State
@@ -231,13 +228,13 @@ Confirmation
 Execute Registration
 ```
 
-CLAra mulai memahami bahwa sebuah operasi dapat membutuhkan beberapa
-informasi sebelum dapat dijalankan.
+CLAra begins to understand that an operation may require multiple pieces
+of information.
 
-Daripada memberikan response statis, CLAra dapat membimbing pengguna melalui
-sebuah operasi sampai selesai.
+Instead of returning a static response, CLAra can guide the user through
+a complete operation.
 
-Kemampuan:
+Capabilities:
 
 - Conversation state
 - Parameter extraction
@@ -251,8 +248,7 @@ Kemampuan:
 
 ## Level 3 — Tool-Using Assistant
 
-CLAra mulai berinteraksi langsung dengan kemampuan yang tersedia di
-ContractLens.
+CLAra begins interacting directly with ContractLens capabilities.
 
 ```text
 User Goal
@@ -276,24 +272,23 @@ Select Tool
          Result
 ```
 
-CLAra tidak menggantikan business logic ContractLens.
+CLAra does not replace ContractLens business logic.
 
-ContractLens tetap bertanggung jawab terhadap operasi yang deterministic.
+ContractLens remains responsible for deterministic operations.
 
-CLAra bertanggung jawab untuk memahami intent pengguna dan mengorkestrasi
-kemampuan yang tersedia.
+CLAra becomes responsible for understanding user intent and orchestrating
+available capabilities.
 
 ---
 
 ## Level 4 — Local AI Reasoning
 
-Interaksi yang lebih kompleks dapat membutuhkan reasoning di luar
-deterministic intent matching.
+Complex interactions may require reasoning beyond deterministic intent
+matching.
 
-Saat ini CLAra masih dapat menggunakan kemampuan LLM berbasis cloud untuk
-kebutuhan tertentu, tetapi arsitektur yang dituju adalah mengurangi
-ketergantungan tersebut dan mendukung AI reasoning di dalam environment
-milik pengguna.
+CLAra may currently use cloud-based LLM capabilities where required, but
+the intended architecture is to reduce this dependency and support AI
+reasoning inside the customer's own environment.
 
 ```text
 Complex User Request
@@ -315,15 +310,15 @@ Complex User Request
   ContractLens Tools
 ```
 
-Tujuannya adalah mendukung private AI inference tanpa mengharuskan data API
-atau contract intelligence dikirim ke external AI provider.
+The goal is to support private AI inference without requiring API data or
+contract intelligence to be sent to external AI providers.
 
 ---
 
 ## Level 5 — Bounded Agent
 
-Arsitektur jangka panjang memungkinkan CLAra beroperasi sebagai
-**bounded agent** di dalam ekosistem ContractLens.
+The long-term architecture allows CLAra to operate as a bounded agent
+inside the ContractLens ecosystem.
 
 ```text
 User Goal
@@ -332,7 +327,7 @@ User Goal
 Understand Context
     │
     ▼
-What Information Is Required?
+What information is required?
     │
     ▼
 Select Tool
@@ -343,7 +338,7 @@ Execute
     ▼
 Observe Result
     │
-    ├── More Work Required
+    ├── More work required
     │        │
     │        └── Reason Again
     │
@@ -353,28 +348,28 @@ Observe Result
           Respond
 ```
 
-CLAra harus beroperasi melalui ContractLens tools, permissions, dan
-execution boundaries yang didefinisikan dengan jelas.
+CLAra should operate through explicitly defined ContractLens tools,
+permissions, and execution boundaries.
 
-Tujuannya bukan autonomous agent tanpa batas.
+The goal is not unrestricted autonomy.
 
-Tujuannya adalah:
+The goal is:
 
-> **Controlled intelligence yang mampu memahami tujuan dan mengoperasikan ekosistem ContractLens secara aman.**
+> **Controlled intelligence capable of understanding goals and operating the ContractLens ecosystem safely.**
 
 ---
 
 # Conversational API Operations
 
-ContractLens mengikuti model interaksi **chat-first**.
+ContractLens follows a **chat-first interaction model**.
 
-Tujuannya sederhana:
+The goal is simple:
 
-> **Jangan memaksa pengguna mencari fitur.**
+> **Don't make the user navigate to the feature.**
 >
-> **Bawa fitur tersebut ke dalam percakapan.**
+> **Make the feature come to the conversation.**
 
-Interaksi tradisional:
+Traditional interaction:
 
 ```text
 Dashboard
@@ -397,7 +392,7 @@ ContractLens:
 ```text
 User
  │
- │ "CLAra, daftarkan API payment saya."
+ │ "CLAra, register my payment API."
  ▼
 CLAra
  │
@@ -414,13 +409,13 @@ Confirmation
 Action
 ```
 
-Chat memberikan **intent**.
+Chat provides the **intent**.
 
-Contextual UI memberikan **visualization dan confirmation**.
+Contextual UI provides **visualization and confirmation**.
 
-ContractLens menjalankan **deterministic operation**.
+ContractLens performs the **deterministic operation**.
 
-Model interaksi yang dituju:
+The intended interaction model is:
 
 > **Conversation → Context → Action**
 
@@ -428,31 +423,31 @@ Model interaksi yang dituju:
 
 # Privacy by Architecture
 
-Traffic API dapat mengandung data sensitif.
+API traffic may contain sensitive information.
 
-Contohnya:
+This may include:
 
-- Authentication token
+- Authentication tokens
 - Customer information
 - Payment information
 - Internal business data
-- Proprietary API structure
-- Internal endpoint
-- Request payload
-- Response payload
-- Header
-- Contract snapshot
+- Proprietary API structures
+- Internal endpoints
+- Request payloads
+- Response payloads
+- Headers
+- Contract snapshots
 - API history
 
-ContractLens dirancang berdasarkan prinsip sederhana:
+ContractLens is designed around a simple principle:
 
-> **API intelligence yang sensitif tidak seharusnya perlu keluar dari infrastruktur pengguna.**
+> **Sensitive API intelligence should not need to leave the customer's infrastructure.**
 
-Platform dirancang untuk berjalan di dalam environment pengguna.
+The platform is designed to run inside the customer's environment.
 
 ```text
 ┌─────────────────────────────────────────────────────┐
-│                 CUSTOMER ENVIRONMENT                │
+│               CUSTOMER ENVIRONMENT                  │
 │                                                     │
 │                    👤 User                          │
 │                       │                             │
@@ -474,38 +469,38 @@ Platform dirancang untuk berjalan di dalam environment pengguna.
 └─────────────────────────────────────────────────────┘
 ```
 
-Arsitektur dirancang agar:
+The architecture is designed so that:
 
-- API traffic tetap internal
-- Request data tetap internal
-- Response data tetap internal
-- Header tetap internal
-- Contract snapshot tetap internal
-- API history tetap internal
-- Contract intelligence tetap internal
-- AI inference dapat berjalan secara internal
+- API traffic remains internal
+- Request data remains internal
+- Response data remains internal
+- Headers remain internal
+- Contract snapshots remain internal
+- API history remains internal
+- Contract intelligence remains internal
+- AI inference can run internally
 
-Security didukung langsung oleh arsitektur.
+Security is therefore supported by architecture.
 
-> **Data Anda tidak perlu meninggalkan environment Anda.**
+> **Your data does not need to leave your environment.**
 
 ---
 
 # Self-Hosted by Design
 
-ContractLens dirancang untuk berjalan di dalam infrastruktur pengguna.
+ContractLens is designed to run inside customer infrastructure.
 
-Environment deployment yang memungkinkan:
+Potential deployment environments include:
 
 - Docker
 - Docker Compose
-- Virtual Machine
-- Private Server
+- Virtual Machines
+- Private Servers
 - Kubernetes
 - Private Cloud
 - On-Premise Infrastructure
 
-Contoh deployment:
+A typical deployment may look like:
 
 ```text
 Customer Infrastructure
@@ -528,19 +523,19 @@ Customer Infrastructure
 └── RabbitMQ
 ```
 
-Pengguna memiliki infrastrukturnya.
+The customer owns the infrastructure.
 
-ContractLens menyediakan platform.
+ContractLens provides the platform.
 
-CLAra beroperasi di dalam environment tersebut.
+CLAra operates within that environment.
 
 ---
 
-# Filosofi Efisiensi AI
+# AI Efficiency Philosophy
 
-CLAra tidak seharusnya membutuhkan AI inference untuk setiap operasi.
+CLAra should not require AI inference for every operation.
 
-Strategi eksekusi yang dituju:
+The preferred execution strategy is:
 
 ```text
                     User Request
@@ -561,7 +556,7 @@ Strategi eksekusi yang dituju:
                  ContractLens Tool
 ```
 
-Contoh operasi yang tidak selalu membutuhkan AI reasoning kompleks:
+Examples of operations that may not require complex AI reasoning:
 
 ```text
 "Show my APIs"
@@ -575,32 +570,32 @@ Contoh operasi yang tidak selalu membutuhkan AI reasoning kompleks:
 "Analyze API payment"
 ```
 
-Operasi seperti ini dapat dirutekan melalui intent yang sudah dikenal dan
-deterministic tools.
+These operations can be routed through known intents and deterministic
+tools.
 
-AI reasoning lebih berguna untuk pertanyaan seperti:
+AI reasoning becomes useful for questions such as:
 
 ```text
 "Why is this change dangerous for existing consumers?"
 ```
 
-atau:
+or:
 
 ```text
 "What would be the safest compatibility strategy?"
 ```
 
-Prinsip desainnya:
+The design principle is:
 
-> **Gunakan deterministic system ketika deterministic system sudah cukup.**
+> **Use deterministic systems when deterministic systems are sufficient.**
 
-> **Gunakan AI ketika reasoning benar-benar memberikan nilai tambah.**
+> **Use AI when reasoning adds meaningful value.**
 
 ---
 
-# Ekosistem ContractLens
+# The ContractLens Ecosystem
 
-ContractLens terdiri dari beberapa komponen yang bekerja bersama.
+ContractLens consists of multiple components working together.
 
 ```text
                       👤 User
@@ -623,12 +618,12 @@ ContractLens terdiri dari beberapa komponen yang bekerja bersama.
 
 ## CLAra — The Brain
 
-CLAra bertanggung jawab terhadap interaction dan orchestration.
+CLAra is responsible for interaction and orchestration.
 
-Kemampuan yang dituju:
+Capabilities include:
 
 - Intent understanding
-- Semantic similarity melalui embedding
+- Semantic similarity through embeddings
 - Conversation flow
 - Context retrieval
 - Parameter collection
@@ -640,10 +635,10 @@ Kemampuan yang dituju:
 
 ## Analyzer — The Eyes
 
-Analyzer bertanggung jawab untuk mengamati dan memahami API contract serta
-perubahannya.
+The Analyzer is responsible for observing and understanding API contracts
+and changes.
 
-Kemampuan saat ini:
+Current capabilities include:
 
 - Request contract observation
 - Response contract observation
@@ -654,7 +649,7 @@ Kemampuan saat ini:
 - API history
 - Change detection
 
-Kemampuan selanjutnya:
+Future capabilities include:
 
 - Advanced compatibility analysis
 - Required field compatibility
@@ -665,9 +660,9 @@ Kemampuan selanjutnya:
 
 ## Gateway — The Hands
 
-Gateway bekerja pada runtime path.
+The Gateway operates on the runtime path.
 
-Bertanggung jawab untuk:
+Responsible for:
 
 - Reverse Proxy
 - Dynamic Route Resolution
@@ -681,14 +676,14 @@ Bertanggung jawab untuk:
 
 ## Compatibility Engine — The Protector
 
-Compatibility Engine menentukan apakah perubahan API yang terdeteksi dapat
-ditangani dengan aman saat runtime.
+The Compatibility Engine determines whether detected API changes can be
+handled safely at runtime.
 
-Implementasi compatibility saat ini berfokus pada:
+The current compatibility implementation is focused on:
 
 - Data type compatibility
 
-Kemampuan berikutnya:
+Future capabilities include:
 
 - Required field compatibility
 - JSON structure compatibility
@@ -732,14 +727,14 @@ Kemampuan berikutnya:
 
 # Architecture Philosophy
 
-ContractLens memisahkan operational data dari contract intelligence sambil
-menjaga keduanya tetap berada di dalam environment pengguna.
+ContractLens separates operational data from contract intelligence while
+keeping both inside the customer's environment.
 
 ## Operational Domain
 
 **Source of Truth:** PostgreSQL
 
-Menyimpan:
+Stores:
 
 - Route Configuration
 - Token Configuration
@@ -754,7 +749,7 @@ Menyimpan:
 
 **Source of Truth:** MongoDB
 
-Menyimpan:
+Stores:
 
 - Contract Snapshot
 - Baseline
@@ -763,7 +758,7 @@ Menyimpan:
 - API History
 - Future AI Insights
 
-MongoDB berperan sebagai **Contract Intelligence Knowledge Base** internal.
+MongoDB acts as the internal **Contract Intelligence Knowledge Base**.
 
 ---
 
@@ -771,7 +766,7 @@ MongoDB berperan sebagai **Contract Intelligence Knowledge Base** internal.
 
 **Message Broker:** RabbitMQ
 
-Bertanggung jawab untuk:
+Responsible for:
 
 - Reliable Event Processing
 - Asynchronous Analysis
@@ -826,13 +821,13 @@ Bertanggung jawab untuk:
                   MongoDB
 ```
 
-Contract analysis dilakukan secara asynchronous.
+Contract analysis is performed asynchronously.
 
-Gateway runtime dirancang untuk menghindari contract comparison yang mahal
-pada setiap request.
+The Gateway runtime is designed to avoid expensive contract comparison for
+every request.
 
-Compatibility decision dipersiapkan sebelumnya dan dioptimalkan untuk
-runtime execution.
+Compatibility decisions are prepared in advance and optimized for runtime
+execution.
 
 ---
 
@@ -862,7 +857,7 @@ runtime execution.
 
 ## Compatibility Engine
 
-### Saat Ini
+### Current
 
 - Data Type Compatibility
 
@@ -877,7 +872,7 @@ runtime execution.
 
 ## CLAra
 
-### Saat Ini
+### Current
 
 - Greeting
 - ContractLens Glossary
@@ -887,7 +882,7 @@ runtime execution.
 - Basic Intent Handling
 - Unknown Intent Handling
 
-Intent saat ini:
+Current intents:
 
 ```text
 GREETING_USER
@@ -898,7 +893,7 @@ ANALYZE_API_CONTRACT
 UNKNOWN
 ```
 
-### Berikutnya
+### Next
 
 - Conversation State
 - Parameter Collection
@@ -908,7 +903,7 @@ UNKNOWN
 - Tool Execution
 - Contextual UI Responses
 
-### Masa Depan
+### Future
 
 - Local LLM Integration
 - Private AI Runtime
@@ -997,12 +992,12 @@ UNKNOWN
 
 ### Sprint 6 Technical Decisions
 
-- Spring WebFlux untuk Gateway runtime
-- MongoDB sebagai Contract Intelligence Source of Truth
-- PostgreSQL sebagai Operational Source of Truth
-- Caffeine sebagai Local Compatibility Cache
-- Compatibility Plan dimuat saat Gateway startup
-- Tidak ada runtime contract comparison
+- Spring WebFlux for Gateway runtime
+- MongoDB as Contract Intelligence Source of Truth
+- PostgreSQL as Operational Source of Truth
+- Caffeine as Local Compatibility Cache
+- Compatibility Plans loaded at Gateway startup
+- No runtime contract comparison
 - Memory-first execution
 - O(1) CompatibilityPlan lookup
 
@@ -1010,7 +1005,7 @@ UNKNOWN
 
 # Sprint Validation
 
-Validation mencakup:
+Validation includes:
 
 - Unit Testing
 - Integration Testing
@@ -1024,7 +1019,7 @@ Validation mencakup:
 - Load Testing
 - Stress Testing
 
-Target performa saat ini:
+Current performance targets:
 
 - Average Overhead < 20 ms
 - P95 < 50 ms
@@ -1123,39 +1118,39 @@ Target performa saat ini:
 
 # Future Vision
 
-ContractLens bertujuan menjadi sebuah **self-hosted API Contract Intelligence
-Platform** di mana tim engineering dapat berinteraksi dengan ekosistem API
-mereka melalui CLAra.
+ContractLens aims to become a complete **self-hosted API Contract
+Intelligence Platform** where engineering teams can interact with their API
+ecosystem through CLAra.
 
-Platform akan memungkinkan tim untuk:
+The platform will enable teams to:
 
-- Mengamati request contract
-- Mengamati response contract
-- Mengamati API header
-- Mendeteksi perubahan API
-- Menjaga backward compatibility
-- Menjalankan runtime transformation
-- Mendeteksi breaking change
-- Menganalisis compatibility
-- Menjelaskan perubahan contract
-- Mendaftarkan dan mengelola API melalui percakapan
-- Melihat API history
-- Mengontrol Gateway operation yang didukung
-- Menjalankan AI di private infrastructure
-- Menjaga API intelligence tetap berada di environment pengguna
+- Observe request contracts
+- Observe response contracts
+- Observe API headers
+- Detect API changes
+- Preserve backward compatibility
+- Execute runtime transformations
+- Detect breaking changes
+- Analyze compatibility
+- Explain contract changes
+- Register and manage APIs through conversation
+- Query API history
+- Control supported Gateway operations
+- Run AI inside private infrastructure
+- Keep API intelligence inside the customer environment
 
-Tujuannya bukan menggantikan engineering judgment.
+The goal is not to replace engineering judgment.
 
-Tujuannya adalah menyediakan cara yang lebih baik untuk memahami dan
-mengoperasikan API ecosystem.
+The goal is to provide a better way to understand and operate API
+ecosystems.
 
 ---
 
 # Closing
 
-> **ContractLens menyediakan infrastrukturnya.**
+> **ContractLens provides the infrastructure.**
 >
-> **CLAra membuatnya menjadi conversational.**
+> **CLAra makes it conversational.**
 
 ```text
 CLAra                 → The Brain
@@ -1165,5 +1160,7 @@ Gateway               → The Hands
 Compatibility Engine  → The Protector
 ContractLens          → The Ecosystem
 ```
+
+> **Observe. Detect. Protect.**
 
 > **Observe. Detect. Protect.**
