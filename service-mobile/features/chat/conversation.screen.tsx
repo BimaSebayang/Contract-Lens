@@ -1,30 +1,6 @@
 import {
-    Animated,
-    Image,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
     View,
 } from 'react-native';
-
-import {
-    useEffect,
-    useRef,
-} from 'react';
-
-import {
-    router,
-} from 'expo-router';
-
-import {
-    ArrowLeft,
-    Bot,
-    Paperclip,
-    Send,
-    ThumbsDown,
-    ThumbsUp,
-} from 'lucide-react-native';
 
 import {
     styles,
@@ -34,24 +10,20 @@ import {
     useConversationScript,
 } from './conversation.script';
 
+import {
+    ConversationHeader,
+} from './components/conversation-header';
+
+import {
+    ConversationList,
+} from './components/conversation-list';
+
+import {
+    ConversationInput,
+} from './components/conversation-input';
+
 
 export default function ConversationScreen() {
-
-    const claraImages = {
-        GREETING_USER: require('@/assets/images/clara-ai/clara_hi.png'),
-
-        UNKNOWN: require(
-            '@/assets/images/clara-ai/clara_confused.png'
-        ),
-
-        GLOSSARY_CONTRACTLENS: require(
-            '@/assets/images/clara-ai/clara_info.png'
-        ),
-
-        ONBOARDING_CONTRACTLENS: require(
-            '@/assets/images/clara-ai/clara_onboarding.png'
-        ),
-    } as const;
 
     const {
         conversations,
@@ -61,753 +33,75 @@ export default function ConversationScreen() {
         scrollViewRef,
         keyboardOffset,
 
-        setMessage,
-
-        scrollToBottom,
         handleChatClara,
         handleFeedback,
         handleMessageChange,
-        isClaraLoading
+
+        scrollToBottom,
+
+        isClaraLoading,
     } = useConversationScript();
 
 
     return (
 
         <View
-            style={styles.container}
+            style={
+                styles.container
+            }
         >
 
             {/* ================= HEADER ================= */}
 
-            <View
-                style={styles.header}
-            >
-                <View
-                    style={styles.headerContent}
-                >
-
-                    <Pressable
-                        style={styles.backButton}
-                        onPress={() =>
-                            router.push(
-                                '/chat/page'
-                            )
-                        }
-                    >
-                        <ArrowLeft
-                            size={16}
-                            color="#4F46E5"
-                            strokeWidth={3.5}
-                        />
-                    </Pressable>
+            <ConversationHeader />
 
 
-                    <Image
-                        source={require(
-                            '@/assets/images/clara-ai/clara-avatar.png'
-                        )}
-                        style={styles.headerAvatar}
-                    />
+            {/* ================= CONVERSATION ================= */}
 
-
-                    <View
-                        style={styles.profileContainer}
-                    >
-
-                        <View
-                            style={styles.nameContainer}
-                        >
-                            <Text
-                                style={styles.profileName}
-                            >
-                                CLAra
-                            </Text>
-
-
-                            <View
-                                style={styles.verifiedBadge}
-                            >
-                                <Bot
-                                    size={12}
-                                    color="#FFFFFF"
-                                    strokeWidth={3}
-                                />
-                            </View>
-
-                        </View>
-
-
-                        <Text
-                            style={styles.profileSubtitle}
-                        >
-                            ContractLens AI Robot Assistent
-                        </Text>
-
-
-                        <View
-                            style={styles.onlineContainer}
-                        >
-                            <View
-                                style={styles.onlineDot}
-                            />
-
-                            <Text
-                                style={styles.onlineText}
-                            >
-                                Online
-                            </Text>
-                        </View>
-
-                    </View>
-
-                </View>
-            </View>
-
-
-            {/* ================= CHAT ================= */}
-
-            <ScrollView
-                ref={scrollViewRef}
-                style={styles.scrollView}
-                contentContainerStyle={[
-                    styles.scrollContent,
-                    {
-                        paddingBottom:
-                            keyboardHeight > 0
-                                ? keyboardHeight + 24
-                                : 24,
-                    },
-                ]}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="interactive"
-                onContentSizeChange={() =>
-                    scrollToBottom(false)
+            <ConversationList
+                conversations={
+                    conversations
                 }
-            >
-
-                {/* ================= DATE ================= */}
-
-                <View
-                    style={styles.dateContainer}
-                >
-
-                    <View
-                        style={styles.dateLine}
-                    />
-
-                    <Text
-                        style={styles.dateText}
-                    >
-                        Hari ini
-                    </Text>
-
-                    <View
-                        style={styles.dateLine}
-                    />
-
-                </View>
-
-
-                {/* ================= INITIAL MESSAGE ================= */}
-
-                <View
-                    style={styles.messageRow}
-                >
-
-                    <Image
-                        source={require(
-                            '@/assets/images/clara-ai/clara-avatar.png'
-                        )}
-                        style={styles.messageAvatar}
-                    />
-
-
-                    <View
-                        style={styles.messageContent}
-                    >
-
-                        <View
-                            style={styles.botMessage}
-                        >
-
-                            <Text
-                                style={
-                                    styles.botMessageTitle
-                                }
-                            >
-                                SobatCLAra bisa memulai
-                                percakapan kapan saja
-                            </Text>
-
-
-                            <Text
-                                style={
-                                    styles.botMessageText
-                                }
-                            >
-                                Tanyakan apa saja untuk
-                                memulai percakapan.
-                            </Text>
-
-                        </View>
-
-
-                        <Text
-                            style={styles.messageTime}
-                        >
-                            09:41
-                        </Text>
-
-                    </View>
-
-                </View>
-
-
-                {/* ================= CONVERSATIONS ================= */}
-
-                {conversations.map(
-                    (
-                        conversation,
-                        index
-                    ) => {
-
-                        /* ================= USER ================= */
-
-                        if (
-                            conversation.role ===
-                            'user'
-                        ) {
-
-                            return (
-
-                                <View
-                                    key={
-                                        `${conversation.timestamp}-${index}`
-                                    }
-                                    style={
-                                        styles.userMessageRow
-                                    }
-                                >
-
-                                    <View
-                                        style={
-                                            conversation.content.styleView
-                                        }
-                                    >
-
-                                        <Text
-                                            style={
-                                                conversation.content.styleText
-                                            }
-                                        >
-                                            {
-                                                conversation.content.message
-                                            }
-                                        </Text>
-
-                                    </View>
-
-
-                                    <Text
-                                        style={
-                                            conversation.content.styleTime
-                                        }
-                                    >
-                                        {
-                                            conversation.timestamp
-                                        }
-                                    </Text>
-
-                                </View>
-
-                            );
-
-                        }
-
-
-                        /* ================= ASSISTANT ================= */
-
-                        if (
-                            conversation.role ===
-                            'assistant'
-                        ) {
-                            return (
-
-                                <View
-                                    key={
-                                        `${conversation.timestamp}-${index}`
-                                    }
-                                    style={
-                                        styles.aiMessageRow
-                                    }
-                                >
-
-                                    <Image
-                                        source={
-                                            claraImages[
-                                                conversation.intent as keyof typeof claraImages
-                                                ] ??
-                                            claraImages.UNKNOWN
-                                        }
-                                        style={
-                                            styles.aiMessageAvatar
-                                        }
-                                    />
-
-
-                                    <View
-                                        style={
-                                            styles.messageContent
-                                        }
-                                    >
-
-                                        <View
-                                            style={
-                                                styles.aiMessage
-                                            }
-                                        >
-
-                                            <Text
-                                                style={
-                                                    styles.aiMessageText
-                                                }
-                                            >
-                                                {
-                                                    conversation.content.message
-                                                }
-                                            </Text>
-
-                                            {
-                                                conversation.showFeedback && (
-                                                   <>
-                                                    <View
-                                                        style={
-                                                            styles.divider
-                                                        }
-                                                    />
-                                                       <View
-                                                           style={
-                                                               styles.feedbackContainer
-                                                           }
-                                                       >
-
-                                                           <Text
-                                                               style={
-                                                                   styles.rightanswer
-                                                               }
-                                                           >
-                                                               jawaban memuaskan?
-                                                           </Text>
-
-
-                                                           {/* ================= LIKE ================= */}
-
-                                                           <Pressable
-                                                               style={
-                                                                   styles.feedbackButton
-                                                               }
-                                                               onPress={() =>
-                                                                   handleFeedback(
-                                                                       index,
-                                                                       true
-                                                                   )
-                                                               }
-                                                           >
-
-                                                               <ThumbsUp
-                                                                   size={20}
-                                                                   color={
-                                                                       conversation.feedback ===true
-                                                                           ? '#4F46E5'
-                                                                           : '#64748B'
-                                                                   }
-                                                                   fill={
-                                                                       conversation.feedback === true
-                                                                           ? '#E0E7FF'
-                                                                           : 'transparent'
-                                                                   }
-                                                               />
-
-                                                           </Pressable>
-
-
-                                                           {/* ================= DISLIKE ================= */}
-
-                                                           <Pressable
-                                                               style={
-                                                                   styles.feedbackButton
-                                                               }
-                                                               onPress={() =>
-                                                                   handleFeedback(
-                                                                       index,
-                                                                       false
-                                                                   )
-                                                               }
-                                                           >
-
-                                                               <ThumbsDown
-                                                                   size={20}
-                                                                   color={
-                                                                       conversation.feedback === false
-                                                                           ? '#4F46E5':'#64748B'
-
-                                                                   }
-                                                                   fill={
-                                                                       conversation.feedback === false
-                                                                           ? '#E0E7FF':'transparent'
-                                                                   }
-                                                               />
-
-                                                           </Pressable>
-
-                                                       </View>
-                                                   </>
-
-                                                )
-                                            }
-
-
-
-                                        </View>
-
-
-                                        <Text
-                                            style={
-                                                styles.messageTime
-                                            }
-                                        >
-                                            {
-                                                conversation.timestamp
-                                            }
-                                        </Text>
-
-                                    </View>
-
-                                </View>
-
-                            );
-                        }
-                    }
-                )}
-
-
-                {/* ================= CLARA LOADING ================= */}
-
-                {
-                    isClaraLoading && (
-                        <ClaraLoading />
-                    )
+                isClaraLoading={
+                    isClaraLoading
                 }
-
-            </ScrollView>
-
-
-            {/* ================= INPUT ================= */}
-
-            <Animated.View
-                style={[
-                    styles.inputWrapper,
-                    {
-                        transform: [
-                            {
-                                translateY:
-                                keyboardOffset,
-                            },
-                        ],
-                    },
-                ]}
-            >
-
-                <View
-                    style={styles.inputContainer}
-                >
-
-                    <Pressable
-                        style={styles.attachButton}
-                        onPress={() => {
-
-                            console.log(
-                                'Open attachment picker'
-                            );
-
-                        }}
-                    >
-                        <Paperclip
-                            size={20}
-                            color="#6366F1"
-                        />
-                    </Pressable>
-
-
-                    <TextInput
-                        value={message.message}
-                        onChangeText={handleMessageChange}
-                        placeholder="Chat Di sini..."
-                        placeholderTextColor="#94A3B8"
-                        style={styles.input}
-                        multiline
-                        maxLength={1000}
-                        onFocus={() =>
-                            scrollToBottom()
-                        }
-                    />
-
-
-                    <Pressable
-                        style={[
-                            styles.sendButton,
-                            !message.message.trim() &&
-                            styles.sendButtonDisabled,
-                        ]}
-                        onPress={
-                            handleChatClara
-                        }
-                    >
-
-                        <Send
-                            size={20}
-                            color="#FFFFFF"
-                            strokeWidth={2.5}
-                        />
-
-                    </Pressable>
-
-                </View>
-
-            </Animated.View>
-
-        </View>
-
-    );
-
-
-
-
-
-}
-
-
-const ClaraLoading = () => {
-
-    const dotOne =
-        useRef(
-            new Animated.Value(0)
-        ).current;
-
-    const dotTwo =
-        useRef(
-            new Animated.Value(0)
-        ).current;
-
-    const dotThree =
-        useRef(
-            new Animated.Value(0)
-        ).current;
-
-
-    useEffect(
-        () => {
-
-            const createAnimation = (
-                animation: Animated.Value,
-                delay: number
-            ) =>
-                Animated.loop(
-                    Animated.sequence([
-
-                        Animated.delay(
-                            delay
-                        ),
-
-                        Animated.timing(
-                            animation,
-                            {
-                                toValue: -6,
-
-                                duration: 250,
-
-                                useNativeDriver:
-                                    true,
-                            }
-                        ),
-
-                        Animated.timing(
-                            animation,
-                            {
-                                toValue: 0,
-
-                                duration: 250,
-
-                                useNativeDriver:
-                                    true,
-                            }
-                        ),
-
-                    ])
-                );
-
-
-            const animationOne =
-                createAnimation(
-                    dotOne,
-                    0
-                );
-
-            const animationTwo =
-                createAnimation(
-                    dotTwo,
-                    150
-                );
-
-            const animationThree =
-                createAnimation(
-                    dotThree,
-                    300
-                );
-
-
-            animationOne.start();
-
-            animationTwo.start();
-
-            animationThree.start();
-
-
-            return () => {
-
-                animationOne.stop();
-
-                animationTwo.stop();
-
-                animationThree.stop();
-
-            };
-
-        },
-        []
-    );
-
-
-    return (
-
-        <View
-            style={
-                styles.aiMessageRow
-            }
-        >
-
-            <Image
-                source={require(
-                    '@/assets/images/clara-ai/clara_typing.png'
-                )}
-                style={
-                    styles.aiMessageAvatar
+                scrollViewRef={
+                    scrollViewRef
+                }
+                keyboardHeight={
+                    keyboardHeight
+                }
+                onFeedback={
+                    handleFeedback
+                }
+                onScrollToBottom={
+                    scrollToBottom
                 }
             />
 
 
-            <View
-                style={
-                    styles.messageContent
+            {/* ================= INPUT ================= */}
+
+            <ConversationInput
+                value={
+                    message.message
                 }
-            >
-
-                <View
-                    style={
-                        styles.aiMessage
-                    }
-                >
-
-                    <View
-                        style={{
-                            flexDirection:
-                                'row',
-
-                            alignItems:
-                                'center',
-
-                            gap:
-                                4,
-                        }}
-                    >
-
-                        <Text
-                            style={
-                                styles.claraThinkingText
-                            }
-                        >
-                            CLAra sedang berpikir
-                        </Text>
-
-
-                        <Animated.View
-                            style={[
-                                {
-                                    width: 6,
-                                    height: 6,
-                                    borderRadius: 999,
-                                    backgroundColor: '#6366F1',
-                                },
-                                {
-                                    transform: [
-                                        {
-                                            translateY:
-                                            dotOne,
-                                        },
-                                    ],
-                                },
-                            ]}
-                        />
-
-
-                        <Animated.View
-                            style={[
-                                {
-                                    width: 6,
-                                    height: 6,
-                                    borderRadius: 999,
-                                    backgroundColor: '#6366F1',
-                                },
-                                {
-                                    transform: [
-                                        {
-                                            translateY:
-                                            dotTwo,
-                                        },
-                                    ],
-                                },
-                            ]}
-                        />
-
-
-                        <Animated.View
-                            style={[
-                                {
-                                    width: 6,
-                                    height: 6,
-                                    borderRadius: 999,
-                                    backgroundColor: '#6366F1',
-                                },
-                                {
-                                    transform: [
-                                        {
-                                            translateY:
-                                            dotThree,
-                                        },
-                                    ],
-                                },
-                            ]}
-                        />
-
-                    </View>
-
-                </View>
-
-            </View>
+                keyboardOffset={
+                    keyboardOffset
+                }
+                onChangeText={
+                    handleMessageChange
+                }
+                onSend={
+                    handleChatClara
+                }
+                onFocus={
+                    scrollToBottom
+                }
+            />
 
         </View>
 
     );
 
-};
+}

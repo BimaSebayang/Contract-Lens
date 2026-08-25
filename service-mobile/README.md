@@ -1,24 +1,4 @@
-CLARA DESIGN TEMPLATE
-
-
 features/
-└── chat/
-├── conversation.screen.tsx
-├── conversation.script.ts
-├── conversation.style.ts
-│
-├── components/
-│   ├── message/
-│   ├── input/
-│   ├── response/
-│   └── interaction/
-│
-├── interactions/
-│   ├── greeting/
-│   ├── register-api/
-│   ├── analyze-contract/
-│   ├── login/
-│   └── glossary/features/
 └── chat/
 │
 ├── conversation.screen.tsx
@@ -45,18 +25,28 @@ features/
 │   │   └── clara-loading.tsx
 │   │
 │   └── interaction/
+│       └── interaction-renderer.tsx
 │
 ├── interactions/
 │   ├── greeting/
+│   │   ├── greeting.interaction.tsx
+│   │   └── greeting.script.ts
+│   │
 │   ├── register-api/
+│   │   ├── register-api.interaction.tsx
+│   │   └── register-api.script.ts
+│   │
 │   ├── analyze-contract/
+│   │   ├── analyze-contract.interaction.tsx
+│   │   └── analyze-contract.script.ts
+│   │
 │   ├── login/
+│   │   ├── login.interaction.tsx
+│   │   └── login.script.ts
+│   │
 │   └── glossary/
-│
-└── runtime/
-├── intent-resolver.ts
-├── interaction-resolver.ts
-└── conversation-state.ts
+│       ├── glossary.interaction.tsx
+│       └── glossary.script.ts
 │
 └── runtime/
 ├── intent-resolver.ts
