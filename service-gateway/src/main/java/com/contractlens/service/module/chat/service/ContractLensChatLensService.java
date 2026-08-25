@@ -19,6 +19,7 @@ import java.util.List;
 public class ContractLensChatLensService {
 
     private final ContractLensAiClientService contractLensAiClientService;
+    private final ContractLensChatIntentsService contractLensChatIntentsService;
     private final ObjectMapper objectMapper;
 
     public IntentDetectionResponse detectIntent(ChatAIRequest request) {
@@ -148,6 +149,12 @@ public class ContractLensChatLensService {
         ChatAiMessageResponse standardMessage = new ChatAiMessageResponse();
         standardMessage.setAiResponse(aiResponse.getContent());
         standardMessage.setIntent(aiResponse.getSelectedIntent());
+
+        contractLensChatIntentsService.createActionButtonsWhenGreeting(standardMessage);
+
         return standardMessage;
     }
+
+
+
 }

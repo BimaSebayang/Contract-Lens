@@ -1,4 +1,5 @@
 import {StyleProp, TextStyle, ViewStyle} from "react-native";
+import {LlmOrchestrationAction} from "@/core/dto/ChatAiMessageResponse";
 
 export type LlmMessageRole =
     | 'user'
@@ -24,4 +25,6 @@ export interface LlmMessageConversation {
     showFeedback: boolean | null;
 
     intent?:string;
+
+    actions ?: [LlmOrchestrationAction];
 }

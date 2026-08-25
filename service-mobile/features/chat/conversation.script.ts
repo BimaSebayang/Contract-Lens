@@ -229,7 +229,8 @@ export function useConversationScript() {
             feedback: null,
             timestamp:result.timestamp,
             showFeedback:true,
-            intent:result.intent
+            intent:result.intent,
+            actions:result.actions
         };
 
 

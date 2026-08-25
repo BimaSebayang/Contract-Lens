@@ -316,4 +316,77 @@ export const styles = StyleSheet.create({
         color: '#64748B',
         fontStyle: 'italic',
     },
+
+    /* ================= GREETING ACTION ================= */
+
+    greetingAction: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+
+        backgroundColor: '#FFFFFF',
+
+        borderRadius: 20,
+
+        paddingHorizontal: 18,
+        paddingVertical: 16,
+
+        marginTop: 12,
+
+        shadowColor: '#64748B',
+        shadowOpacity: 0.06,
+        shadowRadius: 10,
+        elevation: 2,
+    },
+
+    greetingActionIcon: {
+        width: 35,
+        height: 35,
+
+        borderRadius: 13,
+
+        backgroundColor: '#EEF2FF',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        marginRight: 16,
+    },
+
+    greetingActionContent: {
+        flex: 1,
+    },
+
+    greetingActionHeader: {
+        color: '#17203A',
+
+        fontSize: 10,
+
+        fontWeight: '800',
+
+        lineHeight: 12,
+    },
+
+    greetingActionDetail: {
+        color: '#64748B',
+
+        fontSize: 10,
+
+        lineHeight: 14,
+
+        marginTop: 4,
+    },
+
+    greetingActionArrow: {
+        color: '#4338CA',
+
+        fontSize: 32,
+
+        fontWeight: '300',
+
+        marginLeft: 12,
+
+        marginTop: -4,
+    },
+
 });

@@ -29,7 +29,7 @@ const chatService = {
         return {
             intent: response.intent,
             feedback: null,
-
+            actions:response.actions,
             content: [{
                 message: response.ai_response
             }],
