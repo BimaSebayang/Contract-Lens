@@ -1,7 +1,7 @@
 export interface LlmOrchestrationAction{
-    intent?: string | null;
-    ai_header?: string | null;
-    ai_detail?: string | null;
+    intent: string ;
+    ai_header: string ;
+    ai_detail: string ;
 }
 
 export interface ChatAiMessageResponse {

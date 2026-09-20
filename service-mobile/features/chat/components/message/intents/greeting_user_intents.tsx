@@ -32,6 +32,7 @@ export const GreetingUserIntent = (
         conversation,
         index,
         onFeedback,
+        handleAction,
     }: InteractionIntentProps
 ) => {
 
@@ -42,53 +43,7 @@ export const GreetingUserIntent = (
     );
 
 
-    /* ================= ACTION CLICK ================= */
 
-    const handleAction = (
-        action: LlmOrchestrationAction
-    ) => {
-
-        switch (
-            action.intent
-            ) {
-
-            case 'GLOSSARY_CONTRACTLENS':
-
-                console.log(
-                    'OPEN GLOSSARY'
-                );
-
-                break;
-
-
-            case 'ANALYZE_API_CONTRACT':
-
-                console.log(
-                    'OPEN ANALYZE CONTRACT'
-                );
-
-                break;
-
-
-            case 'LOGIN_CONTRACTLENS':
-
-                console.log(
-                    'OPEN LOGIN'
-                );
-
-                break;
-
-
-            default:
-
-                console.log(
-                    'UNKNOWN ACTION:',
-                    action.intent
-                );
-
-        }
-
-    };
 
 
     /* ================= ACTION ICON ================= */
@@ -258,10 +213,8 @@ export const GreetingUserIntent = (
                 {
                     conversation.actions?.map(
                         (
-                            action:
-                            LlmOrchestrationAction,
-                            actionIndex:
-                            number
+                            action:LlmOrchestrationAction,
+                            actionIndex:number
                         ) => (
 
                             <Pressable
@@ -272,9 +225,7 @@ export const GreetingUserIntent = (
                                     styles.greetingAction
                                 }
                                 onPress={() =>
-                                    handleAction(
-                                        action
-                                    )
+                                    handleAction?.(action)
                                 }
                             >
 

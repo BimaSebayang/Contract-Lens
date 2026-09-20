@@ -1,0 +1,25 @@
+server:
+  port: 9002
+  servlet:
+    context-path: /clawfo-dev
+
+spring:
+  application:
+    name: CLAWFO_DEV
+  data:
+    mongodb:
+      host: 192.168.8.2
+      port: 27017
+      database: contractlens
+      username: contractlens
+      password: contractlens123
+      authentication-database: admin
+    redis:
+      lettuce:
+        pool:
+          enabled: true
+      host: 192.168.8.2
+      port: 7000
+      password:
+      timeout: 5000ms
+      database: 0

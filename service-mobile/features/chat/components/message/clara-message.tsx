@@ -1,28 +1,16 @@
 import {LlmMessageConversation} from "@/core/dto/LlmMessageConversation";
 import {GreetingUserIntent} from "@/features/chat/components/message/intents/greeting_user_intents";
 import {UnknownIntent} from "@/features/chat/components/message/intents/unknown_intents";
-
-
-type ClaraMessageProps = {
-
-    conversation: LlmMessageConversation;
-
-    index: number;
-
-    onFeedback: (
-        index: number,
-        feedback: boolean
-    ) => void;
-
-};
-
+import {InteractionIntentProps} from "@/core/dto/InteractionIntentProps";
+import {GlossaryIntent} from "@/features/chat/components/message/intents/glossary_intent";
 
 export const ClaraMessage = (
     {
         conversation,
         index,
         onFeedback,
-    }: ClaraMessageProps
+        handleAction
+    }: InteractionIntentProps
 ) => {
 
 
@@ -40,6 +28,17 @@ export const ClaraMessage = (
                                     conversation={conversation}
                                     index={index}
                                     onFeedback={onFeedback}
+                                    handleAction={handleAction}
+                                />
+                            );
+
+                            case "GLOSSARY_CONTRACTLENS":
+                            return (
+                                <GlossaryIntent
+                                    conversation={conversation}
+                                    index={index}
+                                    onFeedback={onFeedback}
+                                    handleAction={handleAction}
                                 />
                             );
 
@@ -49,6 +48,7 @@ export const ClaraMessage = (
                                     conversation={conversation}
                                     index={index}
                                     onFeedback={onFeedback}
+                                    handleAction={handleAction}
                                 />
                             );
                     }

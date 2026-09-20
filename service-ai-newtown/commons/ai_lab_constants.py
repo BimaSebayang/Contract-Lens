@@ -3,7 +3,8 @@ MESSAGE_NOT_FOUND_BY_ROLE = "Sorry, I can't content on that role"
 
 # All model
 GPT_OSS_120b = "gpt-oss:120b-cloud"
-GPT_OSS_20b = "gpt-oss:20b-cloud"
+# GPT_OSS_20b = "gpt-oss:20b-cloud"
+GPT_OSS_20b = "gpt-oss:120b-cloud"
 GPT_OSS_SAFEGUARD = "openai/gpt-oss-safeguard-20b"
 QWEN_27b = "qwen/qwen3.6-27b"
 GPT_OSS_120B= "gpt-oss:120b-cloud"

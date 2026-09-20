@@ -25,7 +25,7 @@ public class ContractLensChatIntentsService {
             ChatAiMessageResponse.ActionButton actionAnalyze = new ChatAiMessageResponse.ActionButton();
             actionAnalyze.setAiHeader("Mulai Dengan ContractLens");
             actionAnalyze.setAiDetail("Daftar dan Siapkan API mu");
-            actionAnalyze.setIntent("ANALYZE_API_CONTRACT");
+            actionAnalyze.setIntent("ONBOARDING_CONTRACTLENS");
             actions.add(actionAnalyze);
             ChatAiMessageResponse.ActionButton actionLogin = new ChatAiMessageResponse.ActionButton();
             actionLogin.setAiHeader("Login Ke ContractLens");

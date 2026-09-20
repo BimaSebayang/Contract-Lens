@@ -31,6 +31,7 @@ import {
 } from './message/clara-loading';
 
 import {LlmMessageConversation} from "@/core/dto/LlmMessageConversation";
+import {LlmOrchestrationAction} from "@/core/dto/ChatAiMessageResponse";
 
 
 type ConversationListProps = {
@@ -53,6 +54,7 @@ type ConversationListProps = {
         animated?: boolean
     ) => void;
 
+    handleAction: (action:LlmOrchestrationAction)=>void;
 };
 
 
@@ -69,6 +71,7 @@ export const ConversationList = (
         onFeedback,
 
         onScrollToBottom,
+        handleAction,
     }: ConversationListProps
 ) => {
 
@@ -166,6 +169,7 @@ export const ConversationList = (
                                     onFeedback={
                                         onFeedback
                                     }
+                                    handleAction = {handleAction}
                                 />
 
                             );

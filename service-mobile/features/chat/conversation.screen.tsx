@@ -7,6 +7,7 @@ import {
 } from './conversation.style';
 
 import {
+
     useConversationScript,
 } from './conversation.script';
 
@@ -40,6 +41,7 @@ export default function ConversationScreen() {
         scrollToBottom,
 
         isClaraLoading,
+        handleAction
     } = useConversationScript();
 
 
@@ -77,6 +79,7 @@ export default function ConversationScreen() {
                 onScrollToBottom={
                     scrollToBottom
                 }
+                handleAction={handleAction}
             />
 
 

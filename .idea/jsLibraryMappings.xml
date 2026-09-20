@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <excludedPredefinedLibrary name="contractlens/service-mobile/android/app/.cxx/RelWithDebInfo/1b4b3p6z/arm64-v8a/safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/C_/Users/Lenovo/my_project/contractlens/service-mobile/node_modules" />
+  </component>
+</project>

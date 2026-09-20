@@ -1,5 +1,7 @@
 from typing import List
 
+import time
+
 from commons import ai_lab_constants
 from commons.enums.role import Role
 from core.chat_response import ChatResponse
@@ -50,6 +52,7 @@ class ChatOrchestrationService:
             conversation_id: str,
             chat_responses:List[ChatResponse])-> ChatResponse:
 
+        time.sleep(1)
         vector_messages:List[LlmMessageResponse]=[
             LlmMessageResponse(
                 role=Role.ASSISTANT,

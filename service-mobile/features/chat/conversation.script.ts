@@ -19,6 +19,7 @@ import {
 
 import {LlmMessageConversation, LlmMessageMap, LlmMessageRole} from "@/core/dto/LlmMessageConversation";
 import chatService from "@/integration/chat/service/chat.service";
+import {LlmOrchestrationAction} from "@/core/dto/ChatAiMessageResponse";
 
 
 export function useConversationScript() {
@@ -247,6 +248,9 @@ export function useConversationScript() {
     /* ================= SEND MESSAGE ================= */
 
     const handleChatClara = async () => {
+
+        Keyboard.dismiss();
+
         if(message.message && !isClaraLoading){
             const send_message : LlmMessageMap = {
                 message:message.message,
@@ -340,6 +344,136 @@ export function useConversationScript() {
 
 
     /* ================= RETURN ================= */
+    /* ================= HANDLE ACTION ================= */
+
+    const handleAction = async (
+        action: LlmOrchestrationAction
+    ) => {
+
+        Keyboard.dismiss();
+
+        if (
+            isClaraLoading
+        ) {
+            return;
+        }
+
+
+
+        const actionMessage =
+            action.ai_header;
+
+
+        /* ================= USER MESSAGE ================= */
+
+        const sendMessage:
+            LlmMessageMap = {
+            message:
+            actionMessage,
+
+            styleView:
+            styles.userMessage,
+
+            styleText:
+            styles.userMessageText,
+
+            styleTime:
+            styles.messageTime,
+        };
+
+
+        const userConversation:
+            LlmMessageConversation = {
+            role:
+                'user',
+
+            content:
+            sendMessage,
+
+            feedback:
+                false,
+
+            timestamp:
+                new Date()
+                    .toLocaleTimeString(
+                        [],
+                        {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        }
+                    ),
+
+            showFeedback:
+                true,
+        };
+
+
+        setConversations(
+            (
+                previousConversations
+            ) => [
+                ...previousConversations,
+                userConversation,
+            ]
+        );
+
+
+        /* ================= LOADING ================= */
+
+        setIsClaraLoading(
+            true
+        );
+
+
+        /* ================= SEND TO CLARA ================= */
+
+        const result =
+            await chatService.sendMessage(
+                getConversationId(),
+                actionMessage
+            );
+
+
+        const aiConversation:
+            LlmMessageConversation = {
+            role:
+                'assistant',
+
+            content:
+                result.content[0],
+
+            feedback:
+                null,
+
+            timestamp:
+            result.timestamp,
+
+            showFeedback:
+                true,
+
+            intent:
+            result.intent,
+
+            actions:
+            result.actions,
+        };
+
+
+        setConversations(
+            (
+                previousConversations
+            ) => [
+                ...previousConversations,
+                aiConversation,
+            ]
+        );
+
+
+        setIsClaraLoading(
+            false
+        );
+
+    };
 
     return {
 
@@ -364,7 +498,8 @@ export function useConversationScript() {
 
         handleFeedback,
         handleMessageChange,
-        isClaraLoading
+        isClaraLoading,
+        handleAction,
     };
 
 }

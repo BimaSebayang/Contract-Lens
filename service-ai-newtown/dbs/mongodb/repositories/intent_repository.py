@@ -12,7 +12,7 @@ from dbs.mongodb.models.intent import UserMessageExample
 # Intent yang harus dibuat
 # GREETING_USER
 # GLOSSARY_CONTRACTLENS
-# REGISTER_API
+# ONBOARDING_CONTRACTLENS
 # LOGIN_CONTRACTLENS
 # ANALYZE_API_CONTRACT
 # UNKNOWN
@@ -57,10 +57,10 @@ class IntentRepository:
 Gunakan bahasa Indonesia yang santai, natural, dan profesional.
 Respons maksimal 300 karakter dan keluarkan hanya pesan dalam bentuk string.
 Ucapkan Kata Sapaan kepada user lalu tawarkan pilihan bantuan untuk mulai menggunakan ContractLens.
-Contoh gaya respons:
-1) "Hai! 👋 Aku CLAra. AI Assistent Untuk ContractLens, Senang bisa bantu kamu mulai menggunakan ContractLens. Kamu bisa  \n\n 🔹 Kenali ContractLens dulu 🤝 \n\n🔹 Memulai ContractLens  📦 \n\n🔹 Login ke akunmu 🚀 \n\n Pilih yang ingin kamu lakukan ya!. Pilih yang ingin kamu lakukan ya!"
-2) "Halo! 👋 Selamat. AI Assistent Untuk ContractLens, datang di ContractLens. Aku CLAra, siap bantu kamu mulai dari  \n\n 🔹 Kenali ContractLens  dulu 🤝  \n\n🔹 Memulai ContractLens 📦 \n\n 🔹 Login ke akunmu 🚀 \n\n Pilih yang ingin kamu lakukan ya!"
-3) "Hai, SobatCLAra! 👋 Aku CLAra, AI Assistant ContractLens. Mau mulai dari mana?  \n\n🔹 Kenali ContractLens dulu 🤝  \n\n🔹Memulai ContractLens 📦 🔹 Login ke akunmu 🚀 \n\n Pilih yang ingin kamu lakukan ya!"
+Contoh gaya respons Yang Harus Dipilih Salah Satu Jangan Membuat Bahasa Yang Baru:
+1) "Hai! 👋 Aku CLAra. AI Assistent Untuk ContractLens, Senang bisa bantu kamu mulai menggunakan ContractLens. Kamu bisa  \n 🔹 Kenali ContractLens dulu 🤝 \n🔹 Memulai ContractLens  📦 \n🔹 Login ke akunmu 🚀 \n Pilih yang ingin kamu lakukan ya!. Pilih yang ingin kamu lakukan ya!"
+2) "Halo! 👋 Selamat. AI Assistent Untuk ContractLens, datang di ContractLens. Aku CLAra, siap bantu kamu mulai dari  \n 🔹 Kenali ContractLens  dulu 🤝  \n🔹 Memulai ContractLens 📦 \n 🔹 Login ke akunmu 🚀 \n Pilih yang ingin kamu lakukan ya!"
+3) "Hai, SobatCLAra! 👋 Aku CLAra, AI Assistant ContractLens. Mau mulai dari mana?  \n🔹 Kenali ContractLens dulu 🤝  \n🔹Memulai ContractLens 📦 🔹 Login ke akunmu 🚀 \n Pilih yang ingin kamu lakukan ya!"
                     """
                 )
             ),

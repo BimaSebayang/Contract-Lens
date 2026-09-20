@@ -1,0 +1,24 @@
+FROM maven:3.9.9-eclipse-temurin-21-alpine AS builder
+
+WORKDIR /app
+
+COPY common/pom.xml common/pom.xml
+COPY common/src common/src
+
+COPY service-analyzer/pom.xml service-analyzer/pom.xml
+COPY service-analyzer/src service-analyzer/src
+
+RUN mvn -B -U -f common/pom.xml clean install -DskipTests
+
+RUN mvn -B -U -f service-analyzer/pom.xml clean package -DskipTests
+
+
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/service-analyzer/target/*.jar app.jar
+
+EXPOSE 9002
+
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-XX:InitialRAMPercentage=25.0","-Dspring.profiles.active=docker", "-jar", "app.jar"]
