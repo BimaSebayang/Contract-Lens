@@ -7,11 +7,13 @@ import com.contractlens.service.analyzer.module.registrationlogin.service.Regist
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 
+@Slf4j
 @RestController
 @RequestMapping("/V.1.0.0/registration-lapak")
 @RequiredArgsConstructor
@@ -25,6 +27,8 @@ public class RegistrationClawfoRegistController {
             @RequestHeader("X-Ticket-Id") String ticketId,
             @RequestHeader("X-Email") String email
     ) throws MessagingException, UnsupportedEncodingException {
+
+        log.info("/send-otp for version /V.1.0.0 with value deviceId : {}, ticketId : {}, email : {}",deviceId,ticketId,email);
 
         registrationClawfoService.createOtp(
                 deviceId,
@@ -46,6 +50,8 @@ public class RegistrationClawfoRegistController {
             @RequestHeader("X-Ticket-Id") String ticketId,
             @RequestHeader("X-Email-Otp") String emailOtp
     ) {
+
+        log.info("/validate-otp for version /V.1.0.0 with value deviceId : {}, ticketId : {}, emailOtp : {}",deviceId,ticketId,emailOtp);
 
         registrationClawfoService.validateOtp(
                 deviceId,

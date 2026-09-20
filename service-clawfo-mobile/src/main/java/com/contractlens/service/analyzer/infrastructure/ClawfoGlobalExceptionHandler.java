@@ -85,7 +85,7 @@ public class ClawfoGlobalExceptionHandler {
                         exception.getClawfo(),
                         null
                 ),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 

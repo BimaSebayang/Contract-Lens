@@ -38,7 +38,7 @@ public class RegistrationClawfoService {
         registrationOtpService.save(
                 deviceId+"."+ticketId,
                 otp,
-                300
+                30000
         );
     }
 

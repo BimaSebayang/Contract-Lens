@@ -9,11 +9,13 @@ import com.contractlens.service.analyzer.module.registrationlogin.service.LoginC
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 
+@Slf4j
 @RestController
 @RequestMapping("/V.1.0.0/mobile/login")
 @RequiredArgsConstructor
@@ -30,6 +32,9 @@ public class LoginClawfoController {
             @RequestHeader(value = "X-Location") String location,
             @Valid @RequestBody ClawfoMappingLoginRequest request
     ) throws MessagingException, UnsupportedEncodingException {
+
+        log.info("/mobile login for version /V.1.0.0 with value deviceId : {}, longitude : {}, latitude : {}, location : {}, email : {}",deviceId,longitude,latitude,location,request.getEmail());
+
 
         ClawfoLoginResponse clawfoLoginResponse = loginClawfoService.login(
                 deviceId,
