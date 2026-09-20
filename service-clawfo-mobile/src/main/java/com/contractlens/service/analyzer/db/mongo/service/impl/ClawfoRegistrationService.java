@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
 
@@ -19,12 +20,20 @@ public class ClawfoRegistrationService  implements RegistrationService {
 
     private final ClawfoRegistrationRepository repository;
     private final MongoTemplate mongoTemplate;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public ClawfoRegistrationDocument upsert(
             ClawfoRegistrationDocument document
     ) {
+
+
+        String encodedPassword = passwordEncoder.encode(
+                document.getPassword()
+        );
+
+        document.setPassword(encodedPassword);
 
         Query query = new Query(
                 Criteria.where("_id").is(document.getEmail())

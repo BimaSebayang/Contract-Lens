@@ -10,12 +10,14 @@ import com.contractlens.service.analyzer.infrastructure.ClawfoException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RegistrationClawfoService {
@@ -68,12 +70,12 @@ public class RegistrationClawfoService {
         boolean existsEmail = registrationService.existsByEmail(request.getEmail());
 
         if(existsEmail){
+            log.warn("Somebody try to give existEmail for value {}", request.getEmail());
             return;
         }
 
-
         ClawfoRegistrationDocument clawfoRegistrationDocument = new ClawfoRegistrationDocument();
-        clawfoRegistrationDocument.toDocument(
+        clawfoRegistrationDocument = clawfoRegistrationDocument.toDocument(
                 request,
                 ticketId,
                 deviceId

@@ -74,3 +74,10 @@ management:
     web:
       exposure:
         include: health,info,metrics
+
+
+clawfo:
+  jwt:
+    secret: 7f3c9a8e2d1b4f6a9c7e5d3b1a8f2c6e4d9b7a5f3c1e8a6d2b9f4c7e1a5d8b3c6f9a2e5d8b1c4f7a9e2d5c8b3f6a1e4d7c9b2f5a8e1d4c7b9f2a5e8d1c3f6b8a4e7d9
+    access-token-expiration: 3600000
+    refresh-token-expiration: 2592000000

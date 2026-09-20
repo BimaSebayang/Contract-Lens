@@ -59,6 +59,18 @@ public enum WordingClawfo {
             "Kode verifikasi berhasil dikirim"
     ),
 
+    LOGIN_SUCCESS(
+            "auth.login.success",
+            "Login successful",
+            "Login berhasil"
+    ),
+
+    LOGIN_FAILED(
+            "auth.login.failed",
+            "Invalid email or password",
+            "Email atau password salah"
+    ),
+
     OTP_VALIDATION_SUCCESS(
             "auth.register.otp.validation.success",
             "Verification code verified successfully",

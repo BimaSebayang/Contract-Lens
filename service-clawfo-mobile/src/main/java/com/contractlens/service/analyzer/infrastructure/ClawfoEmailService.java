@@ -55,4 +55,44 @@ public class ClawfoEmailService {
         mailSender.send(message);
     }
 
+    public void sendUnknownDeviceLogin(
+            String email,
+            String device,
+            String location,
+            String timestamp
+    ) throws MessagingException, UnsupportedEncodingException {
+
+        MimeMessage message = mailSender.createMimeMessage();
+
+        MimeMessageHelper helper = new MimeMessageHelper(
+                message,
+                false,
+                StandardCharsets.UTF_8.name()
+        );
+
+        helper.setFrom(senderEmail, "CLAwfo");
+        helper.setTo(email);
+        helper.setSubject("CLAwfo Security Alert - New Login");
+
+        String html;
+
+        try {
+            html = LoaderTemplate.loadTemplate(
+                    "template/email/clawfo-login-difference-device.html"
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        html = html
+                .replace("{{EMAIL}}", email)
+                .replace("{{DEVICE}}", device)
+                .replace("{{LOCATION}}", location)
+                .replace("{{TIMESTAMP}}", timestamp);
+
+        helper.setText(html, true);
+
+        mailSender.send(message);
+    }
+
 }
