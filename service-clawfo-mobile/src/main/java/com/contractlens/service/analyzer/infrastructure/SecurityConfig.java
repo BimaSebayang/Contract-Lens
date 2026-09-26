@@ -35,44 +35,48 @@ public class SecurityConfig {
 
     private final Environment environment;
 
-    @Value("${spring.whitelist:}")
-    private String[] whiteLists;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(AppCredentialFilter credentialFilter, Environment environment, String[] whiteLists) {
+    public SecurityConfig(AppCredentialFilter credentialFilter, Environment environment) {
         this.credentialFilter = credentialFilter;
         this.environment = environment;
-        this.whiteLists = whiteLists;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        String[] matchers = whiteLists;
+        String profileBerjalan =
+                environment.getProperty("spring.profiles.active");
 
-        log.info("All whiteList endpoints : {}", (Object) matchers);
-
-        String profileBerjalan = environment.getProperty("spring.profiles.active");
-        log.info("profile berjalan ==> {}",profileBerjalan);
+        log.info("profile berjalan ==> {}", profileBerjalan);
 
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        registry -> registry.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR)
+                        registry -> registry
+                                .dispatcherTypeMatchers(
+                                        DispatcherType.FORWARD,
+                                        DispatcherType.ERROR
+                                )
                                 .permitAll()
-                                .requestMatchers(matchers)
-                                .permitAll().anyRequest().authenticated())
+                                .anyRequest()
+                                .permitAll()
+                )
                 .sessionManagement(
-                        manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(credentialFilter,UsernamePasswordAuthenticationFilter.class);
+                        manager -> manager.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
+                )
+                .addFilterBefore(
+                        credentialFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
-
 
 }

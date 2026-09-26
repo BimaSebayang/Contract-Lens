@@ -71,14 +71,18 @@ public class LoginClawfoService {
                 user.getEmail(),
                 deviceId,
                 longitude,
-                latitude
+                latitude,
+                user.getNamaPemilik(),
+                user.getNamaLapak()
         );
 
         String refreshToken = jwtService.generateRefreshToken(
                 user.getEmail(),
                 deviceId,
                 longitude,
-                latitude
+                latitude,
+                user.getNamaPemilik(),
+                user.getNamaLapak()
         );
 
         return ClawfoLoginResponse.builder()
@@ -158,7 +162,9 @@ public class LoginClawfoService {
                         user.getEmail(),
                         deviceId,
                         longitude,
-                        latitude
+                        latitude,
+                        user.getNamaPemilik(),
+                        user.getNamaLapak()
                 );
 
         String newRefreshToken =
@@ -166,7 +172,9 @@ public class LoginClawfoService {
                         user.getEmail(),
                         deviceId,
                         longitude,
-                        latitude
+                        latitude,
+                        user.getNamaPemilik(),
+                        user.getNamaLapak()
                 );
 
         return ClawfoLoginResponse.builder()

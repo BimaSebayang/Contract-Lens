@@ -67,7 +67,24 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
   pattern:
-    console: "%d %-5level [%X{userId:-}] %logger:%line - %msg%n"
+    console: |
+      {
+        "timestamp": "%d{yyyy-MM-dd HH:mm:ss}",
+        "request": {
+          "url": "%X{url}",
+          "method": "%X{method}"
+        },
+        "context": {
+          "uuid": "%X{uuid}",
+          "user": "%X{user}"
+        },
+        "source": {
+          "class": "%logger{0}",
+          "line": "%line"
+        },
+        "level": "%level",
+        "message": "%msg"
+      }%n
 
 management:
   endpoints:
