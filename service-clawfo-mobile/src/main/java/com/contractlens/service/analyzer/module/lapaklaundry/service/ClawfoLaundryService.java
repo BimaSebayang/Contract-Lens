@@ -7,9 +7,8 @@ import com.contractlens.service.analyzer.db.mongo.service.LaundryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @Service
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClawfoLaundryService {
 
     private final LaundryService laundryService;
-    private String url = "https://{nama_laundry}.clawfo.id/encodeId={encodeId}";
+
+    @Value("${clawfo.laundry.url}")
+    private String laundryUrl;
 
     public void createLaundry(
             String deviceId,
@@ -96,7 +97,7 @@ public class ClawfoLaundryService {
                 .replaceAll("[^a-zA-Z0-9]", "")
                 .toLowerCase();
 
-        String url = this.url
+        String url = laundryUrl
                 .replace("{nama_laundry}", namaLaundry)
                 .replace("{encodeId}", document.getLaundryCode());
         response.setUrl(url);

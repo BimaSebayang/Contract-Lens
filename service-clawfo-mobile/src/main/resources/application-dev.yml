@@ -23,3 +23,7 @@ spring:
       password:
       timeout: 5000ms
       database: 0
+
+clawfo:
+  laundry:
+    url: "https://{nama_laundry}.clawfo.id/encodeId={encodeId}"
