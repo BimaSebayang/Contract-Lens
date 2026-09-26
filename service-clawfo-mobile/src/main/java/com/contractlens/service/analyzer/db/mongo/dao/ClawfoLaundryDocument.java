@@ -1,12 +1,12 @@
-package com.contractlens.common.clawfo.request;
+package com.contractlens.service.analyzer.db.mongo.dao;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
@@ -14,15 +14,20 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ClawfoLapakLaundryRequest {
+@Document(collection = "clawfo_lapak_laundry")
+public class ClawfoLaundryDocument {
 
-    @NotBlank
-    @Size(max = 100)
+    @Id
+    private String laundryCode;
+
+    @Indexed
+    private String email;
+
+    private String deviceId;
+
+    @Indexed
     private String namaLaundry;
 
-    @NotBlank
-    @Size(max = 10000)
     private String deskripsiLaundry;
 
     private CurrentLocationProps currentLocation;
@@ -40,7 +45,6 @@ public class ClawfoLapakLaundryRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CurrentLocationProps {
 
         private String address;
@@ -64,7 +68,6 @@ public class ClawfoLapakLaundryRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PaymentMethodProps {
 
         private boolean isCash;
@@ -99,7 +102,6 @@ public class ClawfoLapakLaundryRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DeliveryServiceProps {
 
         private boolean isPickup;
@@ -132,7 +134,6 @@ public class ClawfoLapakLaundryRequest {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class OperationalHourProps {
 
         private String seninStartDay;
@@ -187,8 +188,11 @@ public class ClawfoLapakLaundryRequest {
 
     @Override
     public String toString() {
-        return "ClawfoLapakLaundryRequest{" +
-                "namaLaundry='" + namaLaundry + '\'' +
+        return "ClawfoLaundryDocument{" +
+                "laundryCode='" + laundryCode + '\'' +
+                ", email='" + email + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", namaLaundry='" + namaLaundry + '\'' +
                 ", deskripsiLaundry='" + deskripsiLaundry + '\'' +
                 ", currentLocation=" + currentLocation +
                 ", paymentMethod=" + paymentMethod +

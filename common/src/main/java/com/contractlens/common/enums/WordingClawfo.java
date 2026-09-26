@@ -35,6 +35,12 @@ public enum WordingClawfo {
             "Nomor telepon sudah terdaftar"
     ),
 
+    USER_NOT_FOUND(
+            "auth.user.not_found",
+            "User not found",
+            "Pengguna tidak ditemukan"
+    ),
+
     DEVICE_ALREADY_REGISTERED(
             "auth.register.device_exists",
             "This device is already registered",
@@ -51,6 +57,18 @@ public enum WordingClawfo {
             "auth.register.otp_expired",
             "Verification code has expired",
             "Kode verifikasi sudah kedaluwarsa"
+    ),
+
+    LAPAK_LAUNDRY_CREATED(
+            "laundry.lapak_created",
+            "Laundry lapak has been created successfully",
+            "Lapak laundry berhasil dibuat"
+    ),
+
+    LAPAK_LAUNDRY_FOUND(
+            "laundry.lapak_found",
+            "Laundry lapak found successfully",
+            "Lapak laundry berhasil ditemukan"
     ),
 
     OTP_SEND_SUCCESS(

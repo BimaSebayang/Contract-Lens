@@ -45,7 +45,10 @@ public class ClawfoRegistrationService  implements RegistrationService {
                 .set("namaPemilik", document.getNamaPemilik())
                 .set("namaLapak", document.getNamaLapak())
                 .set("password", document.getPassword())
-                .set("tnc", document.getTnc());
+                .set("tnc", document.getTnc())
+                .set("laundryCode",document.getLaundryCode());
+
+
 
         mongoTemplate.upsert(
                 query,
