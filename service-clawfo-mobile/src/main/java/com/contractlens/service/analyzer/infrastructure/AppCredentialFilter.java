@@ -127,7 +127,7 @@ public class AppCredentialFilter extends OncePerRequestFilter {
 
         } else {
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
 
             log.warn(
@@ -136,10 +136,15 @@ public class AppCredentialFilter extends OncePerRequestFilter {
             );
 
             response.getWriter().write("""
-                {
-                    "message": "Unauthorized"
-                }
-                """);
+    {
+        "code": "auth.login.unauthorized",
+        "message": {
+            "en": "Unauthorized",
+            "id": "Tidak terautorisasi"
+        },
+        "data": null
+    }
+    """);
 
             MDC.clear();
             SecurityContextHolder.clearContext();

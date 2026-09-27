@@ -58,7 +58,7 @@ public class LaundryServiceImpl implements LaundryService {
         if (existingLaundry.isPresent()) {
 
             document = existingLaundry.get();
-
+            document.setPhone(request.getPhoneNumber());
             document.setDeviceId(deviceId);
             document.setNamaLaundry(request.getNamaLaundry());
             document.setDeskripsiLaundry(request.getDeskripsiLaundry());
@@ -108,6 +108,7 @@ public class LaundryServiceImpl implements LaundryService {
                                     request.getPaymentMethod()
                             )
                     )
+                    .phone(request.getPhoneNumber())
                     .deliveryService(
                             mapDeliveryService(
                                     request.getDeliveryService()

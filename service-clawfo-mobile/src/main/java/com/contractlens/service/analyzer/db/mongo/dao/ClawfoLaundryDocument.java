@@ -23,6 +23,8 @@ public class ClawfoLaundryDocument {
     @Indexed
     private String email;
 
+    private String phone;
+
     private String deviceId;
 
     @Indexed

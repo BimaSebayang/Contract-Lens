@@ -152,6 +152,8 @@ public class ClawfoJwtService {
                     .longitude(claims.get("longitude", String.class))
                     .latitude(claims.get("latitude", String.class))
                     .type(claims.get("type", String.class))
+                    .username(claims.get("username", String.class))
+                    .namaUmkm(claims.get("namaUmkm", String.class))
                     .issuedAt(toLocalDateTime(claims.getIssuedAt()))
                     .expiration(toLocalDateTime(claims.getExpiration()))
                     .build();

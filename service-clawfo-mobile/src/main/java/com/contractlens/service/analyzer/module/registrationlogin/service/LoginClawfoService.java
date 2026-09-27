@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -30,6 +31,7 @@ public class LoginClawfoService {
     private final PasswordEncoder passwordEncoder;
     private final ClawfoJwtService jwtService;
     private final ClawfoEmailService clawfoEmailService;
+
 
     public ClawfoLoginResponse login(
             String deviceId,
@@ -182,5 +184,15 @@ public class LoginClawfoService {
                 .refreshToken(newRefreshToken)
                 .expiresIn(3600L)
                 .build();
+    }
+
+    public ClawfoJwtPayload selfDetail(String deviceId) {
+        ClawfoJwtPayload clawfoJwtPayload = jwtService.getCurrentUser();
+        String deviceIdJwt = clawfoJwtPayload.getDeviceId();
+        if(!Objects.equals(deviceId,deviceIdJwt)){
+            throw new ClawfoException(WordingClawfo.INVALID_REQUEST);
+        }
+
+        return clawfoJwtPayload;
     }
 }

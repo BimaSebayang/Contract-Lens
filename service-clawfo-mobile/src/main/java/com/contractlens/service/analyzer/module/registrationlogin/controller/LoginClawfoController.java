@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-@Slf4j
-@RestController
-@RequestMapping("/V.1.0.0/mobile/login")
-@RequiredArgsConstructor
+    @Slf4j
+    @RestController
+    @RequestMapping("/V.1.0.0/mobile/login")
+    @RequiredArgsConstructor
 public class LoginClawfoController {
 
     private final LoginClawfoService loginClawfoService;

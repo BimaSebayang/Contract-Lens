@@ -223,3 +223,4 @@
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoLaundryDocument$OperationalHourProps.class
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoLaundryDocument$PaymentMethodProps$PaymentMethodPropsBuilder.class
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoLaundryDocument$PaymentMethodProps.class
+/common/target/classes/com/contractlens/common/clawfo/response/ClawfoBankResponse$ClawfoBankResponseBuilder.class

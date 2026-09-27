@@ -28,4 +28,8 @@ public class ClawfoJwtPayload {
     private LocalDateTime issuedAt;
 
     private LocalDateTime  expiration;
+
+    private String username;
+
+    private String namaUmkm;
 }

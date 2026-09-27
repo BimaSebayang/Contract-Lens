@@ -22,6 +22,10 @@ public class ClawfoLapakLaundryRequest {
     private String namaLaundry;
 
     @NotBlank
+    @Size(max = 12)
+    private String phoneNumber;
+
+    @NotBlank
     @Size(max = 10000)
     private String deskripsiLaundry;
 

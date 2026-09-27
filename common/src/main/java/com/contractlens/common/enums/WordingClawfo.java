@@ -17,6 +17,12 @@ public enum WordingClawfo {
             "Registrasi berhasil"
     ),
 
+    USER_FOUND(
+            "auth.found.success",
+            "User Found",
+            "User Ditemukan"
+    ),
+
     TNC_NOT_ACCEPTED(
             "auth.register.tnc.not.accepted",
             "Please accept the Terms and Conditions",
@@ -63,6 +69,18 @@ public enum WordingClawfo {
             "laundry.lapak_created",
             "Laundry lapak has been created successfully",
             "Lapak laundry berhasil dibuat"
+    ),
+
+    BANK_NOT_FOUND(
+            "laundry.bank_not_found",
+            "Bank not found",
+            "Bank tidak ditemukan"
+    ),
+
+    BANK_FOUND(
+            "laundry.bank_found",
+            "Bank found successfully",
+            "Bank berhasil ditemukan"
     ),
 
     LAPAK_LAUNDRY_FOUND(
@@ -117,7 +135,14 @@ public enum WordingClawfo {
             "auth.register.failed",
             "Registration failed",
             "Registrasi gagal"
-    );
+    ),
+
+    INVALID_REQUEST(
+            "invalid.request.failed",
+            "Invalid Request",
+            "Invalid Request"
+    )
+    ;
 
 
 
