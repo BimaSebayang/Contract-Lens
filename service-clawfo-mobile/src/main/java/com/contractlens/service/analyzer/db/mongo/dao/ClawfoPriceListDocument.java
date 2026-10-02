@@ -36,7 +36,7 @@ public class ClawfoPriceListDocument extends ClawfoComponent {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ClawfoServiceDocument extends ClawfoTimerComponent {
-        private String  serviceId;
+        private String serviceId;
         private String mainFotoUrl;
         private List<MenuImageProps> fotos;
         private String namaLayanan;
@@ -63,6 +63,7 @@ public class ClawfoPriceListDocument extends ClawfoComponent {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ClawfoBannerDocument extends ClawfoTimerComponent{
+        private String bannerId;
         private Integer templateId;
         private String logo;
         @Indexed

@@ -66,6 +66,8 @@ springdoc:
 logging:
   level:
     org.hibernate.SQL: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    org.springframework.data.mongodb.repository.query: DEBUG
   pattern:
     console: |
       {

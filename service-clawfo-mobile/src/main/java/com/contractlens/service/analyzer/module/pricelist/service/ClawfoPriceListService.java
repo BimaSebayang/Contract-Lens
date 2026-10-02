@@ -41,4 +41,11 @@ public class ClawfoPriceListService {
     }
 
 
+    public void deleteBannerLaundry(String deviceId, String ticketId, String longitude, String latitude, String location, String bannerId) {
+        priceListService.deleteLaundryByBannerId(bannerId);
+    }
+
+    public void deleteServiceLaundry(String deviceId, String ticketId, String longitude, String latitude, String location, String serviceId) {
+        priceListService.deleteServiceLaundry(serviceId);
+    }
 }

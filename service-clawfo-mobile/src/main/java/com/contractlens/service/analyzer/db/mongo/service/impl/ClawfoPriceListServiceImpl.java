@@ -8,6 +8,7 @@ import com.contractlens.service.analyzer.db.mongo.repository.ClawfoRegistrationR
 import com.contractlens.service.analyzer.db.mongo.service.PriceListService;
 import com.contractlens.service.analyzer.infrastructure.ClawfoException;
 import com.contractlens.service.analyzer.infrastructure.ClawfoJwtService;
+import io.jsonwebtoken.lang.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -147,7 +148,7 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
             if(isBannerExists) {
                 isBannerExists = realData.getBanners()
                         .stream()
-                        .anyMatch(banner -> Objects.equals(document.getBanners().get(0).getTemplateId(), banner.getTemplateId()));
+                        .anyMatch(banner -> Objects.equals(document.getBanners().get(0).getBannerId(), banner.getBannerId()));
             }
 
             upsertBanners(
@@ -187,7 +188,89 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
         return clawfoPriceListDocumentRepository
                 .findAllByEmail(email);
     }
-    
+
+    @Override
+    public void deleteLaundryByBannerId(String bannerId) {
+        ClawfoRegistrationDocument selfDocument = selfDocument();
+        String laundryCode = selfDocument.getLaundryCode();
+        ClawfoPriceListDocument realData =
+                clawfoPriceListDocumentRepository
+                        .findByLaundryCode(laundryCode)
+                        .orElse(null);
+
+        if(Objects.isNull(realData)){
+            log.info("deleteLaundryByBannerId for banner Id {} not find data for realData {}", bannerId, null);
+            return;
+        }
+
+        boolean nonExistsBannerId = realData.getBanners().stream().noneMatch(banner-> Objects.equals(banner.getBannerId(),bannerId));
+
+        if(nonExistsBannerId){
+            log.info("deleteLaundryByBannerId for banner Id {} required nonExistsBannerId : {}", bannerId, true);
+            return;
+        }
+
+        Query query = new Query(
+                Criteria.where("_id").is(laundryCode)
+                        .and("banners.bannerId").is(bannerId)
+        );
+
+        Update update = new Update()
+                .pull(
+                        "banners",
+                        Query.query(
+                                Criteria.where("bannerId").is(bannerId)
+                        )
+                );
+
+        mongoTemplate.updateFirst(
+                query,
+                update,
+                ClawfoPriceListDocument.class
+        );
+    }
+
+    @Override
+    public void deleteServiceLaundry(String serviceId) {
+        ClawfoRegistrationDocument selfDocument = selfDocument();
+        String laundryCode = selfDocument.getLaundryCode();
+        ClawfoPriceListDocument realData =
+                clawfoPriceListDocumentRepository
+                        .findByLaundryCode(laundryCode)
+                        .orElse(null);
+
+        if(Objects.isNull(realData)){
+            log.info("deleteServiceLaundryId for service Id {} not find data for realData {}", serviceId, null);
+            return;
+        }
+
+        boolean nonExistsServiceId = realData.getServices().stream().noneMatch(banner-> Objects.equals(banner.getServiceId(),serviceId));
+
+        if(nonExistsServiceId){
+            log.info("deleteServiceLaundryId for service Id {} required nonExistsBannerId : {}", serviceId, true);
+            return;
+        }
+
+        Query query = new Query(
+                Criteria.where("_id").is(laundryCode)
+                        .and("services.serviceId").is(serviceId)
+        );
+
+        Update update = new Update()
+                .pull(
+                        "services",
+                        Query.query(
+                                Criteria.where("serviceId").is(serviceId)
+                        )
+                );
+
+        mongoTemplate.updateFirst(
+                query,
+                update,
+                ClawfoPriceListDocument.class
+        );
+    }
+
     private void upsertServices(
             Update update,
             String email,
@@ -201,7 +284,7 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
             /*
              * INSERT
              */
-            if (service.getServiceId() == null) {
+            if (!Strings.hasText(service.getServiceId())) {
 
                 service.setServiceId(UUID.randomUUID().toString());
 
@@ -222,13 +305,18 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
             service.setUpdatedDate(now);
 
             update.set(
-                    "services.$[service].fotoLayanan",
+                    "services.$[service].mainFotoUrl",
                     service.getMainFotoUrl()
             );
 
             update.set(
                     "services.$[service].namaLayanan",
                     service.getNamaLayanan()
+            );
+
+            update.set(
+                    "services.$[service].fotos",
+                    service.getFotos()
             );
 
             update.set(
@@ -307,8 +395,8 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
                 );
 
                 update.filterArray(
-                        Criteria.where("banner.templateId")
-                                .is(banner.getTemplateId())
+                        Criteria.where("banner.bannerId")
+                                .is(banner.getBannerId())
                 );
 
             } else {

@@ -3,7 +3,6 @@ package com.contractlens.service.analyzer.module.pricelist.controller;
 import com.contractlens.common.clawfo.response.ClawfoMappingResponse;
 import com.contractlens.common.enums.WordingClawfo;
 import com.contractlens.service.analyzer.db.mongo.dao.ClawfoPriceListDocument;
-import com.contractlens.service.analyzer.db.mongo.service.PriceListService;
 import com.contractlens.service.analyzer.module.pricelist.service.ClawfoPriceListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,59 @@ public class ClawfoPriceListController {
         return ResponseEntity.ok(
                 ClawfoMappingResponse.of(
                         WordingClawfo.BANNER_SAVED_SUCCESS,
+                        null
+                )
+        );
+    }
+
+
+    @DeleteMapping("/banner")
+    public ResponseEntity<ClawfoMappingResponse<Void>> deleteBannerLaundry(
+            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestHeader("X-Ticket-Id") String ticketId,
+            @RequestHeader(value = "X-Longitude") String longitude,
+            @RequestHeader(value = "X-Latitude") String latitude,
+            @RequestHeader(value = "X-Location") String location,
+            @RequestHeader("X-Banner-id") String bannerId
+    ){
+        priceListService.deleteBannerLaundry(
+                deviceId,
+                ticketId,
+                longitude,
+                latitude,
+                location,
+                bannerId
+        );
+
+        return ResponseEntity.ok(
+                ClawfoMappingResponse.of(
+                        WordingClawfo.LAPAK_LAUNDRY_DELETED,
+                        null
+                )
+        );
+    }
+
+    @DeleteMapping("/service")
+    public ResponseEntity<ClawfoMappingResponse<Void>> deleteBannerService(
+            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestHeader("X-Ticket-Id") String ticketId,
+            @RequestHeader(value = "X-Longitude") String longitude,
+            @RequestHeader(value = "X-Latitude") String latitude,
+            @RequestHeader(value = "X-Location") String location,
+            @RequestHeader("X-Service-id") String serviceId
+    ){
+        priceListService.deleteServiceLaundry(
+                deviceId,
+                ticketId,
+                longitude,
+                latitude,
+                location,
+                serviceId
+        );
+
+        return ResponseEntity.ok(
+                ClawfoMappingResponse.of(
+                        WordingClawfo.LAPAK_LAUNDRY_DELETED,
                         null
                 )
         );

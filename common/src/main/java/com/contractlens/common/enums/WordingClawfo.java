@@ -42,7 +42,7 @@ public enum WordingClawfo {
     ),
 
     USER_NOT_FOUND(
-            "auth.user.not_found",
+            USER_FOUND.key,
             "User not found",
             "Pengguna tidak ditemukan"
     ),
@@ -69,6 +69,12 @@ public enum WordingClawfo {
             "laundry.lapak_created",
             "Laundry lapak has been created successfully",
             "Lapak laundry berhasil dibuat"
+    ),
+
+    LAPAK_LAUNDRY_DELETED(
+            "laundry.lapak_deleted",
+            "Laundry lapak has been deleted successfully",
+            "Lapak laundry berhasil dihapus"
     ),
 
     BANK_NOT_FOUND(

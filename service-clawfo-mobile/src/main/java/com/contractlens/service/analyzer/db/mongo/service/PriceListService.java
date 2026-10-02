@@ -26,4 +26,7 @@ public interface PriceListService {
 
     List<ClawfoPriceListDocument> getAllClawfoPriceListAndBannerByEmail();
 
+    void deleteLaundryByBannerId(String bannerId);
+
+    void deleteServiceLaundry(String serviceId);
 }

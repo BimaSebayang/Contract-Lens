@@ -60,6 +60,8 @@ public class ClawfoLaundryController {
         );
     }
 
+
+
     @GetMapping("/current-laundry")
     public ResponseEntity<ClawfoMappingResponse<ClawfoLapakLaundryResponse>> getOwnLaundry(
             @RequestHeader("X-Device-Id") String deviceId,
