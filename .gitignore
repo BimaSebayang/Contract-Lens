@@ -224,3 +224,11 @@
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoLaundryDocument$PaymentMethodProps$PaymentMethodPropsBuilder.class
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoLaundryDocument$PaymentMethodProps.class
 /common/target/classes/com/contractlens/common/clawfo/response/ClawfoBankResponse$ClawfoBankResponseBuilder.class
+/service-clawfo-mobile/target/clawfo-mobile.jar
+/service-clawfo-mobile/target/clawfo-mobile.jar.original
+/common/target/classes/com/contractlens/common/clawfo/request/ClawfoBannerRequest$ClawfoBanner.class
+/service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoPriceListDocument$ClawfoBannerDocument.class
+/common/target/classes/com/contractlens/common/dto/ClawfoJwtPayload$ClawfoJwtPayloadBuilder.class
+/service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoPriceListDocument$ClawfoServiceDocument$MenuImageProps.class
+/service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoPriceListDocument$ClawfoServiceDocument.class
+/common/target/classes/com/contractlens/common/clawfo/request/ClawfoServiceRequest$ClawfoService.class

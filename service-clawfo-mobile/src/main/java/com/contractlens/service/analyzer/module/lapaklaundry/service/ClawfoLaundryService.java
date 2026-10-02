@@ -44,7 +44,7 @@ public class ClawfoLaundryService {
 
         log.info("Creating laundry lapak | with request = {}",request);
 
-        laundryService.createLaundry(
+        laundryService.upsertLaundry(
                 deviceId,
                 ticketId,
                 longitude,

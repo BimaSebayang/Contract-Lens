@@ -1,62 +1,57 @@
 package com.contractlens.service.analyzer.db.mongo.service.impl;
 
 
+import com.contractlens.common.enums.WordingClawfo;
 import com.contractlens.service.analyzer.db.mongo.dao.ClawfoRegistrationDocument;
 import com.contractlens.service.analyzer.db.mongo.repository.ClawfoRegistrationRepository;
 import com.contractlens.service.analyzer.db.mongo.service.RegistrationService;
+import com.contractlens.service.analyzer.infrastructure.ClawfoException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class ClawfoRegistrationService  implements RegistrationService {
+public class ClawfoRegistrationServiceImpl implements RegistrationService {
 
     private final ClawfoRegistrationRepository repository;
-    private final MongoTemplate mongoTemplate;
     private final PasswordEncoder passwordEncoder;
 
 
     @Override
-    public ClawfoRegistrationDocument upsert(
+    public void upsert(
             ClawfoRegistrationDocument document
     ) {
 
+        Optional<ClawfoRegistrationDocument> existing =
+                repository.findByEmail(document.getEmail());
+
+        if (existing.isPresent()) {
+            throw new ClawfoException(
+                    WordingClawfo.EMAIL_ALREADY_REGISTERED
+            );
+        }
 
         String encodedPassword = passwordEncoder.encode(
                 document.getPassword()
         );
 
         document.setPassword(encodedPassword);
+        document.setCreatedBy(document.getEmail());
+        document.setCreatedDate(LocalDateTime.now());
 
-        Query query = new Query(
-                Criteria.where("_id").is(document.getEmail())
-        );
+        document.setTicketIds(document.getTicketIds());
+        document.setDeviceId(document.getDeviceId());
+        document.setNamaPemilik(document.getNamaPemilik());
+        document.setNamaLapak(document.getNamaLapak());
+        document.setTnc(document.getTnc());
+        document.setLaundryCode(document.getLaundryCode());
 
-        Update update = new Update()
-                .set("ticketIds", document.getTicketIds())
-                .set("deviceId", document.getDeviceId())
-                .set("namaPemilik", document.getNamaPemilik())
-                .set("namaLapak", document.getNamaLapak())
-                .set("password", document.getPassword())
-                .set("tnc", document.getTnc())
-                .set("laundryCode",document.getLaundryCode());
-
-
-
-        mongoTemplate.upsert(
-                query,
-                update,
-                ClawfoRegistrationDocument.class
-        );
-
-        return document;
+        repository.save(document);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.contractlens.service.analyzer.db.mongo.dao.ClawfoLaundryDocument;
 
 public interface LaundryService {
 
-    void createLaundry(
+    void upsertLaundry(
             String deviceId,
             String ticketId,
             String longitude,

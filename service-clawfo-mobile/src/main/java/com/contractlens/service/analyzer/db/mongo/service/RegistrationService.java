@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface RegistrationService {
 
-    ClawfoRegistrationDocument upsert(
+    void upsert(
             ClawfoRegistrationDocument document
     );
 

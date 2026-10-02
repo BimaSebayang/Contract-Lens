@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/V.1.0.0/mobile/self")
+    @RequestMapping("/V.1.0.0/mobile/self")
 @RequiredArgsConstructor
 public class SelfClawfoController {
 

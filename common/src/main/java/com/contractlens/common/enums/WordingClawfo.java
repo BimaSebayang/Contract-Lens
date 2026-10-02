@@ -83,6 +83,31 @@ public enum WordingClawfo {
             "Bank berhasil ditemukan"
     ),
 
+    BANNER_SAVED_SUCCESS(
+            "banner.saved.success",
+            "Banner Saved Success",
+            "Banner Berhasil Disimpan"
+    ),
+
+    SERVICE_SAVED_SUCCESS(
+            "service.saved.success",
+            "Service Saved Success",
+            "Service Berhasil Disimpan"
+    ),
+
+    PRICE_LIST_FOUND(
+            "price.list.found",
+            "Price List Found",
+            "List Harga Ditemukan"
+    ),
+
+    PRICE_LIST_NOT_FOUND(
+            "price.list.not.found",
+            "Price List Not Found",
+            "List Harga Tidak Ditemukan"
+    ),
+
+
     LAPAK_LAUNDRY_FOUND(
             "laundry.lapak_found",
             "Laundry lapak found successfully",

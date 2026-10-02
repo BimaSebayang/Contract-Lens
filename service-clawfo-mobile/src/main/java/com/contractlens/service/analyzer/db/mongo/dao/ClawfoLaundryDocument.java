@@ -1,27 +1,22 @@
 package com.contractlens.service.analyzer.db.mongo.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.contractlens.service.analyzer.db.mongo.dao.component.ClawfoComponent;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "clawfo_lapak_laundry")
-public class ClawfoLaundryDocument {
+public class ClawfoLaundryDocument extends ClawfoComponent {
 
     @Id
     private String laundryCode;
-
-    @Indexed
-    private String email;
 
     private String phone;
 
@@ -192,7 +187,7 @@ public class ClawfoLaundryDocument {
     public String toString() {
         return "ClawfoLaundryDocument{" +
                 "laundryCode='" + laundryCode + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + super.getEmail() + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", namaLaundry='" + namaLaundry + '\'' +
                 ", deskripsiLaundry='" + deskripsiLaundry + '\'' +

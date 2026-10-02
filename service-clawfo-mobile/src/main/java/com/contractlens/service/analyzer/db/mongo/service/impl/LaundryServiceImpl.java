@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -25,8 +25,9 @@ public class LaundryServiceImpl implements LaundryService {
     private final ClawfoRegistrationRepository clawfoRegistrationRepository;
     private final ClawfoJwtService clawfoJwtService;
 
+
     @Override
-    public void createLaundry(
+    public void upsertLaundry(
             String deviceId,
             String ticketId,
             String longitude,
@@ -58,72 +59,70 @@ public class LaundryServiceImpl implements LaundryService {
         if (existingLaundry.isPresent()) {
 
             document = existingLaundry.get();
-            document.setPhone(request.getPhoneNumber());
-            document.setDeviceId(deviceId);
-            document.setNamaLaundry(request.getNamaLaundry());
-            document.setDeskripsiLaundry(request.getDeskripsiLaundry());
-
-            document.setCurrentLocation(
-                    mapCurrentLocation(
-                            request.getCurrentLocation()
-                    )
-            );
-
-            document.setFotoToko(request.getFotoToko());
-
-            document.setPaymentMethod(
-                    mapPaymentMethod(
-                            request.getPaymentMethod()
-                    )
-            );
-
-            document.setDeliveryService(
-                    mapDeliveryService(
-                            request.getDeliveryService()
-                    )
-            );
-
-            document.setOperationalHour(
-                    mapOperationalHour(
-                            request.getOperationalHour()
-                    )
-            );
 
         } else {
 
-            document = ClawfoLaundryDocument.builder()
-                    .laundryCode(registration.getLaundryCode())
-                    .email(email)
-                    .deviceId(deviceId)
-                    .namaLaundry(request.getNamaLaundry())
-                    .deskripsiLaundry(request.getDeskripsiLaundry())
-                    .currentLocation(
-                            mapCurrentLocation(
-                                    request.getCurrentLocation()
-                            )
-                    )
-                    .fotoToko(request.getFotoToko())
-                    .paymentMethod(
-                            mapPaymentMethod(
-                                    request.getPaymentMethod()
-                            )
-                    )
-                    .phone(request.getPhoneNumber())
-                    .deliveryService(
-                            mapDeliveryService(
-                                    request.getDeliveryService()
-                            )
-                    )
-                    .operationalHour(
-                            mapOperationalHour(
-                                    request.getOperationalHour()
-                            )
-                    )
-                    .build();
+            document = new ClawfoLaundryDocument();
+
+            document.setLaundryCode(
+                    registration.getLaundryCode()
+            );
+
+            document.setEmail(email);
+            document.setCreatedBy(ticketId);
+            document.setCreatedDate(LocalDateTime.now());
         }
+
+        document.setUpdatedBy(ticketId);
+        document.setUpdatedDate(LocalDateTime.now());
+
+        document.setPhone(
+                request.getPhoneNumber()
+        );
+
+        document.setDeviceId(
+                deviceId
+        );
+
+        document.setNamaLaundry(
+                request.getNamaLaundry()
+        );
+
+        document.setDeskripsiLaundry(
+                request.getDeskripsiLaundry()
+        );
+
+        document.setCurrentLocation(
+                mapCurrentLocation(
+                        request.getCurrentLocation()
+                )
+        );
+
+        document.setFotoToko(
+                request.getFotoToko()
+        );
+
+        document.setPaymentMethod(
+                mapPaymentMethod(
+                        request.getPaymentMethod()
+                )
+        );
+
+        document.setDeliveryService(
+                mapDeliveryService(
+                        request.getDeliveryService()
+                )
+        );
+
+        document.setOperationalHour(
+                mapOperationalHour(
+                        request.getOperationalHour()
+                )
+        );
 
         clawfoLaundryRepository.save(document);
     }
+
 
     @Override
     public ClawfoLaundryDocument getOwnLaundry() {
@@ -141,79 +140,62 @@ public class LaundryServiceImpl implements LaundryService {
                                 )
                         );
 
-        return clawfoLaundryRepository.findByLaundryCode(registration.getLaundryCode())
-                .orElse(new ClawfoLaundryDocument());
+        return clawfoLaundryRepository
+                .findByLaundryCode(
+                        registration.getLaundryCode()
+                )
+                .orElse(
+                        new ClawfoLaundryDocument()
+                );
     }
+
 
     private ClawfoLaundryDocument mapToDocument(
             ClawfoLapakLaundryRequest request
     ) {
 
-        return ClawfoLaundryDocument.builder()
-                .namaLaundry(request.getNamaLaundry())
-                .deskripsiLaundry(request.getDeskripsiLaundry())
+        ClawfoLaundryDocument document =
+                new ClawfoLaundryDocument();
 
-                .currentLocation(
-                        request.getCurrentLocation() == null
-                                ? null
-                                : ClawfoLaundryDocument.CurrentLocationProps.builder()
-                                .address(request.getCurrentLocation().getAddress())
-                                .longitude(request.getCurrentLocation().getLongitude())
-                                .latitude(request.getCurrentLocation().getLatitude())
-                                .build()
+        document.setNamaLaundry(
+                request.getNamaLaundry()
+        );
+
+        document.setDeskripsiLaundry(
+                request.getDeskripsiLaundry()
+        );
+
+        document.setCurrentLocation(
+                mapCurrentLocation(
+                        request.getCurrentLocation()
                 )
+        );
 
-                .fotoToko(request.getFotoToko())
+        document.setFotoToko(
+                request.getFotoToko()
+        );
 
-                .paymentMethod(
-                        request.getPaymentMethod() == null
-                                ? null
-                                : ClawfoLaundryDocument.PaymentMethodProps.builder()
-                                .isCash(request.getPaymentMethod().isCash())
-                                .isQris(request.getPaymentMethod().isQris())
-                                .fotoQris(request.getPaymentMethod().getFotoQris())
-                                .isBankTransfer(request.getPaymentMethod().isBankTransfer())
-                                .bankCode(request.getPaymentMethod().getBankCode())
-                                .rekno(request.getPaymentMethod().getRekno())
-                                .rekOwner(request.getPaymentMethod().getRekOwner())
-                                .build()
+        document.setPaymentMethod(
+                mapPaymentMethod(
+                        request.getPaymentMethod()
                 )
+        );
 
-                .deliveryService(
-                        request.getDeliveryService() == null
-                                ? null
-                                : ClawfoLaundryDocument.DeliveryServiceProps.builder()
-                                .isPickup(request.getDeliveryService().isPickup())
-                                .isPickupFree(request.getDeliveryService().isPickupFree())
-                                .pickupPayment(request.getDeliveryService().getPickupPayment())
-                                .isDelivery(request.getDeliveryService().isDelivery())
-                                .isDeliveryFree(request.getDeliveryService().isDeliveryFree())
-                                .deliveryPayment(request.getDeliveryService().getDeliveryPayment())
-                                .build()
+        document.setDeliveryService(
+                mapDeliveryService(
+                        request.getDeliveryService()
                 )
+        );
 
-                .operationalHour(
-                        request.getOperationalHour() == null
-                                ? null
-                                : ClawfoLaundryDocument.OperationalHourProps.builder()
-                                .seninStartDay(request.getOperationalHour().getSeninStartDay())
-                                .seninEndDay(request.getOperationalHour().getSeninEndDay())
-                                .selasaStartDay(request.getOperationalHour().getSelasaStartDay())
-                                .selasaEndDay(request.getOperationalHour().getSelasaEndDay())
-                                .rabuStartDay(request.getOperationalHour().getRabuStartDay())
-                                .rabuEndDay(request.getOperationalHour().getRabuEndDay())
-                                .kamisStartDay(request.getOperationalHour().getKamisStartDay())
-                                .kamisEndDay(request.getOperationalHour().getKamisEndDay())
-                                .jumatStartDay(request.getOperationalHour().getJumatStartDay())
-                                .jumatEndDay(request.getOperationalHour().getJumatEndDay())
-                                .sabtuStartDay(request.getOperationalHour().getSabtuStartDay())
-                                .sabtuEndDay(request.getOperationalHour().getSabtuEndDay())
-                                .mingguStartDay(request.getOperationalHour().getMingguStartDay())
-                                .mingguEndDay(request.getOperationalHour().getMingguEndDay())
-                                .build()
+        document.setOperationalHour(
+                mapOperationalHour(
+                        request.getOperationalHour()
                 )
-                .build();
+        );
+
+        return document;
     }
+
 
     private ClawfoLaundryDocument.CurrentLocationProps mapCurrentLocation(
             ClawfoLapakLaundryRequest.CurrentLocationProps source
@@ -223,12 +205,24 @@ public class LaundryServiceImpl implements LaundryService {
             return null;
         }
 
-        return ClawfoLaundryDocument.CurrentLocationProps.builder()
-                .address(source.getAddress())
-                .longitude(source.getLongitude())
-                .latitude(source.getLatitude())
-                .build();
+        ClawfoLaundryDocument.CurrentLocationProps target =
+                new ClawfoLaundryDocument.CurrentLocationProps();
+
+        target.setAddress(
+                source.getAddress()
+        );
+
+        target.setLongitude(
+                source.getLongitude()
+        );
+
+        target.setLatitude(
+                source.getLatitude()
+        );
+
+        return target;
     }
+
 
     private ClawfoLaundryDocument.PaymentMethodProps mapPaymentMethod(
             ClawfoLapakLaundryRequest.PaymentMethodProps source
@@ -238,16 +232,40 @@ public class LaundryServiceImpl implements LaundryService {
             return null;
         }
 
-        return ClawfoLaundryDocument.PaymentMethodProps.builder()
-                .isCash(source.isCash())
-                .isQris(source.isQris())
-                .fotoQris(source.getFotoQris())
-                .isBankTransfer(source.isBankTransfer())
-                .bankCode(source.getBankCode())
-                .rekno(source.getRekno())
-                .rekOwner(source.getRekOwner())
-                .build();
+        ClawfoLaundryDocument.PaymentMethodProps target =
+                new ClawfoLaundryDocument.PaymentMethodProps();
+
+        target.setCash(
+                source.isCash()
+        );
+
+        target.setQris(
+                source.isQris()
+        );
+
+        target.setFotoQris(
+                source.getFotoQris()
+        );
+
+        target.setBankTransfer(
+                source.isBankTransfer()
+        );
+
+        target.setBankCode(
+                source.getBankCode()
+        );
+
+        target.setRekno(
+                source.getRekno()
+        );
+
+        target.setRekOwner(
+                source.getRekOwner()
+        );
+
+        return target;
     }
+
 
     private ClawfoLaundryDocument.DeliveryServiceProps mapDeliveryService(
             ClawfoLapakLaundryRequest.DeliveryServiceProps source
@@ -257,15 +275,36 @@ public class LaundryServiceImpl implements LaundryService {
             return null;
         }
 
-        return ClawfoLaundryDocument.DeliveryServiceProps.builder()
-                .isPickup(source.isPickup())
-                .isPickupFree(source.isPickupFree())
-                .pickupPayment(source.getPickupPayment())
-                .isDelivery(source.isDelivery())
-                .isDeliveryFree(source.isDeliveryFree())
-                .deliveryPayment(source.getDeliveryPayment())
-                .build();
+        ClawfoLaundryDocument.DeliveryServiceProps target =
+                new ClawfoLaundryDocument.DeliveryServiceProps();
+
+        target.setPickup(
+                source.isPickup()
+        );
+
+        target.setPickupFree(
+                source.isPickupFree()
+        );
+
+        target.setPickupPayment(
+                source.getPickupPayment()
+        );
+
+        target.setDelivery(
+                source.isDelivery()
+        );
+
+        target.setDeliveryFree(
+                source.isDeliveryFree()
+        );
+
+        target.setDeliveryPayment(
+                source.getDeliveryPayment()
+        );
+
+        return target;
     }
+
 
     private ClawfoLaundryDocument.OperationalHourProps mapOperationalHour(
             ClawfoLapakLaundryRequest.OperationalHourProps source
@@ -275,22 +314,65 @@ public class LaundryServiceImpl implements LaundryService {
             return null;
         }
 
-        return ClawfoLaundryDocument.OperationalHourProps.builder()
-                .seninStartDay(source.getSeninStartDay())
-                .seninEndDay(source.getSeninEndDay())
-                .selasaStartDay(source.getSelasaStartDay())
-                .selasaEndDay(source.getSelasaEndDay())
-                .rabuStartDay(source.getRabuStartDay())
-                .rabuEndDay(source.getRabuEndDay())
-                .kamisStartDay(source.getKamisStartDay())
-                .kamisEndDay(source.getKamisEndDay())
-                .jumatStartDay(source.getJumatStartDay())
-                .jumatEndDay(source.getJumatEndDay())
-                .sabtuStartDay(source.getSabtuStartDay())
-                .sabtuEndDay(source.getSabtuEndDay())
-                .mingguStartDay(source.getMingguStartDay())
-                .mingguEndDay(source.getMingguEndDay())
-                .build();
-    }
+        ClawfoLaundryDocument.OperationalHourProps target =
+                new ClawfoLaundryDocument.OperationalHourProps();
 
+        target.setSeninStartDay(
+                source.getSeninStartDay()
+        );
+
+        target.setSeninEndDay(
+                source.getSeninEndDay()
+        );
+
+        target.setSelasaStartDay(
+                source.getSelasaStartDay()
+        );
+
+        target.setSelasaEndDay(
+                source.getSelasaEndDay()
+        );
+
+        target.setRabuStartDay(
+                source.getRabuStartDay()
+        );
+
+        target.setRabuEndDay(
+                source.getRabuEndDay()
+        );
+
+        target.setKamisStartDay(
+                source.getKamisStartDay()
+        );
+
+        target.setKamisEndDay(
+                source.getKamisEndDay()
+        );
+
+        target.setJumatStartDay(
+                source.getJumatStartDay()
+        );
+
+        target.setJumatEndDay(
+                source.getJumatEndDay()
+        );
+
+        target.setSabtuStartDay(
+                source.getSabtuStartDay()
+        );
+
+        target.setSabtuEndDay(
+                source.getSabtuEndDay()
+        );
+
+        target.setMingguStartDay(
+                source.getMingguStartDay()
+        );
+
+        target.setMingguEndDay(
+                source.getMingguEndDay()
+        );
+
+        return target;
+    }
 }
