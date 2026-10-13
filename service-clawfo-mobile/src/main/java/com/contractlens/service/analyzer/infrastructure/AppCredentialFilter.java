@@ -35,8 +35,11 @@ public class AppCredentialFilter extends OncePerRequestFilter {
             "/**/mobile/logout",
             "/**/registration-lapak/send-otp",
             "/**/registration-lapak/validate-otp",
-            "/**/registration-lapak/create-account"
+            "/**/registration-lapak/create-account",
+            "/**/V.1.0.0/mobile/pesanan-chat/generate-token-chat",
+            "/**/ws"
     );
+
 
     private static final String APPLICATION_CONTEXT = "APPLICATION_CONTEXT";
 

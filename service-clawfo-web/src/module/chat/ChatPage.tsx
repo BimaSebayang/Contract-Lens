@@ -4,21 +4,48 @@ import {
     useState,
 } from 'react';
 
+import { Client } from "@stomp/stompjs";
+
+import {
+    useParams,
+    useSearchParams
+} from "react-router-dom";
+
 import {
     ClawfoChatRequest,
     ClawfoMessageRequest,
     ClawfoMessageResponse,
+    connectChat,
+    getChatApi,
+    sendChat,
 } from '../../integration/module/chat0a.api';
 
 import {
     styles,
 } from '../../component/chat/chat.style';
 
+import {
+    generateTokenChatApi
+} from "../../integration/module/auth0a.api";
+
+import {
+    log,
+    removeStorage,
+    setStorage,
+    STORAGE_KEY
+} from "../../utils/props/async-storage";
+
+import {
+    generateTicketId
+} from "../../utils/props/header-props";
+
 
 /* =========================================================
    ICON
    ========================================================= */
 
+
+//TODO : typing indicator need to enhance and Message for Click File And Photo
 function Icon({
                   name,
                   size = 20,
@@ -154,7 +181,7 @@ interface ChatPageProps {
 const INITIAL_MESSAGES: ClawfoMessageResponse[] = [
     {
         id: '1',
-        type: 'clawfo',
+        type: 'CLAWFO',
         name: 'CLAwfo Asisten',
         message: 'Halo! 👋 Ada yang bisa CLAwfo bantu hari ini?',
         time: '10:24',
@@ -177,16 +204,39 @@ export default function ChatPage({
     const fileInputRef =
         useRef<HTMLInputElement | null>(null);
 
+    const stompClientRef =
+        useRef<Client | null>(null);
+
     const cameraInputRef =
         useRef<HTMLInputElement | null>(null);
+
+    const initializedRef =
+        useRef(false);
+
+    const pendingMessageIdRef =
+        useRef<string | null>(null);
 
     const [message, setMessage] =
         useState('');
 
+    const [sending, setSending] =
+        useState(false);
+
     const [messages, setMessages] =
         useState<ClawfoMessageResponse[]>(
-            INITIAL_MESSAGES,
+            INITIAL_MESSAGES
         );
+
+    const { chatId } =
+        useParams<{
+            chatId: string;
+        }>();
+
+    const [searchParams] =
+        useSearchParams();
+
+    const laundryCode =
+        searchParams.get("laundryCode");
 
 
     /* =====================================================
@@ -213,9 +263,212 @@ export default function ChatPage({
     };
 
 
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    useEffect(() => {
+
+        if (initializedRef.current) {
+            return;
+        }
+
+        initializedRef.current = true;
+
+        initialize();
+
+    }, []);
+
+
+    /* =====================================================
+       AUTO SCROLL ON MESSAGE CHANGE
+       ===================================================== */
+
     useEffect(() => {
         scrollToBottom(false);
     }, [messages]);
+
+
+    /* =====================================================
+       INITIALIZE FLOW
+       ===================================================== */
+
+    const initialize = async () => {
+
+        const initialized =
+            await initializeChat();
+
+        await getChat(
+            initialized
+        );
+    };
+
+
+    /* =====================================================
+       GET CHAT
+       ===================================================== */
+
+    const getChat = async (
+        initialized: boolean
+    ) => {
+
+        if (!initialized) {
+
+            log(
+                "Initialized issued",
+                "Intialized cannot be generate"
+            );
+
+            return;
+        }
+
+        try {
+
+            const ticketId =
+                generateTicketId();
+
+            if (!chatId) {
+
+                log(
+                    "Logger Chat Id not Found Weh"
+                );
+
+                return;
+            }
+
+            const response =
+                await getChatApi(
+                    chatId,
+                    ticketId
+                );
+
+            if (
+                Array.isArray(
+                    response.messages
+                ) &&
+                response.messages.length > 0
+            ) {
+
+                setMessages(
+                    response.messages
+                );
+            }
+
+
+            /* =================================================
+               CONNECT WEBSOCKET
+               ================================================= */
+
+            stompClientRef.current =
+                connectChat(
+                    chatId,
+                    (
+                        message: ClawfoMessageRequest
+                    ) => {
+
+                        console.log(
+                            "[CONNECT-CHAT] MESSAGE CALLBACK",
+                            message
+                        );
+
+
+                        /* =====================================
+                           ADD MESSAGE
+                           ===================================== */
+
+                        setMessages(
+                            (current) => [
+                                ...current,
+                                message,
+                            ]
+                        );
+                        setSending(false)
+                        setMessage('');
+                    }
+                );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to get chat:",
+                error
+            );
+        }
+    };
+
+
+    /* =====================================================
+       INITIALIZE CHAT TOKEN
+       ===================================================== */
+
+    const initializeChat =
+        async (): Promise<boolean> => {
+
+            try {
+
+                if (!laundryCode) {
+                    return false;
+                }
+
+                const response =
+                    await generateTokenChatApi({
+                        codeLaundry:
+                        laundryCode,
+
+                        username:
+                            "Bima",
+
+                        email:
+                            "bima@clawfo.com",
+
+                        handphone:
+                            "081234567890",
+                    });
+
+
+                if (
+                    response.code ===
+                    "auth.login.success"
+                ) {
+
+                    setStorage(
+                        STORAGE_KEY.CHAT_ACCESS_TOKEN,
+                        response.data.accessToken
+                    );
+
+                    setStorage(
+                        STORAGE_KEY.CHAT_REFRESH_TOKEN,
+                        response.data.refreshToken
+                    );
+
+                    return true;
+                }
+
+
+                /* =============================================
+                   CLEAR TOKEN
+                   ============================================= */
+
+                removeStorage(
+                    STORAGE_KEY.CHAT_ACCESS_TOKEN
+                );
+
+                removeStorage(
+                    STORAGE_KEY.CHAT_REFRESH_TOKEN
+                );
+
+                return false;
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to initialize chat:",
+                    error
+                );
+
+                return false;
+            }
+        };
 
 
     /* =====================================================
@@ -227,17 +480,58 @@ export default function ChatPage({
         const value =
             message.trim();
 
+
+        /* =============================================
+           VALIDATION
+           ============================================= */
+
         if (!value) {
             return;
         }
 
+        if (sending) {
+            return;
+        }
 
-        const newMessage: ClawfoMessageRequest = {
-            id: Date.now().toString(),
+        if (!chatId) {
 
-            type: 'user',
+            log(
+                "CHAT ID",
+                "chat id cannot be found"
+            );
 
-            message: value,
+            return;
+        }
+
+        if (
+            !stompClientRef.current ||
+            !stompClientRef.current.connected
+        ) {
+
+            log(
+                "CHAT",
+                "websocket is not connected"
+            );
+
+            return;
+        }
+
+
+        /* =============================================
+           CREATE MESSAGE
+           ============================================= */
+
+        const newMessage:
+            ClawfoMessageRequest = {
+
+            id:
+                Date.now().toString(),
+
+            type:
+                'USER',
+
+            message:
+            value,
 
             name:
                 chatDetail?.username ??
@@ -254,12 +548,30 @@ export default function ChatPage({
         };
 
 
-        setMessages((current) => [
-            ...current,
-            newMessage,
-        ]);
+        /* =============================================
+           SET PENDING MESSAGE
+           ============================================= */
 
-        setMessage('');
+        pendingMessageIdRef.current =
+            newMessage.id;
+
+
+        /* =============================================
+           START LOADING
+           ============================================= */
+
+        setSending(true);
+
+
+        /* =============================================
+           SEND
+           ============================================= */
+
+        sendChat(
+            stompClientRef.current,
+            chatId,
+            newMessage
+        );
     };
 
 
@@ -271,15 +583,11 @@ export default function ChatPage({
         event: React.KeyboardEvent<HTMLTextAreaElement>,
     ) => {
 
-        /*
-         * Enter      -> send
-         * Shift+Enter -> new line
-         */
-
         if (
             event.key === 'Enter' &&
             !event.shiftKey
         ) {
+
             event.preventDefault();
 
             handleSend();
@@ -292,13 +600,11 @@ export default function ChatPage({
        ===================================================== */
 
     const handleAttachmentClick = () => {
-
         fileInputRef.current?.click();
     };
 
 
     const handleCameraClick = () => {
-
         cameraInputRef.current?.click();
     };
 
@@ -314,15 +620,6 @@ export default function ChatPage({
             return;
         }
 
-        /*
-         * TODO:
-         * Upload / process file here.
-         *
-         * Untuk sementara behavior-nya
-         * hanya mengambil file seperti
-         * picker di React Native.
-         */
-
         console.log(
             'Selected attachment:',
             file,
@@ -333,18 +630,6 @@ export default function ChatPage({
 
 
     const handleAttachmentMenu = () => {
-
-        /*
-         * Browser tidak punya Alert.alert seperti RN.
-         *
-         * Untuk sekarang kita langsung membuka
-         * file picker.
-         *
-         * Kalau nanti mau dibuat popup custom:
-         * Camera / File
-         * tinggal kita bikin modal kecil.
-         */
-
         handleAttachmentClick();
     };
 
@@ -520,7 +805,7 @@ export default function ChatPage({
                     {messages.map((item) => {
 
                         const isUser =
-                            item.type === 'user';
+                            item.type === 'USER';
 
                         return (
 
@@ -532,8 +817,6 @@ export default function ChatPage({
                                         : styles.clawfoMessageRow
                                 }
                             >
-
-                                {/* CLAWFO AVATAR */}
 
                                 {!isUser && (
 
@@ -555,8 +838,6 @@ export default function ChatPage({
 
                                 )}
 
-
-                                {/* MESSAGE */}
 
                                 <div
                                     style={
@@ -641,6 +922,7 @@ export default function ChatPage({
                             handleAttachmentMenu
                         }
                         title="Tambah lampiran"
+                        disabled={sending}
                     >
                         <Icon
                             name="attach"
@@ -650,6 +932,10 @@ export default function ChatPage({
                     </button>
 
 
+                    {/* =================================================
+                        TEXTAREA
+                        ================================================= */}
+
                     <textarea
                         value={message}
                         onChange={(event) =>
@@ -657,33 +943,59 @@ export default function ChatPage({
                                 event.target.value,
                             )
                         }
-                        onKeyDown={handleKeyDown}
+                        onKeyDown={
+                            handleKeyDown
+                        }
                         placeholder="Tulis pesan..."
                         maxLength={1000}
                         rows={1}
                         style={styles.input}
+                        disabled={sending}
                     />
 
+
+                    {/* =================================================
+                        SEND BUTTON
+                        ================================================= */}
 
                     <button
                         type="button"
                         style={{
                             ...styles.sendButton,
+
                             ...(
-                                !message.trim()
+                                !message.trim() ||
+                                sending
                                     ? styles.sendButtonDisabled
                                     : {}
                             ),
                         }}
-                        onClick={handleSend}
-                        disabled={!message.trim()}
+                        onClick={
+                            handleSend
+                        }
+                        disabled={
+                            !message.trim() ||
+                            sending
+                        }
                     >
 
-                        <Icon
-                            name="send"
-                            size={20}
-                            color={COLORS.white}
-                        />
+                        {sending ? (
+
+                            <div
+                                style={
+                                    styles.sendingSpinner
+                                }
+                            />
+
+                        ) : (
+
+                            <Icon
+                                name="send"
+                                size={20}
+                                color={COLORS.white}
+                            />
+
+                        )}
 
                     </button>
 
@@ -703,8 +1015,11 @@ export default function ChatPage({
                 style={{
                     display: 'none',
                 }}
-                onChange={handleFileChange}
+                onChange={
+                    handleFileChange
+                }
             />
+
 
             <input
                 ref={cameraInputRef}
@@ -714,7 +1029,9 @@ export default function ChatPage({
                 style={{
                     display: 'none',
                 }}
-                onChange={handleFileChange}
+                onChange={
+                    handleFileChange
+                }
             />
 
         </div>

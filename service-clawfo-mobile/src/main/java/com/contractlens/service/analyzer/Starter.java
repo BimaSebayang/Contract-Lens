@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
                 DataSourceAutoConfiguration.class
         }
 )
-public class Analyzer {
+public class Starter {
  public static void main(String[] args){
-   SpringApplication.run(Analyzer.class,args);
+   SpringApplication.run(Starter.class,args);
 
  }}

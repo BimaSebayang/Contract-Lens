@@ -33,7 +33,7 @@ public class LoginClawfoController {
             @RequestHeader(value = "X-Latitude") String latitude,
             @RequestHeader(value = "X-Location") String location,
             @Valid @RequestBody ClawfoMappingLoginRequest request
-    ) throws MessagingException, UnsupportedEncodingException {
+    )  {
 
         log.info("/mobile login for version /V.1.0.0 with value deviceId : {}, longitude : {}, latitude : {}, location : {}, email : {}",deviceId,longitude,latitude,location,request.getEmail());
 

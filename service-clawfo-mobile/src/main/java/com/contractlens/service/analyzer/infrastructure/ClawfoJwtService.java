@@ -2,17 +2,20 @@ package com.contractlens.service.analyzer.infrastructure;
 
 import com.contractlens.common.dto.ClawfoJwtPayload;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -24,6 +27,14 @@ public class ClawfoJwtService {
     private final SecretKey secretKey;
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
+
+    public ClawfoJwtPayload getCurrentUser(Principal principal) {
+        Authentication authentication =
+                (Authentication) principal;
+
+        return (ClawfoJwtPayload)
+                authentication.getPrincipal();
+    }
 
     public ClawfoJwtPayload getCurrentUser() {
 
@@ -71,7 +82,10 @@ public class ClawfoJwtService {
             String longitude,
             String latitude,
             String username,
-            String namaUmkm
+            String namaUmkm,
+            String handphone,
+            String location,
+            String userType
     ) {
         return generateToken(
                 email,
@@ -81,7 +95,10 @@ public class ClawfoJwtService {
                 accessTokenExpiration,
                 "access",
                 username,
-                namaUmkm
+                namaUmkm,
+                handphone,
+                location,
+                userType
         );
     }
 
@@ -91,7 +108,10 @@ public class ClawfoJwtService {
             String longitude,
             String latitude,
             String username,
-            String namaUmkm
+            String namaUmkm,
+            String handphone,
+            String location,
+            String userType
     ) {
         return generateToken(
                 email,
@@ -101,10 +121,12 @@ public class ClawfoJwtService {
                 refreshTokenExpiration,
                 "refresh",
                 username,
-                namaUmkm
+                namaUmkm,
+                handphone,
+                location,
+                userType
         );
     }
-
 
     private String generateToken(
             String email,
@@ -114,12 +136,15 @@ public class ClawfoJwtService {
             long expiration,
             String tokenType,
             String username,
-            String namaUmkm
+            String namaUmkm,
+            String handphone,
+            String location,
+            String userType
     ) {
 
         Date now = new Date();
 
-        return Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 .id(UUID.randomUUID().toString())
                 .subject(email)
                 .claim("deviceId", deviceId)
@@ -128,12 +153,22 @@ public class ClawfoJwtService {
                 .claim("type", tokenType)
                 .claim("username", username)
                 .claim("namaUmkm", namaUmkm)
+                .claim("userType", userType)
                 .issuedAt(now)
                 .expiration(
                         new Date(now.getTime() + expiration)
                 )
-                .signWith(secretKey)
-                .compact();
+                .signWith(secretKey);
+
+        if (handphone != null && !handphone.isBlank()) {
+            builder.claim("handphone", handphone);
+        }
+
+        if (location != null && !location.isBlank()) {
+            builder.claim("location", location);
+        }
+
+        return builder.compact();
     }
 
     public ClawfoJwtPayload getTokenPayload(String token) {
@@ -154,6 +189,9 @@ public class ClawfoJwtService {
                     .type(claims.get("type", String.class))
                     .username(claims.get("username", String.class))
                     .namaUmkm(claims.get("namaUmkm", String.class))
+                    .handphone(claims.get("handphone", String.class))
+                    .location(claims.get("location", String.class))
+                    .userType(claims.get("userType", String.class))
                     .issuedAt(toLocalDateTime(claims.getIssuedAt()))
                     .expiration(toLocalDateTime(claims.getExpiration()))
                     .build();

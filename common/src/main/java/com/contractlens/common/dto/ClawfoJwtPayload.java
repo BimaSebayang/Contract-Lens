@@ -32,4 +32,10 @@ public class ClawfoJwtPayload {
     private String username;
 
     private String namaUmkm;
+
+    private String handphone;
+
+    private String location;
+
+    private String userType;
 }

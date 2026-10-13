@@ -12,9 +12,11 @@ function HomePage() {
       <div>
         <h1>CLAwfo</h1>
 
-        <Link to="/chat">
-          Chat
-        </Link>
+          <Link
+              to={`/chat/${crypto.randomUUID()}?laundryCode=3dc71afcfaa130d3b463376f2298acf846c53bb0b3e550c1043bf31eedd2e233`}
+          >
+              Chat
+          </Link>
       </div>
   );
 }
@@ -28,10 +30,10 @@ export default function App() {
               element={<HomePage />}
           />
 
-          <Route
-              path="/chat"
-              element={<ChatPage />}
-          />
+            <Route
+                path="/chat/:chatId"
+                element={<ChatPage />}
+            />
         </Routes>
       </BrowserRouter>
   );

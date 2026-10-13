@@ -3,6 +3,7 @@ package com.contractlens.service.analyzer.module.registrationlogin.service;
 import com.contractlens.common.clawfo.request.ClawfoMappingLoginRequest;
 import com.contractlens.common.clawfo.response.ClawfoLoginResponse;
 import com.contractlens.common.dto.ClawfoJwtPayload;
+import com.contractlens.common.enums.ClawfoUserType;
 import com.contractlens.common.enums.WordingClawfo;
 import com.contractlens.common.util.TimestampUtils;
 import com.contractlens.service.analyzer.db.mongo.dao.ClawfoRegistrationDocument;
@@ -75,7 +76,10 @@ public class LoginClawfoService {
                 longitude,
                 latitude,
                 user.getNamaPemilik(),
-                user.getNamaLapak()
+                user.getNamaLapak(),
+                "",
+                location,
+                ""
         );
 
         String refreshToken = jwtService.generateRefreshToken(
@@ -84,7 +88,10 @@ public class LoginClawfoService {
                 longitude,
                 latitude,
                 user.getNamaPemilik(),
-                user.getNamaLapak()
+                user.getNamaLapak(),
+                "",
+                location,
+                ClawfoUserType.KARYAWAN.name()
         );
 
         return ClawfoLoginResponse.builder()
@@ -166,7 +173,10 @@ public class LoginClawfoService {
                         longitude,
                         latitude,
                         user.getNamaPemilik(),
-                        user.getNamaLapak()
+                        user.getNamaLapak(),
+                        "",
+                        location,
+                        ClawfoUserType.KARYAWAN.name()
                 );
 
         String newRefreshToken =
@@ -176,7 +186,10 @@ public class LoginClawfoService {
                         longitude,
                         latitude,
                         user.getNamaPemilik(),
-                        user.getNamaLapak()
+                        user.getNamaLapak(),
+                        "",
+                        location,
+                        ClawfoUserType.KARYAWAN.name()
                 );
 
         return ClawfoLoginResponse.builder()
@@ -194,5 +207,46 @@ public class LoginClawfoService {
         }
 
         return clawfoJwtPayload;
+    }
+
+    public ClawfoLoginResponse generateTokenChat(
+            String deviceId,
+            String longitude,
+            String latitude,
+            String location,
+            String cCodeLaundry,
+            String cUsername,
+            String cEmailUser,
+            String cHandphoneUser
+    ) {
+
+        String accessToken = jwtService.generateAccessToken(
+                cEmailUser,
+                deviceId,
+                longitude,
+                latitude,
+                cUsername,
+                cCodeLaundry,
+                cHandphoneUser,
+                location,
+                ClawfoUserType.USER.name()
+        );
+
+        String refreshToken = jwtService.generateRefreshToken(
+                cEmailUser,
+                deviceId,
+                longitude,
+                latitude,
+                cUsername,
+                cCodeLaundry,
+                cHandphoneUser,
+                location,
+                ClawfoUserType.USER.name()
+        );
+
+        return ClawfoLoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }
