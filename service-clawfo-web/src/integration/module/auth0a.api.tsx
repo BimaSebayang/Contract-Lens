@@ -1,4 +1,4 @@
-import apiClient, {ClawfoMappingResponse} from "../client";
+import apiClient, {API_BASE_URL, ClawfoMappingResponse} from "../client";
 import {log} from "../../utils/props/async-storage";
 import {getCurrentLocation, getDeviceId} from "../../utils/props/header-props";
 
@@ -26,9 +26,13 @@ export const generateTokenChatApi = async ({
     ClawfoMappingResponse<LoginResponseData>
 > => {
 
+
+
     log("START: generate token chat");
 
     const location = await getCurrentLocation();
+
+
     const deviceId = getDeviceId();
 
     log("CODE LAUNDRY:", codeLaundry);
@@ -39,6 +43,8 @@ export const generateTokenChatApi = async ({
     log("LONGITUDE:", location.longitude);
     log("LATITUDE:", location.latitude);
     log("LOCATION:", location.location);
+
+
 
     const response = await apiClient.post<
         ClawfoMappingResponse<LoginResponseData>
@@ -62,7 +68,7 @@ export const generateTokenChatApi = async ({
         }
     );
 
-    log("HTTP STATUS:", response.status);
+
     log("CODE:", response.data.code);
     log("MESSAGE EN:", response.data.message.en);
     log("MESSAGE ID:", response.data.message.id);

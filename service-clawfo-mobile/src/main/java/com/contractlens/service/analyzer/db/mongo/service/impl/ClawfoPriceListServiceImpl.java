@@ -271,6 +271,19 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
         );
     }
 
+    @Override
+    public ClawfoPriceListDocument getAllClawfoPriceListAndBannerByLaundryCodeByWeb() {
+        String laundryCode =  clawfoJwtService
+                .getCurrentUser()
+                .getNamaUmkm();
+        return clawfoPriceListDocumentRepository
+                .findByLaundryCode(laundryCode)
+                .orElseThrow(() -> new ClawfoException(
+                        WordingClawfo.PRICE_LIST_NOT_FOUND
+                ));
+
+    }
+
     private void upsertServices(
             Update update,
             String email,
@@ -424,5 +437,6 @@ public class ClawfoPriceListServiceImpl implements PriceListService {
                         )
                 );
     }
+
 
 }

@@ -48,4 +48,8 @@ public class ClawfoPriceListService {
     public void deleteServiceLaundry(String deviceId, String ticketId, String longitude, String latitude, String location, String serviceId) {
         priceListService.deleteServiceLaundry(serviceId);
     }
+
+    public ClawfoPriceListDocument getDetailPriceListWeb(String deviceId, String ticketId) {
+        return priceListService.getAllClawfoPriceListAndBannerByLaundryCodeByWeb();
+    }
 }

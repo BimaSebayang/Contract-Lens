@@ -2,7 +2,7 @@ import axios from "axios";
 import {Client} from "@stomp/stompjs";
 
 
-const API_BASE_URL:string = "http://192.168.8.248:9002/clawfo-dev";
+export const API_BASE_URL:string = "http://192.168.8.248:9002/clawfo-dev";
 
 const WS_BASE_URL: string =
     API_BASE_URL.startsWith("https://")

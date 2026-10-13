@@ -34,28 +34,34 @@ export const getDeviceId = (): string => {
 
 export const getCurrentLocation =
     async (): Promise<DeviceLocation> => {
-
         if (!navigator.geolocation) {
             throw new Error(
                 "Geolocation is not supported"
             );
         }
 
-        const position =
-            await new Promise<GeolocationPosition>(
-                (resolve, reject) => {
 
-                    navigator.geolocation.getCurrentPosition(
-                        resolve,
-                        reject,
-                        {
-                            enableHighAccuracy: true,
-                            timeout: 10000,
-                            maximumAge: 0,
-                        }
-                    );
-                }
-            );
+
+        const position = await new Promise<GeolocationPosition>(
+            (resolve, reject) => {
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        resolve(position);
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0,
+                    }
+                );
+            }
+        );
+
+
 
         const latitude =
             position.coords.latitude;
@@ -64,6 +70,8 @@ export const getCurrentLocation =
             position.coords.longitude;
 
         let location = "";
+
+
 
         try {
 

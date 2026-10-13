@@ -232,3 +232,5 @@
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoPriceListDocument$ClawfoServiceDocument$MenuImageProps.class
 /service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoPriceListDocument$ClawfoServiceDocument.class
 /common/target/classes/com/contractlens/common/clawfo/request/ClawfoServiceRequest$ClawfoService.class
+/service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/ClawfoChatDocument$ClawfoChatDocumentBuilder.class
+/service-clawfo-mobile/target/classes/com/contractlens/service/analyzer/db/mongo/dao/component/ClawfoMessageRequest$ClawfoMessageRequestBuilder.class
