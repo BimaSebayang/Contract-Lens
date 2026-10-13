@@ -69,24 +69,7 @@ logging:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
     org.springframework.data.mongodb.repository.query: DEBUG
   pattern:
-    console: |
-      {
-        "timestamp": "%d{yyyy-MM-dd HH:mm:ss}",
-        "request": {
-          "url": "%X{url}",
-          "method": "%X{method}"
-        },
-        "context": {
-          "uuid": "%X{uuid}",
-          "user": "%X{user}"
-        },
-        "source": {
-          "class": "%logger{0}",
-          "line": "%line"
-        },
-        "level": "%level",
-        "message": "%msg"
-      }%n
+    console: "%d{yyyy-MM-dd HH:mm:ss} | url=%X{url} | method=%X{method} | uuid=%X{uuid} | user=%X{user} | %logger:%line %n [%level] message=%msg%n"
 
 management:
   endpoints:
@@ -100,3 +83,5 @@ clawfo:
     secret: 7f3c9a8e2d1b4f6a9c7e5d3b1a8f2c6e4d9b7a5f3c1e8a6d2b9f4c7e1a5d8b3c6f9a2e5d8b1c4f7a9e2d5c8b3f6a1e4d7c9b2f5a8e1d4c7b9f2a5e8d1c3f6b8a4e7d9gdsgcvadvchdbcuabaciuasbciasbcbacbsjcbasbcjbcbac
     access-token-expiration: 3600000
     refresh-token-expiration: 2592000000
+
+
